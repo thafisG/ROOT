@@ -1,27 +1,20 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 export type IconName =
-  | 'home' | 'dumbbell' | 'sparkles' | 'chart' | 'user'
-  | 'droplet' | 'moon' | 'flame' | 'leaf' | 'apple'
-  | 'chevron-right' | 'check' | 'x' | 'clock';
-
-const ICON_PATHS: Record<IconName, string> = {
-  home: '<path d="M4 11.5 12 4l8 7.5" /><path d="M6 10v9a1 1 0 0 0 1 1h3v-6h4v6h3a1 1 0 0 0 1-1v-9" />',
-  dumbbell: '<path d="M6 8v8" /><path d="M18 8v8" /><path d="M3 10v4" /><path d="M21 10v4" /><path d="M6 12h12" />',
-  sparkles: '<path d="M12 3v4" /><path d="M12 17v4" /><path d="M3 12h4" /><path d="M17 12h4" /><path d="M6.5 6.5l1.8 1.8" /><path d="M15.7 15.7l1.8 1.8" /><path d="M17.5 6.5l-1.8 1.8" /><path d="M8.3 15.7l-1.8 1.8" />',
-  chart: '<path d="M4 20V10" /><path d="M11 20V4" /><path d="M18 20v-7" /><path d="M3 20h18" />',
-  user: '<circle cx="12" cy="8" r="3.5" /><path d="M5 20c1.2-4 4-6 7-6s5.8 2 7 6" />',
-  droplet: '<path d="M12 3c3.5 4.2 6 7.5 6 10.5A6 6 0 1 1 6 13.5C6 10.5 8.5 7.2 12 3Z" />',
-  moon: '<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z" />',
-  flame: '<path d="M12 3c1 3-3 4-3 7a3 3 0 0 0 6 0c0-1-1-2-1-2 2 1 3 3 3 5a5 5 0 0 1-10 0c0-4 3-6 5-10Z" />',
-  leaf: '<path d="M5 19c8 1 14-5 14-14-9 0-14 6-14 14Z" /><path d="M5 19c2-4 5-7 9-9" />',
-  apple: '<path d="M12 4.5c.6-1 1.6-1.6 2.5-1.5-.2 1.2-1 2-2.1 2.3" /><path d="M12 6a5.3 5.3 0 0 1 5.3 5.3c0 4-2.4 8.2-5.3 9.7-2.9-1.5-5.3-5.7-5.3-9.7A5.3 5.3 0 0 1 12 6Z" />',
-  'chevron-right': '<path d="M9 5l7 7-7 7" />',
-  check: '<path d="M5 12.5l4.5 4.5L19 7" />',
-  x: '<path d="M6 6l12 12" /><path d="M18 6 6 18" />',
-  clock: '<circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" />',
-};
+  | 'home'
+  | 'dumbbell'
+  | 'sparkles'
+  | 'chart'
+  | 'user'
+  | 'droplet'
+  | 'moon'
+  | 'flame'
+  | 'leaf'
+  | 'apple'
+  | 'chevron-right'
+  | 'check'
+  | 'x'
+  | 'clock';
 
 @Component({
   selector: 'root-icon',
@@ -30,12 +23,7 @@ const ICON_PATHS: Record<IconName, string> = {
   styleUrl: './icon.component.scss',
 })
 export class IconComponent {
-  private readonly sanitizer = inject(DomSanitizer);
-
   readonly name = input.required<IconName>();
   readonly size = input<number>(20);
-
-  protected readonly innerSvg = computed<SafeHtml>(() =>
-    this.sanitizer.bypassSecurityTrustHtml(ICON_PATHS[this.name()]),
-  );
 }
+
