@@ -1,0 +1,24 @@
+<article class="workout-card">
+  <div class="workout-card__icon">
+    <root-icon name="dumbbell" [size]="22" />
+  </div>
+
+  <div class="workout-card__content">
+    <p class="workout-card__eyebrow">Treino do dia · {{ workout().scheduledLabel }}</p>
+    <h3 class="workout-card__title">{{ workout().name }}</h3>
+
+    <div class="workout-card__meta">
+      <span class="workout-card__badge">{{ workout().level }}</span>
+      <span class="workout-card__meta-item">
+        <root-icon name="clock" [size]="14" />
+        {{ workout().durationMinutes }} min
+      </span>
+      <span class="workout-card__meta-item">{{ workout().exerciseCount }} exercícios</span>
+    </div>
+  </div>
+
+  <button type="button" class="workout-card__action" (click)="viewWorkout.emit()">
+    Ver treino
+    <root-icon name="chevron-right" [size]="16" />
+  </button>
+</article>

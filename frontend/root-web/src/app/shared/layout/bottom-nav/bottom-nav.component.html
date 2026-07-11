@@ -1,0 +1,17 @@
+<nav class="bottom-nav">
+  @for (item of items(); track item.route) {
+    <a
+      class="bottom-nav__item"
+      [routerLink]="item.route"
+      [class.bottom-nav__item--active]="item.route === activeRoute()"
+      [class.bottom-nav__item--primary]="item.isPrimary"
+    >
+      <root-icon
+        [name]="item.icon"
+        [size]="item.isPrimary ? 22 : 20"
+      ></root-icon>
+
+      <span>{{ item.label }}</span>
+    </a>
+  }
+</nav>

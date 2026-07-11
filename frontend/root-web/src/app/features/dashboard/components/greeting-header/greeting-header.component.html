@@ -1,0 +1,13 @@
+<div class="greeting">
+  <div class="greeting__text">
+    <h1 class="greeting__title">{{ greeting() }}, {{ userName() }}</h1>
+    <p class="greeting__subtitle">Aqui está o que preparamos para você hoje.</p>
+  </div>
+
+  @if (streakDays() > 0) {
+    <div class="greeting__streak">
+      <root-icon name="flame" [size]="16" />
+      <span>{{ streakDays() }} dias seguidos</span>
+    </div>
+  }
+</div>

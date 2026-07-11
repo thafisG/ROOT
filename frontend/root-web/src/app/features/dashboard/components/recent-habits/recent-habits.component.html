@@ -1,0 +1,21 @@
+<section class="recent-habits">
+  <h3 class="recent-habits__title">Hábitos recentes</h3>
+
+  @if (entries().length === 0) {
+    <p class="recent-habits__empty">Nenhum registro ainda hoje.</p>
+  } @else {
+    <ul class="recent-habits__list">
+      @for (entry of entries(); track entry.id) {
+        <li class="recent-habits__item">
+          <span class="recent-habits__icon" [style.color]="'var(' + entry.category.colorVar + ')'">
+            <root-icon [name]="entry.category.icon" [size]="16" />
+          </span>
+          <div class="recent-habits__text">
+            <p class="recent-habits__label">{{ entry.label }}</p>
+            <p class="recent-habits__time">{{ entry.timeLabel }}</p>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>

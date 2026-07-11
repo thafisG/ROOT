@@ -1,0 +1,46 @@
+@use 'tokens' as t;
+
+.greeting {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+
+  @include t.from-tablet {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.greeting__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 2rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.greeting__subtitle {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin: var(--space-4) 0 0;
+}
+
+.greeting__streak {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  align-self: flex-start;
+  padding: var(--space-8) var(--space-16);
+  border-radius: var(--radius-full);
+  background: var(--color-accent-50);
+  color: var(--color-accent-700);
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 500;
+
+  @include t.from-tablet {
+    align-self: center;
+  }
+}

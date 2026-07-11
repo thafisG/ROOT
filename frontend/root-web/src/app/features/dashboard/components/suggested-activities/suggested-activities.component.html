@@ -1,0 +1,15 @@
+<section class="suggested">
+  <h3 class="suggested__title">Atividades recomendadas para você</h3>
+
+  <div class="suggested__row">
+    @for (activity of activities(); track activity.id) {
+      <button type="button" class="suggested__card" (click)="selectActivity.emit(activity)">
+        <span class="suggested__icon" [style.color]="'var(' + activity.category.colorVar + ')'">
+          <root-icon [name]="activity.category.icon" [size]="18" />
+        </span>
+        <span class="suggested__name">{{ activity.title }}</span>
+        <span class="suggested__duration">{{ activity.durationMinutes }} min</span>
+      </button>
+    }
+  </div>
+</section>

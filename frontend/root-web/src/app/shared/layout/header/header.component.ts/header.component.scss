@@ -1,0 +1,79 @@
+@use 'tokens' as t;
+
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-16);
+  background: rgba(253, 251, 247, 0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border-default);
+
+  @include t.from-desktop {
+    padding: var(--space-16) var(--space-48);
+  }
+}
+
+.header__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  color: var(--color-primary-600);
+}
+
+.header__brand-name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+}
+
+.header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.header__icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: var(--bg-surface);
+  color: var(--icon-default);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-standard);
+
+  &:hover {
+    background: var(--color-neutral-100);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+  }
+}
+
+.header__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-500);
+  color: var(--text-on-primary);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

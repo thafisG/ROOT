@@ -1,0 +1,32 @@
+<article class="recommendation">
+  <button
+    type="button"
+    class="recommendation__dismiss"
+    aria-label="Dispensar recomendação"
+    (click)="dismiss.emit()"
+  >
+    <root-icon name="x" [size]="16" />
+  </button>
+
+  <div class="recommendation__header">
+    <span class="recommendation__badge" [style.color]="'var(' + recommendation().category.colorVar + ')'">
+      <root-icon [name]="recommendation().category.icon" [size]="22" />
+    </span>
+    <div>
+      <p class="recommendation__eyebrow">Recomendação do dia</p>
+      <h2 class="recommendation__title">{{ recommendation().title }}</h2>
+    </div>
+  </div>
+
+  <p class="recommendation__explanation">{{ recommendation().explanation }}</p>
+
+  <div class="recommendation__actions">
+    <button type="button" class="recommendation__cta" (click)="accept.emit()">
+      Iniciar · {{ recommendation().durationMinutes }} min
+    </button>
+    <button type="button" class="recommendation__secondary" (click)="viewAlternatives.emit()">
+      Ver outras opções
+      <root-icon name="chevron-right" [size]="16" />
+    </button>
+  </div>
+</article>
