@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
-import { DashboardComponent } from './features/dashboard/dashboard.component';
+import { RouterOutlet } from '@angular/router';
+import { SidebarNavComponent } from './shared/layout/sidebar-nav/sidebar-nav.component';
+import { BottomNavComponent } from './shared/layout/bottom-nav/bottom-nav.component';
+import { HeaderComponent } from './shared/layout/header/header.component.ts/header.component.ts';
 
 @Component({
   selector: 'app-root',
-  imports: [DashboardComponent],
+  imports: [RouterOutlet, HeaderComponent, SidebarNavComponent, BottomNavComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

@@ -1,12 +1,7 @@
-import { IconName } from "../../../shared/ui/icon/icon.component";
+import { IconName } from '../../../shared/ui/icon/icon.component';
 
 export type HabitCategoryId =
-  | 'strength'
-  | 'mobility'
-  | 'hydration'
-  | 'sleep'
-  | 'nutrition'
-  | 'cardio';
+  'strength' | 'mobility' | 'hydration' | 'sleep' | 'nutrition' | 'cardio';
 
 export interface CategoryInfo {
   id: HabitCategoryId;
@@ -30,6 +25,7 @@ export interface WeeklyCategoryStat {
 export type WorkoutLevel = 'Iniciante' | 'Intermediário' | 'Avançado';
 
 export interface NextWorkout {
+  category: CategoryInfo;
   name: string;
   scheduledLabel: string;
   durationMinutes: number;
@@ -61,9 +57,19 @@ export interface NavItem {
 export const CATEGORIES: Record<HabitCategoryId, CategoryInfo> = {
   strength: { id: 'strength', label: 'Força', icon: 'dumbbell', colorVar: '--color-cat-strength' },
   mobility: { id: 'mobility', label: 'Mobilidade', icon: 'leaf', colorVar: '--color-cat-mobility' },
-  hydration: { id: 'hydration', label: 'Hidratação', icon: 'droplet', colorVar: '--color-cat-hydration' },
+  hydration: {
+    id: 'hydration',
+    label: 'Hidratação',
+    icon: 'droplet',
+    colorVar: '--color-cat-hydration',
+  },
   sleep: { id: 'sleep', label: 'Sono', icon: 'moon', colorVar: '--color-cat-sleep' },
-  nutrition: { id: 'nutrition', label: 'Nutrição', icon: 'apple', colorVar: '--color-cat-nutrition' },
+  nutrition: {
+    id: 'nutrition',
+    label: 'Nutrição',
+    icon: 'apple',
+    colorVar: '--color-cat-nutrition',
+  },
   cardio: { id: 'cardio', label: 'Cardio', icon: 'flame', colorVar: '--color-cat-cardio' },
 };
 
@@ -74,3 +80,12 @@ export const PRIMARY_NAV_ITEMS: NavItem[] = [
   { label: 'Analytics', icon: 'chart', route: '/analytics' },
   { label: 'Perfil', icon: 'user', route: '/perfil' },
 ];
+export type InteractionType =
+  'workout_completed' | 'habit_completed' | 'recommendation_clicked' | 'recommendation_dismissed';
+
+export interface InteractionEvent {
+  id: string;
+  type: InteractionType;
+  category: HabitCategoryId;
+  createdAt: string;
+}

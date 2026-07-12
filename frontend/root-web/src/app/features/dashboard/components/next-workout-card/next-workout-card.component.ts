@@ -11,5 +11,5 @@ import { NextWorkout } from '../../models/dashboard.models';
 })
 export class NextWorkoutCardComponent {
   readonly workout = input.required<NextWorkout>();
-  readonly viewWorkout = output<void>();
+  readonly complete = output<void>();
 }

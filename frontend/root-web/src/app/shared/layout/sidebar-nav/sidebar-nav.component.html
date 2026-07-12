@@ -1,5 +1,5 @@
 <div class="sidebar__brand">
-  <root-icon name="leaf" [size]="20"></root-icon>
+  <root-icon name="leaf" [size]="20" />
   <span>ROOT</span>
 </div>
 
@@ -7,15 +7,11 @@
   @for (item of items(); track item.route) {
     <a
       class="sidebar__link"
-      [routerLink]="item.route"
-      [class.sidebar__link--active]="item.route === activeRoute()"
       [class.sidebar__link--primary]="item.isPrimary"
+      [routerLink]="item.route"
+      routerLinkActive="sidebar__link--active"
     >
-      <root-icon
-        [name]="item.icon"
-        [size]="20"
-      ></root-icon>
-
+      <root-icon [name]="item.icon" [size]="20" />
       <span>{{ item.label }}</span>
     </a>
   }

@@ -1,28 +1,28 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { BottomNavComponent } from '../../shared/layout/bottom-nav/bottom-nav.component';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { IconComponent } from '../../shared/ui/icon/icon.component';
 import { GreetingHeaderComponent } from './components/greeting-header/greeting-header.component';
 import { RecommendationCardComponent } from './components/recommendation-card/recommendation-card.component';
 import { NextWorkoutCardComponent } from './components/next-workout-card/next-workout-card.component';
 import { WeeklySummaryComponent } from './components/weekly-summary/weekly-summary.component';
 import { RecentHabitsComponent } from './components/recent-habits/recent-habits.component';
 import { SuggestedActivitiesComponent } from './components/suggested-activities/suggested-activities.component';
+import { InteractionService } from '../../core/interaction/interaction.service';
+import { RecommendationService } from '../../core/recommendation/recommendation.service';
 import {
   CATEGORIES,
+  HabitCategoryId,
   HabitLogEntry,
+  InteractionEvent,
   NextWorkout,
   Recommendation,
   SuggestedActivity,
   WeeklyCategoryStat,
 } from './models/dashboard.models';
-import { HeaderComponent } from '../../shared/layout/header/header.component.ts/header.component.ts';
-import { SidebarNavComponent } from '../../shared/layout/sidebar-nav/sidebar-nav.component';
 
 @Component({
   selector: 'root-dashboard',
   imports: [
-    HeaderComponent,
-    SidebarNavComponent,
-    BottomNavComponent,
+    IconComponent,
     GreetingHeaderComponent,
     RecommendationCardComponent,
     NextWorkoutCardComponent,
@@ -35,18 +35,20 @@ import { SidebarNavComponent } from '../../shared/layout/sidebar-nav/sidebar-nav
   styleUrl: './dashboard.component.scss',
 })
 export class DashboardComponent {
-  // Dados mockados — em produção, viriam do RecommendationService / InteractionService (Fase 3).
-  protected readonly userName = signal('Marina');
-  protected readonly streakDays = signal(5);
+  private readonly interactionService = inject(InteractionService);
+  private readonly recommendationService = inject(RecommendationService);
 
-  protected readonly recommendation = signal<Recommendation>({
-    category: CATEGORIES.mobility,
-    title: 'Mobilidade recomendada',
-    explanation: 'Você treinou força por 5 dias consecutivos e ainda não fez mobilidade esta semana.',
-    durationMinutes: 10,
-  });
+  protected readonly userName = signal('Marina');
+  protected readonly showAlternatives = signal(false);
+
+  protected readonly recommendationState = this.recommendationService.result;
+
+  protected readonly streakDays = computed(() =>
+    this.calculateStreak(this.interactionService.history()),
+  );
 
   protected readonly nextWorkout = signal<NextWorkout>({
+    category: CATEGORIES.mobility,
     name: 'Mobilidade completa — corpo todo',
     scheduledLabel: 'Hoje, 18:30',
     durationMinutes: 25,
@@ -54,44 +56,111 @@ export class DashboardComponent {
     exerciseCount: 8,
   });
 
-  protected readonly weeklyStats = signal<WeeklyCategoryStat[]>([
-    { category: CATEGORIES.strength, percentage: 90 },
-    { category: CATEGORIES.cardio, percentage: 45 },
-    { category: CATEGORIES.hydration, percentage: 60 },
-    { category: CATEGORIES.mobility, percentage: 10 },
-    { category: CATEGORIES.sleep, percentage: 70 },
-    { category: CATEGORIES.nutrition, percentage: 55 },
-  ]);
-
-  protected readonly recentHabits = signal<HabitLogEntry[]>([
-    { id: '1', category: CATEGORIES.strength, label: 'Treino de força concluído', timeLabel: 'Hoje, 07:20' },
-    { id: '2', category: CATEGORIES.hydration, label: '500ml de água registrados', timeLabel: 'Hoje, 09:10' },
-    { id: '3', category: CATEGORIES.sleep, label: '7h40 de sono registradas', timeLabel: 'Ontem, 23:15' },
-  ]);
-
   protected readonly suggestedActivities = signal<SuggestedActivity[]>([
     { id: 'a1', category: CATEGORIES.mobility, title: 'Alongamento matinal', durationMinutes: 8 },
-    { id: 'a2', category: CATEGORIES.hydration, title: 'Lembrete de hidratação', durationMinutes: 1 },
+    { id: 'a2', category: CATEGORIES.hydration, title: 'Registrar hidratação', durationMinutes: 1 },
     { id: 'a3', category: CATEGORIES.nutrition, title: 'Planejar refeições', durationMinutes: 5 },
+    { id: 'a4', category: CATEGORIES.sleep, title: 'Registrar sono da noite', durationMinutes: 1 },
+    { id: 'a5', category: CATEGORIES.cardio, title: 'Caminhada leve', durationMinutes: 15 },
   ]);
 
-  protected onAcceptRecommendation(): void {
-    // RF-05: registrar sinal positivo e redirecionar para execução (InteractionService).
+  protected readonly weeklyStats = computed<WeeklyCategoryStat[]>(() => {
+    const history = this.interactionService.history();
+    const windowStart = Date.now() - 7 * 24 * 60 * 60 * 1000;
+
+    return (Object.keys(CATEGORIES) as HabitCategoryId[]).map((id) => {
+      const count = history.filter(
+        (e) =>
+          e.category === id &&
+          (e.type === 'habit_completed' || e.type === 'workout_completed') &&
+          new Date(e.createdAt).getTime() >= windowStart,
+      ).length;
+
+      return { category: CATEGORIES[id], percentage: Math.min(100, count * 20) };
+    });
+  });
+
+  protected readonly recentHabits = computed<HabitLogEntry[]>(() =>
+    this.interactionService.recentEntries(5).map((event) => ({
+      id: event.id,
+      category: CATEGORIES[event.category],
+      label: this.describeEvent(event),
+      timeLabel: this.formatRelativeTime(event.createdAt),
+    })),
+  );
+
+  protected onAcceptRecommendation(recommendation: Recommendation): void {
+    this.interactionService.register('recommendation_clicked', recommendation.category.id);
+    this.interactionService.register('habit_completed', recommendation.category.id);
+    this.showAlternatives.set(false);
   }
 
-  protected onViewAlternatives(): void {
-    // RF-03: navegar para a lista de recomendações alternativas.
+  protected onDismissRecommendation(recommendation: Recommendation): void {
+    this.interactionService.register('recommendation_dismissed', recommendation.category.id);
   }
 
-  protected onDismissRecommendation(): void {
-    // RF-04: registrar sinal fraco negativo (InteractionService).
+  protected onToggleAlternatives(): void {
+    this.showAlternatives.update((value) => !value);
   }
 
-  protected onViewWorkout(): void {
-    // Navegar para o detalhe do treino (feature Workouts).
+  protected onSelectAlternative(recommendation: Recommendation): void {
+    this.interactionService.register('recommendation_clicked', recommendation.category.id);
+    this.interactionService.register('habit_completed', recommendation.category.id);
+    this.showAlternatives.set(false);
+  }
+
+  protected onCompleteWorkout(): void {
+    this.interactionService.register('workout_completed', this.nextWorkout().category.id);
   }
 
   protected onSelectActivity(activity: SuggestedActivity): void {
-    // Encaminhar para o fluxo de execução/registro da categoria correspondente.
+    this.interactionService.register('habit_completed', activity.category.id);
+  }
+
+  private calculateStreak(history: InteractionEvent[]): number {
+    const activityDates = new Set(
+      history
+        .filter((e) => e.type === 'habit_completed' || e.type === 'workout_completed')
+        .map((e) => new Date(e.createdAt).toDateString()),
+    );
+
+    let streak = 0;
+    const cursor = new Date();
+
+    while (activityDates.has(cursor.toDateString())) {
+      streak += 1;
+      cursor.setDate(cursor.getDate() - 1);
+    }
+
+    return streak;
+  }
+
+  private formatRelativeTime(iso: string): string {
+    const date = new Date(iso);
+    const diffMinutes = Math.round((Date.now() - date.getTime()) / 60000);
+
+    if (diffMinutes < 1) return 'Agora mesmo';
+    if (diffMinutes < 60) return `Há ${diffMinutes} min`;
+
+    const diffHours = Math.round(diffMinutes / 60);
+    if (diffHours < 24) {
+      return `Hoje, ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    }
+
+    return date.toLocaleDateString('pt-BR');
+  }
+
+  private describeEvent(event: InteractionEvent): string {
+    const label = CATEGORIES[event.category].label.toLowerCase();
+    switch (event.type) {
+      case 'workout_completed':
+        return `Treino de ${label} concluído`;
+      case 'habit_completed':
+        return `Hábito de ${label} registrado`;
+      case 'recommendation_clicked':
+        return `Recomendação de ${label} aceita`;
+      default:
+        return `${label} atualizado`;
+    }
   }
 }
