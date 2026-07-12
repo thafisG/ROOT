@@ -1,5 +1,5 @@
 <main class="dashboard">
-  <root-greeting-header [userName]="userName()" [streakDays]="streakDays()" />
+  <app-root-greeting-header [userName]="userName()" [streakDays]="streakDays()" />
 
   @if (recommendationState().isLearning) {
     <div class="dashboard__learning">
@@ -10,7 +10,7 @@
       </p>
     </div>
   } @else if (recommendationState().primary; as recommendation) {
-    <root-recommendation-card
+    <app-root-recommendation-card
       [recommendation]="recommendation"
       (accept)="onAcceptRecommendation(recommendation)"
       (viewAlternatives)="onToggleAlternatives()"
@@ -25,7 +25,7 @@
               class="dashboard__alternative-icon"
               [style.color]="'var(' + alt.category.colorVar + ')'"
             >
-              <root-icon [name]="alt.category.icon" [size]="16" />
+              <app-root-icon [name]="alt.category.icon" [size]="16" />
             </span>
             <span class="dashboard__alternative-text">
               <strong>{{ alt.title }}</strong>
@@ -39,16 +39,16 @@
 
   <div class="dashboard__grid">
     <div class="dashboard__grid-main">
-      <root-next-workout-card [workout]="nextWorkout()" (complete)="onCompleteWorkout()" />
-      <root-weekly-summary [stats]="weeklyStats()" />
-      <root-suggested-activities
+      <app-root-next-workout-card [workout]="nextWorkout()" (complete)="onCompleteWorkout()" />
+      <app-root-weekly-summary [stats]="weeklyStats()" />
+      <app-root-suggested-activities
         [activities]="suggestedActivities()"
         (selectActivity)="onSelectActivity($event)"
       />
     </div>
 
     <aside class="dashboard__grid-side">
-      <root-recent-habits [entries]="recentHabits()" />
+      <app-root-recent-habits [entries]="recentHabits()" />
     </aside>
   </div>
 </main>

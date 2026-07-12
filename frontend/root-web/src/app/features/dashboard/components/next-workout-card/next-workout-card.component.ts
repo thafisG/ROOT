@@ -3,7 +3,7 @@ import { IconComponent } from '../../../../shared/ui/icon/icon.component';
 import { NextWorkout } from '../../models/dashboard.models';
 
 @Component({
-  selector: 'root-next-workout-card',
+  selector: 'app-root-next-workout-card',
   imports: [IconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './next-workout-card.component.html',

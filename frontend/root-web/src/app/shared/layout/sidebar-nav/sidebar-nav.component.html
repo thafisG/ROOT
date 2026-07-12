@@ -1,5 +1,5 @@
 <div class="sidebar__brand">
-  <root-icon name="leaf" [size]="20" />
+  <app-root-icon name="leaf" [size]="20" />
   <span>ROOT</span>
 </div>
 
@@ -11,7 +11,7 @@
       [routerLink]="item.route"
       routerLinkActive="sidebar__link--active"
     >
-      <root-icon [name]="item.icon" [size]="20" />
+      <app-root-icon [name]="item.icon" [size]="20" />
       <span>{{ item.label }}</span>
     </a>
   }

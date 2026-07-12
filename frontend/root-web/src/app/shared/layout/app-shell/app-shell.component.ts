@@ -5,7 +5,7 @@ import { BottomNavComponent } from '../bottom-nav/bottom-nav.component';
 import { HeaderComponent } from '../header/header.component.ts/header.component.ts';
 
 @Component({
-  selector: 'root-app-shell',
+  selector: 'app-root-app-shell',
   imports: [RouterOutlet, HeaderComponent, SidebarNavComponent, BottomNavComponent],
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',

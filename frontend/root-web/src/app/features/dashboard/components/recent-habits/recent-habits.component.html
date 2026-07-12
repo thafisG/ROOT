@@ -8,7 +8,7 @@
       @for (entry of entries(); track entry.id) {
         <li class="recent-habits__item">
           <span class="recent-habits__icon" [style.color]="'var(' + entry.category.colorVar + ')'">
-            <root-icon [name]="entry.category.icon" [size]="16" />
+            <app-root-icon [name]="entry.category.icon" [size]="16" />
           </span>
           <div class="recent-habits__text">
             <p class="recent-habits__label">{{ entry.label }}</p>

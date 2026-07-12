@@ -17,7 +17,7 @@ export type IconName =
   | 'clock';
 
 @Component({
-  selector: 'root-icon',
+  selector: 'app-root-icon',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './icon.component.html',
   styleUrl: './icon.component.scss',

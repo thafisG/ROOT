@@ -3,7 +3,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { EXPERIENCE_OPTIONS } from '../../models/onboarding.models';
 
 @Component({
-  selector: 'root-step-routine',
+  selector: 'app-root-step-routine',
   imports: [ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './step-routine.component.html',

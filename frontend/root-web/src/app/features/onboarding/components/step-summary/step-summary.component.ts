@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { GOAL_OPTIONS, EXPERIENCE_OPTIONS } from '../../models/onboarding.models';
 
 @Component({
-  selector: 'root-step-summary',
+  selector: 'app-root-step-summary',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './step-summary.component.html',
   styleUrl: './step-summary.component.scss',

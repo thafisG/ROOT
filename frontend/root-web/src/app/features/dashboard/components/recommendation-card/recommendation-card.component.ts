@@ -3,7 +3,7 @@ import { IconComponent } from '../../../../shared/ui/icon/icon.component';
 import { Recommendation } from '../../models/dashboard.models';
 
 @Component({
-  selector: 'root-recommendation-card',
+  selector: 'app-root-recommendation-card',
   imports: [IconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './recommendation-card.component.html',

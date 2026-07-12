@@ -22,7 +22,7 @@ import {
 } from './models/dashboard.models';
 
 @Component({
-  selector: 'root-dashboard',
+  selector: 'app-root-dashboard',
   imports: [
     IconComponent,
     GreetingHeaderComponent,
