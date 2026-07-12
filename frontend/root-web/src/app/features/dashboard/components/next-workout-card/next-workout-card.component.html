@@ -1,6 +1,6 @@
 <article class="workout-card">
   <div class="workout-card__icon">
-    <root-icon name="dumbbell" [size]="22" />
+    <app-root-icon name="dumbbell" [size]="22" />
   </div>
 
   <div class="workout-card__content">
@@ -10,7 +10,7 @@
     <div class="workout-card__meta">
       <span class="workout-card__badge">{{ workout().level }}</span>
       <span class="workout-card__meta-item">
-        <root-icon name="clock" [size]="14" />
+        <app-root-icon name="clock" [size]="14" />
         {{ workout().durationMinutes }} min
       </span>
       <span class="workout-card__meta-item">{{ workout().exerciseCount }} exercícios</span>
@@ -19,6 +19,6 @@
 
   <button type="button" class="workout-card__action" (click)="complete.emit()">
     Concluir treino
-    <root-icon name="check" [size]="16" />
+    <app-root-icon name="check" [size]="16" />
   </button>
 </article>

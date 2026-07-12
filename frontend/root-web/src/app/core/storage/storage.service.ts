@@ -8,19 +8,23 @@ export class StorageService {
 
   read<T>(key: string, fallback: T): T {
     if (!this.isBrowser) return fallback;
+
     try {
       const raw = localStorage.getItem(this.prefix + key);
       return raw ? (JSON.parse(raw) as T) : fallback;
-    } catch {
+    } catch (error) {
+      console.error(`Erro ao ler "${key}" do localStorage.`, error);
       return fallback;
     }
   }
 
   write<T>(key: string, value: T): void {
     if (!this.isBrowser) return;
+
     try {
       localStorage.setItem(this.prefix + key, JSON.stringify(value));
-    } catch {
+    } catch (error) {
+      console.error(`Erro ao salvar "${key}" no localStorage.`, error);
     }
   }
 

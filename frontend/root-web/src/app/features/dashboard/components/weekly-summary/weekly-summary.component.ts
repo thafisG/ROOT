@@ -3,7 +3,7 @@ import { IconComponent } from '../../../../shared/ui/icon/icon.component';
 import { WeeklyCategoryStat } from '../../models/dashboard.models';
 
 @Component({
-  selector: 'root-weekly-summary',
+  selector: 'app-root-weekly-summary',
   imports: [IconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './weekly-summary.component.html',

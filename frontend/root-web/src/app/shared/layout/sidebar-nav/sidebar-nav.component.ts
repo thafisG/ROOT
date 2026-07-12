@@ -4,7 +4,7 @@ import { IconComponent } from '../../ui/icon/icon.component';
 import { NavItem, PRIMARY_NAV_ITEMS } from '../../../features/dashboard/models/dashboard.models';
 
 @Component({
-  selector: 'root-sidebar-nav',
+  selector: 'app-root-sidebar-nav',
   imports: [IconComponent, RouterLink, RouterLinkActive],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './sidebar-nav.component.html',

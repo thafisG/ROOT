@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { IconComponent } from '../../../ui/icon/icon.component';
 
 @Component({
-  selector: 'root-app-header',
+  selector: 'app-root-app-header',
   imports: [IconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './header.component.html',

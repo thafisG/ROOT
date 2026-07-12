@@ -3,7 +3,7 @@ import { IconComponent } from '../../../../shared/ui/icon/icon.component';
 import { HabitLogEntry } from '../../models/dashboard.models';
 
 @Component({
-  selector: 'root-recent-habits',
+  selector: 'app-root-recent-habits',
   imports: [IconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './recent-habits.component.html',

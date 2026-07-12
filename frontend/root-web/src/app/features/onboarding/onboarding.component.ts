@@ -20,7 +20,7 @@ const STEP_FIELDS: string[][] = [
 ];
 
 @Component({
-  selector: 'root-onboarding',
+  selector: 'app-root-onboarding',
   imports: [
     ReactiveFormsModule,
     OnboardingHeroComponent,

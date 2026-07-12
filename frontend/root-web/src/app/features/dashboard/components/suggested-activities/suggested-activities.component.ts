@@ -3,7 +3,7 @@ import { IconComponent } from '../../../../shared/ui/icon/icon.component';
 import { SuggestedActivity } from '../../models/dashboard.models';
 
 @Component({
-  selector: 'root-suggested-activities',
+  selector: 'app-root-suggested-activities',
   imports: [IconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './suggested-activities.component.html',

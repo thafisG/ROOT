@@ -36,7 +36,7 @@ const HERO_CONTENT: HeroContent[] = [
 ];
 
 @Component({
-  selector: 'root-onboarding-hero',
+  selector: 'app-root-onboarding-hero',
   imports: [IconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './onboarding-hero.component.html',

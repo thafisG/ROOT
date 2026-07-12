@@ -3,7 +3,8 @@
   "version": 1,
   "cli": {
     "packageManager": "npm",
-    "analytics": "cbe0658e-d5ca-4aa0-aa77-55eaee15cb84"
+    "analytics": "cbe0658e-d5ca-4aa0-aa77-55eaee15cb84",
+    "schematicCollections": ["angular-eslint"]
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -24,31 +25,21 @@
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-
             "assets": [
               {
                 "glob": "**/*",
                 "input": "public"
               }
             ],
-
-            "styles": [
-              "src/styles.scss"
-            ],
-
+            "styles": ["src/styles.scss"],
             "stylePreprocessorOptions": {
-              "includePaths": [
-                "src/styles"
-              ]
+              "includePaths": ["src/styles"]
             },
-
             "server": "src/main.server.ts",
             "outputMode": "server",
-
             "security": {
               "allowedHosts": []
             },
-
             "ssr": {
               "entry": "src/server.ts"
             }
@@ -91,9 +82,14 @@
         },
         "test": {
           "builder": "@angular/build:unit-test"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
+          }
         }
       }
     }
   }
-
 }

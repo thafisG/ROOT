@@ -4,7 +4,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 
 @Component({
-  selector: 'root-placeholder-page',
+  selector: 'app-root-placeholder-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './placeholder-page.component.html',
   styleUrl: './placeholder-page.component.scss',

@@ -5,12 +5,12 @@
     aria-label="Dispensar recomendação"
     (click)="dismiss.emit()"
   >
-    <root-icon name="x" [size]="16" />
+    <app-root-icon name="x" [size]="16" />
   </button>
 
   <div class="recommendation__header">
     <span class="recommendation__badge" [style.color]="'var(' + recommendation().category.colorVar + ')'">
-      <root-icon [name]="recommendation().category.icon" [size]="22" />
+      <app-root-icon [name]="recommendation().category.icon" [size]="22" />
     </span>
     <div>
       <p class="recommendation__eyebrow">Recomendação do dia</p>
@@ -26,7 +26,7 @@
     </button>
     <button type="button" class="recommendation__secondary" (click)="viewAlternatives.emit()">
       Ver outras opções
-      <root-icon name="chevron-right" [size]="16" />
+      <app-root-icon name="chevron-right" [size]="16" />
     </button>
   </div>
 </article>

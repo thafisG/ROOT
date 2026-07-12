@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { IconComponent } from '../../../../shared/ui/icon/icon.component';
 
 @Component({
-  selector: 'root-greeting-header',
+  selector: 'app-root-greeting-header',
   imports: [IconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './greeting-header.component.html',

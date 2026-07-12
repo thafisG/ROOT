@@ -4,7 +4,7 @@ import { IconComponent } from '../../ui/icon/icon.component';
 import { NavItem, PRIMARY_NAV_ITEMS } from '../../../features/dashboard/models/dashboard.models';
 
 @Component({
-  selector: 'root-bottom-nav',
+  selector: 'app-root-bottom-nav',
   imports: [IconComponent, RouterLink, RouterLinkActive],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './bottom-nav.component.html',

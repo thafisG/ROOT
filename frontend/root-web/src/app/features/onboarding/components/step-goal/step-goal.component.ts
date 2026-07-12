@@ -4,7 +4,7 @@ import { IconComponent } from '../../../../shared/ui/icon/icon.component';
 import { GOAL_OPTIONS } from '../../models/onboarding.models';
 
 @Component({
-  selector: 'root-step-goal',
+  selector: 'app-root-step-goal',
   imports: [ReactiveFormsModule, IconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './step-goal.component.html',

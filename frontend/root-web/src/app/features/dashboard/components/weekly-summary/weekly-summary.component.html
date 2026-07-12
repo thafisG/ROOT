@@ -8,7 +8,7 @@
     @for (stat of stats(); track stat.category.id) {
       <li class="weekly-summary__row">
         <span class="weekly-summary__icon" [style.color]="'var(' + stat.category.colorVar + ')'">
-          <root-icon [name]="stat.category.icon" [size]="16" />
+          <app-root-icon [name]="stat.category.icon" [size]="16" />
         </span>
 
         <span class="weekly-summary__label">{{ stat.category.label }}</span>
