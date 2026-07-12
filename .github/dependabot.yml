@@ -10,3 +10,26 @@ updates:
 
     commit-message:
       prefix: chore
+
+    groups:
+      angular:
+        patterns:
+          - "@angular/*"
+
+      tooling:
+        patterns:
+          - "@angular/cli"
+          - "@angular/build"
+          - "typescript"
+          - "typescript-eslint"
+          - "eslint"
+          - "prettier"
+
+      dependencies:
+        patterns:
+          - "*"
+
+    ignore:
+      - dependency-name: "@angular/*"
+        update-types:
+          - "version-update:semver-major"
