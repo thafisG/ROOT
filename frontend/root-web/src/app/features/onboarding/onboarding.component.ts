@@ -36,9 +36,6 @@ const STEP_FIELDS: string[][] = [
   styleUrl: './onboarding.component.scss',
 })
 export class OnboardingComponent {
-   constructor() {
-    console.log('🔥 ONBOARDING CARREGOU');
-  }
   private readonly fb = inject(FormBuilder);
   private readonly userService = inject(UserService);
   private readonly router = inject(Router);
@@ -65,31 +62,14 @@ export class OnboardingComponent {
   });
 
   protected next(): void {
-    console.log('--- next() chamado, step atual:', this.currentStep());
-
     const fields = STEP_FIELDS[this.currentStep()];
     fields.forEach((field) => this.form.get(field)?.markAsTouched());
 
-    fields.forEach((field) => {
-      const control = this.form.get(field);
-      console.log(
-        field,
-        '| value:',
-        control?.value,
-        '| valid:',
-        control?.valid,
-        '| errors:',
-        control?.errors,
-      );
-    });
-
     const isStepValid = fields.every((field) => this.form.get(field)?.valid);
-    console.log('isStepValid:', isStepValid);
     if (!isStepValid) return;
 
     if (this.currentStep() < this.lastStepIndex) {
       this.currentStep.update((step) => step + 1);
-      console.log('avançou para step:', this.currentStep());
     } else {
       this.confirm();
     }
