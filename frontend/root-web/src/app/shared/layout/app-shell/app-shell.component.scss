@@ -1,0 +1,18 @@
+@use 'tokens' as t;
+
+:host {
+  display: block;
+  background: var(--bg-page);
+  min-height: 100vh;
+}
+
+.app-shell__main {
+  padding-bottom: var(--space-96);
+}
+
+@include t.from-desktop {
+  .app-shell__main {
+    margin-left: 240px;
+    padding-bottom: var(--space-48);
+  }
+}

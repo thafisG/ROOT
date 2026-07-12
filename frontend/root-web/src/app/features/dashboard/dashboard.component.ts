@@ -8,6 +8,8 @@ import { RecentHabitsComponent } from './components/recent-habits/recent-habits.
 import { SuggestedActivitiesComponent } from './components/suggested-activities/suggested-activities.component';
 import { InteractionService } from '../../core/interaction/interaction.service';
 import { RecommendationService } from '../../core/recommendation/recommendation.service';
+import { UserService } from '../../core/user/user.service';
+import { ExperienceLevel } from '../onboarding/models/onboarding.models';
 import {
   CATEGORIES,
   HabitCategoryId,
@@ -37,9 +39,11 @@ import {
 export class DashboardComponent {
   private readonly interactionService = inject(InteractionService);
   private readonly recommendationService = inject(RecommendationService);
+  private readonly userService = inject(UserService);
 
-  protected readonly userName = signal('Marina');
   protected readonly showAlternatives = signal(false);
+
+  protected readonly userName = computed(() => this.userService.profile()?.name ?? 'Visitante');
 
   protected readonly recommendationState = this.recommendationService.result;
 
@@ -47,14 +51,14 @@ export class DashboardComponent {
     this.calculateStreak(this.interactionService.history()),
   );
 
-  protected readonly nextWorkout = signal<NextWorkout>({
+  protected readonly nextWorkout = computed<NextWorkout>(() => ({
     category: CATEGORIES.mobility,
     name: 'Mobilidade completa — corpo todo',
     scheduledLabel: 'Hoje, 18:30',
     durationMinutes: 25,
-    level: 'Intermediário',
+    level: this.mapExperienceToLevel(this.userService.profile()?.experienceLevel),
     exerciseCount: 8,
-  });
+  }));
 
   protected readonly suggestedActivities = signal<SuggestedActivity[]>([
     { id: 'a1', category: CATEGORIES.mobility, title: 'Alongamento matinal', durationMinutes: 8 },
@@ -162,5 +166,11 @@ export class DashboardComponent {
       default:
         return `${label} atualizado`;
     }
+  }
+
+  private mapExperienceToLevel(level?: ExperienceLevel): NextWorkout['level'] {
+    if (level === 'beginner') return 'Iniciante';
+    if (level === 'advanced') return 'Avançado';
+    return 'Intermediário';
   }
 }
