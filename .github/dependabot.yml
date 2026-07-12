@@ -1,0 +1,35 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: "/frontend/root-web"
+    schedule:
+      interval: weekly
+
+    open-pull-requests-limit: 5
+
+    commit-message:
+      prefix: chore
+
+    groups:
+      angular:
+        patterns:
+          - "@angular/*"
+
+      tooling:
+        patterns:
+          - "@angular/cli"
+          - "@angular/build"
+          - "typescript"
+          - "typescript-eslint"
+          - "eslint"
+          - "prettier"
+
+      dependencies:
+        patterns:
+          - "*"
+
+    ignore:
+      - dependency-name: "@angular/*"
+        update-types:
+          - "version-update:semver-major"
