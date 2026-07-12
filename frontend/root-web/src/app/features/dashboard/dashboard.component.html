@@ -1,0 +1,54 @@
+<main class="dashboard">
+  <root-greeting-header [userName]="userName()" [streakDays]="streakDays()" />
+
+  @if (recommendationState().isLearning) {
+    <div class="dashboard__learning">
+      <p class="dashboard__learning-title">Ainda estamos aprendendo seus padrões</p>
+      <p class="dashboard__learning-text">
+        Registre pelo menos 3 atividades para receber sua primeira recomendação personalizada. Toque
+        em uma das sugestões abaixo para começar.
+      </p>
+    </div>
+  } @else if (recommendationState().primary; as recommendation) {
+    <root-recommendation-card
+      [recommendation]="recommendation"
+      (accept)="onAcceptRecommendation(recommendation)"
+      (viewAlternatives)="onToggleAlternatives()"
+      (dismiss)="onDismissRecommendation(recommendation)"
+    />
+
+    @if (showAlternatives()) {
+      <div class="dashboard__alternatives">
+        @for (alt of recommendationState().alternatives; track alt.category.id) {
+          <button type="button" class="dashboard__alternative" (click)="onSelectAlternative(alt)">
+            <span
+              class="dashboard__alternative-icon"
+              [style.color]="'var(' + alt.category.colorVar + ')'"
+            >
+              <root-icon [name]="alt.category.icon" [size]="16" />
+            </span>
+            <span class="dashboard__alternative-text">
+              <strong>{{ alt.title }}</strong>
+              <small>{{ alt.explanation }}</small>
+            </span>
+          </button>
+        }
+      </div>
+    }
+  }
+
+  <div class="dashboard__grid">
+    <div class="dashboard__grid-main">
+      <root-next-workout-card [workout]="nextWorkout()" (complete)="onCompleteWorkout()" />
+      <root-weekly-summary [stats]="weeklyStats()" />
+      <root-suggested-activities
+        [activities]="suggestedActivities()"
+        (selectActivity)="onSelectActivity($event)"
+      />
+    </div>
+
+    <aside class="dashboard__grid-side">
+      <root-recent-habits [entries]="recentHabits()" />
+    </aside>
+  </div>
+</main>

@@ -1,0 +1,12 @@
+<ol class="progress">
+  @for (label of labels(); track label; let i = $index) {
+    <li
+      class="progress__step"
+      [class.progress__step--done]="i < currentIndex()"
+      [class.progress__step--active]="i === currentIndex()"
+    >
+      <span class="progress__dot"></span>
+      <span class="progress__label">{{ label }}</span>
+    </li>
+  }
+</ol>

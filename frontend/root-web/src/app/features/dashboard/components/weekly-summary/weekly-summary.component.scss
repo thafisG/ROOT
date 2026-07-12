@@ -1,0 +1,71 @@
+@use 'tokens' as t;
+
+.weekly-summary {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-24);
+}
+
+.weekly-summary__header {
+  margin-bottom: var(--space-20);
+}
+
+.weekly-summary__title {
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.weekly-summary__subtitle {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin: var(--space-4) 0 0;
+}
+
+.weekly-summary__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.weekly-summary__row {
+  display: grid;
+  grid-template-columns: 20px 92px 1fr 36px;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.weekly-summary__label {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.weekly-summary__track {
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+.weekly-summary__fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width var(--duration-base) var(--ease-standard);
+}
+
+.weekly-summary__value {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: right;
+}

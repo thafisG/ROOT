@@ -1,0 +1,28 @@
+<section class="weekly-summary">
+  <header class="weekly-summary__header">
+    <h3 class="weekly-summary__title">Resumo da semana</h3>
+    <p class="weekly-summary__subtitle">Equilíbrio entre categorias de hábito</p>
+  </header>
+
+  <ul class="weekly-summary__list">
+    @for (stat of stats(); track stat.category.id) {
+      <li class="weekly-summary__row">
+        <span class="weekly-summary__icon" [style.color]="'var(' + stat.category.colorVar + ')'">
+          <root-icon [name]="stat.category.icon" [size]="16" />
+        </span>
+
+        <span class="weekly-summary__label">{{ stat.category.label }}</span>
+
+        <span class="weekly-summary__track">
+          <span
+            class="weekly-summary__fill"
+            [style.width.%]="stat.percentage"
+            [style.background]="'var(' + stat.category.colorVar + ')'"
+          ></span>
+        </span>
+
+        <span class="weekly-summary__value">{{ stat.percentage }}%</span>
+      </li>
+    }
+  </ul>
+</section>

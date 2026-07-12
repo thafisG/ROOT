@@ -1,0 +1,39 @@
+<div [formGroup]="form()" class="step">
+  <h2 class="step__title">Sua rotina atual</h2>
+  <p class="step__subtitle">Sem pressão. O ROOT acompanha o seu ritmo</p>
+
+  <div class="days">
+    <span class="field__label">Dias disponíveis por semana</span>
+    <div class="days__row">
+      @for (day of [1, 2, 3, 4, 5, 6, 7]; track day) {
+        <button
+          type="button"
+          class="days__chip"
+          [class.days__chip--selected]="form().get('availableDaysPerWeek')?.value === day"
+          (click)="form().get('availableDaysPerWeek')?.setValue(day)"
+        >
+          {{ day }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="experience">
+    <span class="field__label">Nível de experiência</span>
+    <div class="experience__options">
+      @for (option of experienceOptions; track option.value) {
+        <button
+          type="button"
+          class="experience__option"
+          [class.experience__option--selected]="
+            form().get('experienceLevel')?.value === option.value
+          "
+          (click)="selectExperience(option.value)"
+        >
+          <strong>{{ option.label }}</strong>
+          <small>{{ option.description }}</small>
+        </button>
+      }
+    </div>
+  </div>
+</div>

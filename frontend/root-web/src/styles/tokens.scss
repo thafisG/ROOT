@@ -1,0 +1,106 @@
+$bp-tablet: 600px;
+$bp-desktop: 1024px;
+$bp-wide: 1440px;
+
+@mixin from-tablet {
+  @media (min-width: $bp-tablet) { @content; }
+}
+
+@mixin from-desktop {
+  @media (min-width: $bp-desktop) { @content; }
+}
+
+@mixin from-wide {
+  @media (min-width: $bp-wide) { @content; }
+}
+
+:root {
+  // Neutros — Paper & Stone
+  --color-neutral-0: #FDFBF7;
+  --color-neutral-50: #F7F2EA;
+  --color-neutral-100: #EDE4D3;
+  --color-neutral-200: #E0D4BE;
+  --color-neutral-300: #C9B99C;
+  --color-neutral-400: #A8977A;
+  --color-neutral-500: #8A7A63;
+  --color-neutral-600: #6B5D4A;
+  --color-neutral-700: #4F4436;
+  --color-neutral-800: #362E24;
+  --color-neutral-900: #221C16;
+
+  // Primária — Terracotta
+  --color-primary-50: #FBEDE6;
+  --color-primary-100: #F4D3C2;
+  --color-primary-200: #E8B191;
+  --color-primary-300: #D68F66;
+  --color-primary-400: #C97748;
+  --color-primary-500: #B35E34;
+  --color-primary-600: #94492A;
+  --color-primary-700: #743823;
+  --color-primary-800: #55291A;
+
+  // Secundária — Moss
+  --color-secondary-50: #EEF0E4;
+  --color-secondary-100: #D9DEC3;
+  --color-secondary-300: #A2AD79;
+  --color-secondary-500: #707C48;
+  --color-secondary-700: #454C2C;
+
+  // Acento — Ochre
+  --color-accent-50: #FBF1E1;
+  --color-accent-300: #DDAE68;
+  --color-accent-500: #C08A3E;
+  --color-accent-700: #8A611F;
+
+  // Semânticas
+  --color-success: var(--color-secondary-500);
+  --color-warning: var(--color-accent-500);
+  --color-error: #A8462F;
+  --color-info: #6B7D8A;
+
+  // Categorias de hábito
+  --color-cat-strength: var(--color-primary-600);
+  --color-cat-mobility: var(--color-secondary-500);
+  --color-cat-hydration: #6B7D8A;
+  --color-cat-sleep: #5C5470;
+  --color-cat-nutrition: var(--color-accent-500);
+  --color-cat-cardio: var(--color-primary-500);
+
+  // Aplicação
+  --bg-page: var(--color-neutral-0);
+  --bg-surface: var(--color-neutral-50);
+  --bg-card: #FFFFFF;
+  --border-default: var(--color-neutral-200);
+  --border-strong: var(--color-neutral-300);
+  --text-primary: var(--color-neutral-900);
+  --text-secondary: var(--color-neutral-600);
+  --text-muted: var(--color-neutral-400);
+  --text-on-primary: var(--color-neutral-0);
+  --icon-default: var(--color-neutral-500);
+
+  // Tipografia
+  --font-display: 'DM Serif Display', serif;
+  --font-body: 'Inter', sans-serif;
+
+  // Espaçamento
+  --space-2: 2px; --space-4: 4px; --space-8: 8px; --space-12: 12px;
+  --space-16: 16px; --space-20: 20px; --space-24: 24px; --space-32: 32px;
+  --space-40: 40px; --space-48: 48px; --space-64: 64px; --space-96: 96px;
+
+  // Radius
+  --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px;
+  --radius-xl: 24px; --radius-2xl: 32px; --radius-full: 999px;
+
+  // Sombras (tingidas com neutral-900, nunca preto puro)
+  --shadow-xs: 0 1px 2px rgba(54, 46, 36, 0.06);
+  --shadow-sm: 0 2px 6px rgba(54, 46, 36, 0.08);
+  --shadow-md: 0 6px 16px rgba(54, 46, 36, 0.10);
+  --shadow-lg: 0 12px 32px rgba(54, 46, 36, 0.14);
+  --shadow-focus: 0 0 0 3px rgba(179, 94, 52, 0.25);
+
+  // Motion
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-soft: cubic-bezier(0, 0, 0.2, 1);
+}

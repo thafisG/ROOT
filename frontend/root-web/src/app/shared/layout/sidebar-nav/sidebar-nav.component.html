@@ -1,0 +1,18 @@
+<div class="sidebar__brand">
+  <root-icon name="leaf" [size]="20" />
+  <span>ROOT</span>
+</div>
+
+<nav class="sidebar__nav">
+  @for (item of items(); track item.route) {
+    <a
+      class="sidebar__link"
+      [class.sidebar__link--primary]="item.isPrimary"
+      [routerLink]="item.route"
+      routerLinkActive="sidebar__link--active"
+    >
+      <root-icon [name]="item.icon" [size]="20" />
+      <span>{{ item.label }}</span>
+    </a>
+  }
+</nav>

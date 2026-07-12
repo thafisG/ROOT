@@ -1,0 +1,34 @@
+<div [formGroup]="form()" class="step">
+  <h2 class="step__title">Bem-vindo(a) ao ROOT</h2>
+  <p class="step__subtitle">
+    Vamos te conhecer para personalizar suas recomendações desde o primeiro dia.
+  </p>
+
+  <label class="field">
+    <span class="field__label">Nome</span>
+    <input
+      class="field__input"
+      type="text"
+      formControlName="name"
+      placeholder="Seu nome"
+      autocomplete="name"
+    />
+    @if (form().get('name')?.invalid && form().get('name')?.touched) {
+      <span class="field__error">Informe seu nome (mínimo 2 letras).</span>
+    }
+  </label>
+
+  <label class="field">
+    <span class="field__label">E-mail</span>
+    <input
+      class="field__input"
+      type="email"
+      formControlName="email"
+      placeholder="voce@email.com"
+      autocomplete="email"
+    />
+    @if (form().get('email')?.invalid && form().get('email')?.touched) {
+      <span class="field__error">Informe um e-mail válido.</span>
+    }
+  </label>
+</div>

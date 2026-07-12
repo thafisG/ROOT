@@ -1,0 +1,46 @@
+<div class="onboarding">
+  <root-onboarding-hero [stepIndex]="currentStep()" />
+
+  <div class="onboarding__panel">
+    <div class="onboarding__panel-inner">
+      <root-onboarding-progress [labels]="stepLabels" [currentIndex]="currentStep()" />
+
+      <form [formGroup]="form" novalidate (ngSubmit)="next()">
+        @switch (currentStep()) {
+          @case (0) {
+            <root-step-welcome [form]="form" />
+          }
+          @case (1) {
+            <root-step-physical [form]="form" />
+          }
+          @case (2) {
+            <root-step-goal [form]="form" />
+          }
+          @case (3) {
+            <root-step-routine [form]="form" />
+          }
+          @case (4) {
+            <root-step-summary
+              [name]="form.value.name!"
+              [age]="form.value.age!"
+              [heightCm]="form.value.heightCm!"
+              [weightKg]="form.value.weightKg!"
+              [goal]="form.value.goal!"
+              [experienceLevel]="form.value.experienceLevel!"
+              [availableDaysPerWeek]="form.value.availableDaysPerWeek!"
+            />
+          }
+        }
+
+        <div class="onboarding__actions">
+          @if (currentStep() > 0) {
+            <button type="button" class="onboarding__back" (click)="back()">Voltar</button>
+          }
+          <button type="submit" class="onboarding__next">
+            {{ currentStep() === lastStepIndex ? 'Começar a usar o ROOT' : 'Continuar' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
