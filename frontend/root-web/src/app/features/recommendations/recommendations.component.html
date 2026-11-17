@@ -1,8 +1,8 @@
 <main class="recommendations">
   <header class="recommendations__header">
-    <p class="recommendations__eyebrow">Seu percurso</p>
-    <h1>Recomendações</h1>
-    <p>Acompanhe as sugestões que você iniciou, concluiu ou dispensou.</p>
+    <p class="recommendations__eyebrow">Sua jornada</p>
+    <h1>Meu progresso</h1>
+    <p>Acompanhe as atividades que você iniciou, concluiu ou decidiu deixar para depois.</p>
   </header>
 
   <section class="recommendations__summary" aria-label="Resumo das atividades">
@@ -24,8 +24,7 @@
     <h2 id="recommendations-history-title">Atividade recente</h2>
     @if (history().length === 0) {
       <p class="recommendations__empty">
-        Ainda não há atividades registradas. Quando você iniciar ou dispensar uma sugestão, ela
-        aparecerá aqui.
+        Ainda não há atividades registradas. Quando você registrar uma atividade, ela aparecerá aqui.
       </p>
     } @else {
       <ol>

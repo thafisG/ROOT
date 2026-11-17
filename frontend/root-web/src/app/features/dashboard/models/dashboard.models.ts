@@ -76,7 +76,7 @@ export const CATEGORIES: Record<HabitCategoryId, CategoryInfo> = {
 export const PRIMARY_NAV_ITEMS: NavItem[] = [
   { label: 'Início', icon: 'home', route: '/dashboard' },
   { label: 'Treinos', icon: 'dumbbell', route: '/treinos' },
-  { label: 'Recomendações', icon: 'sparkles', route: '/recomendacoes', isPrimary: true },
+  { label: 'Progresso', icon: 'chart', route: '/recomendacoes', isPrimary: true },
   { label: 'Nutrição', icon: 'apple', route: '/nutricao' },
   { label: 'Equipe', icon: 'briefcase', route: '/acompanhamento' },
   { label: 'Perfil', icon: 'user', route: '/perfil' },
