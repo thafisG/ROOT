@@ -14,6 +14,7 @@ export type IconName =
   | 'chevron-right'
   | 'check'
   | 'x'
+  | 'briefcase'
   | 'clock';
 
 @Component({

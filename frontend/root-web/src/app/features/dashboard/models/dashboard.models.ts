@@ -78,6 +78,7 @@ export const PRIMARY_NAV_ITEMS: NavItem[] = [
   { label: 'Treinos', icon: 'dumbbell', route: '/treinos' },
   { label: 'Recomendações', icon: 'sparkles', route: '/recomendacoes', isPrimary: true },
   { label: 'Nutrição', icon: 'apple', route: '/nutricao' },
+  { label: 'Equipe', icon: 'briefcase', route: '/acompanhamento' },
   { label: 'Perfil', icon: 'user', route: '/perfil' },
 ];
 export type InteractionType =

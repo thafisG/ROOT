@@ -42,7 +42,11 @@
           },
           "configurations": {
             "production": {
-              "optimization": true,
+              "optimization": {
+                "fonts": {
+                  "inline": false
+                }
+              },
               "outputHashing": "all",
               "budgets": [
                 {
