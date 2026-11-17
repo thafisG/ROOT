@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { WorkoutExerciseDraft } from '../../workout.service';
 
 @Component({
@@ -8,6 +8,7 @@ import { WorkoutExerciseDraft } from '../../workout.service';
   styleUrl: './workout-import.component.scss',
 })
 export class WorkoutImportComponent {
+  readonly mode = input.required<'message' | 'photo'>();
   readonly exercisesImported = output<WorkoutExerciseDraft[]>();
   readonly referenceImageChanged = output<string | null>();
 

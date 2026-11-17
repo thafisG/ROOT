@@ -1,37 +1,39 @@
 <section class="workout-import" aria-labelledby="workout-import-title">
   <div class="workout-import__heading">
-    <h3 id="workout-import-title">Importar da mensagem ou foto</h3>
+    <h3 id="workout-import-title">{{ mode() === 'message' ? 'Cole a mensagem do professor' : 'Envie uma foto da ficha' }}</h3>
     <span>Opcional</span>
   </div>
   <p class="workout-import__standard">
     Padrão: <strong>Exercício — séries×repetições</strong>, um por linha. Exemplo: <em>Supino reto — 3×8</em>.
     Confira o que for reconhecido antes de salvar.
   </p>
-  <label for="coach-message">Mensagem do professor</label>
-  <textarea
-    id="coach-message"
-    rows="3"
-    [value]="message()"
-    (input)="onMessageInput($event)"
-    placeholder="Treino A&#10;Supino reto — 3×8&#10;Remada baixa — 3×10"
-  ></textarea>
-  <button type="button" class="workout-import__button" [disabled]="isProcessing()" (click)="importMessage()">
-    Organizar mensagem
-  </button>
-
-  <label for="workout-reference-image">Foto da ficha</label>
-  <input
-    id="workout-reference-image"
-    class="workout-import__file-input"
-    type="file"
-    accept="image/jpeg,image/png,image/webp"
-    aria-describedby="workout-import-photo-note"
-    [disabled]="isProcessing()"
-    (change)="onImageSelected($event)"
-  />
-  <p id="workout-import-photo-note" class="workout-import__photo-note">
-    O OCR lê a foto no navegador; a imagem não é enviada. Na primeira leitura, o app baixa o modelo em português.
-  </p>
+  @if (mode() === 'message') {
+    <label for="coach-message">Mensagem do professor</label>
+    <textarea
+      id="coach-message"
+      rows="4"
+      [value]="message()"
+      (input)="onMessageInput($event)"
+      placeholder="Treino A&#10;Supino reto — 3×8&#10;Remada baixa — 3×10"
+    ></textarea>
+    <button type="button" class="workout-import__button" [disabled]="isProcessing() || !message().trim()" (click)="importMessage()">
+      Organizar minha mensagem
+    </button>
+  } @else {
+    <label for="workout-reference-image">Escolha a imagem (JPG, PNG ou WebP; até 8 MB)</label>
+    <input
+      id="workout-reference-image"
+      class="workout-import__file-input"
+      type="file"
+      accept="image/jpeg,image/png,image/webp"
+      aria-describedby="workout-import-photo-note"
+      [disabled]="isProcessing()"
+      (change)="onImageSelected($event)"
+    />
+    <p id="workout-import-photo-note" class="workout-import__photo-note">
+      A leitura acontece no navegador. Na primeira vez, o app baixa o modelo de leitura em português.
+    </p>
+  }
   @if (image()) {
     <div class="workout-import__preview">
       <img [src]="image()" alt="Prévia da foto de referência da ficha" />

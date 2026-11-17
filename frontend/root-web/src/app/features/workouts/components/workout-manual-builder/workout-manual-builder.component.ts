@@ -26,6 +26,7 @@ export class WorkoutManualBuilderComponent {
     restSeconds: [60, [Validators.required, Validators.min(0), Validators.max(300)]],
   });
   protected readonly exercises = signal<WorkoutExerciseDraft[]>([]);
+  protected readonly selectedMode = signal<'message' | 'photo' | 'manual' | null>(null);
   protected readonly referenceImage = signal<string | null>(null);
   protected readonly exerciseError = signal('');
   protected readonly progress = computed(() => Math.min(100, Math.round((this.exercises().length / 3) * 100)));
@@ -35,6 +36,11 @@ export class WorkoutManualBuilderComponent {
     if (count < 3) return `Boa! Mais ${3 - count} para completar sua ficha`;
     return 'Ficha pronta para salvar';
   });
+
+  protected selectMode(mode: 'message' | 'photo' | 'manual'): void {
+    this.selectedMode.set(mode);
+    this.exerciseError.set('');
+  }
 
   protected addExercise(): void {
     this.exerciseForm.markAllAsTouched();
