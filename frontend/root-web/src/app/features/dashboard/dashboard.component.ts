@@ -6,6 +6,7 @@ import { WeeklySummaryComponent } from './components/weekly-summary/weekly-summa
 import { RecentHabitsComponent } from './components/recent-habits/recent-habits.component';
 import { SuggestedActivitiesComponent } from './components/suggested-activities/suggested-activities.component';
 import { InteractionService } from '../../core/interaction/interaction.service';
+import { calculateActivityStreak } from '../../core/interaction/activity-metrics';
 import { RecommendationService } from '../../core/recommendation/recommendation.service';
 import { UserService } from '../../core/user/user.service';
 import {
@@ -46,7 +47,7 @@ export class DashboardComponent {
   protected readonly recommendationState = this.recommendationService.result;
 
   protected readonly streakDays = computed(() =>
-    this.calculateStreak(this.interactionService.history()),
+    calculateActivityStreak(this.interactionService.history()),
   );
 
   protected readonly suggestedActivities = computed<SuggestedActivity[]>(() => {
@@ -140,24 +141,6 @@ export class DashboardComponent {
 
     this.interactionService.register('habit_completed', activity.category.id);
     this.activeSuggestedActivity.set(null);
-  }
-
-  private calculateStreak(history: InteractionEvent[]): number {
-    const activityDates = new Set(
-      history
-        .filter((e) => e.type === 'habit_completed' || e.type === 'workout_completed')
-        .map((e) => new Date(e.createdAt).toDateString()),
-    );
-
-    let streak = 0;
-    const cursor = new Date();
-
-    while (activityDates.has(cursor.toDateString())) {
-      streak += 1;
-      cursor.setDate(cursor.getDate() - 1);
-    }
-
-    return streak;
   }
 
   private formatRelativeTime(iso: string): string {
