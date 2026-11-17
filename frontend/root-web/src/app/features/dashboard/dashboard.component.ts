@@ -46,7 +46,6 @@ export class DashboardComponent {
 
   protected readonly showAlternatives = signal(false);
   protected readonly activeRecommendation = signal<Recommendation | null>(null);
-  protected readonly activeSuggestedActivity = signal<SuggestedActivity | null>(null);
 
   protected readonly userName = computed(() => this.userService.profile()?.name ?? 'Visitante');
 
@@ -144,18 +143,8 @@ export class DashboardComponent {
   }
 
   protected onSelectActivity(activity: SuggestedActivity): void {
-    this.interactionService.register('recommendation_clicked', activity.category.id);
-    this.activeSuggestedActivity.set(activity);
-    this.feedback.show(`${activity.title} iniciada. Marque como concluída ao terminar.`);
-  }
-
-  protected onCompleteSuggestedActivity(): void {
-    const activity = this.activeSuggestedActivity();
-    if (!activity) return;
-
-    this.interactionService.register('habit_completed', activity.category.id);
-    this.activeSuggestedActivity.set(null);
-    this.feedback.show('Atividade concluída. Você ganhou 10 XP.');
+    this.interactionService.register('habit_completed', activity.category.id, activity.title);
+    this.feedback.show(`${activity.title} concluída. Você ganhou 10 XP.`);
   }
 
   protected onDeleteActivity(id: string): void {

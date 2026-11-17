@@ -56,11 +56,6 @@
         [activities]="suggestedActivities()"
         (selectActivity)="onSelectActivity($event)"
       />
-      @if (activeSuggestedActivity(); as activity) {
-        <button type="button" class="dashboard__complete-recommendation" (click)="onCompleteSuggestedActivity()">
-          Marcar {{ activity.category.label.toLowerCase() }} como concluída
-        </button>
-      }
     </div>
 
     <aside class="dashboard__grid-side">
