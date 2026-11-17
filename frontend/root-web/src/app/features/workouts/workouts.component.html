@@ -2,8 +2,60 @@
   <header class="workouts-page__header">
     <p class="workouts-page__eyebrow">Treino de academia</p>
     <h1>Seus treinos</h1>
-    <p>Monte uma ficha com seus exercícios e marque cada etapa enquanto treina.</p>
+    <p>Escolha uma ficha pronta, responda algumas perguntas para montar um plano ou crie sua própria ficha.</p>
   </header>
+
+  <section class="workout-presets" aria-labelledby="workout-presets-title">
+    <h2 id="workout-presets-title">Sugestões avulsas</h2>
+    <p>Use uma ficha pronta como ponto de partida. Ela será copiada para seus treinos.</p>
+    <div class="workout-presets__grid">
+      @for (preset of presets; track preset.name) {
+        <article>
+          <h3>{{ preset.name }}</h3>
+          <details>
+            <summary>Ver exercícios</summary>
+            <ul>@for (exercise of preset.exercises; track exercise) { <li>{{ exercise }}</li> }</ul>
+          </details>
+          <button type="button" (click)="addPreset(preset)">Adicionar ficha</button>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="plan-builder" aria-labelledby="plan-builder-title">
+    <h2 id="plan-builder-title">Montar um plano para mim</h2>
+    <p>Responda algumas perguntas e o ROOT cria fichas para sua semana.</p>
+    <form [formGroup]="planForm" (ngSubmit)="buildPlan()" novalidate>
+      <label for="plan-goal">Qual é seu objetivo?</label>
+      <select id="plan-goal" formControlName="goal">
+        @for (option of goalOptions; track option.value) {
+          <option [value]="option.value">{{ option.label }}</option>
+        }
+      </select>
+
+      <label for="plan-days">Quantos dias por semana quer treinar?</label>
+      <input id="plan-days" type="number" min="1" max="7" formControlName="daysPerWeek" />
+      @if (planForm.controls.daysPerWeek.invalid && planForm.controls.daysPerWeek.touched) {
+        <small>Escolha de 1 a 7 dias por semana.</small>
+      }
+
+      <label for="plan-experience">Como descreve sua experiência?</label>
+      <select id="plan-experience" formControlName="experienceLevel">
+        <option value="beginner">Iniciante</option>
+        <option value="intermediate">Intermediário</option>
+        <option value="advanced">Avançado</option>
+      </select>
+
+      <label for="plan-duration">Quanto tempo tem por sessão?</label>
+      <select id="plan-duration" formControlName="sessionMinutes">
+        <option [ngValue]="30">30 minutos</option>
+        <option [ngValue]="45">45 minutos</option>
+        <option [ngValue]="60">60 minutos</option>
+      </select>
+      <button type="submit">Montar meu plano</button>
+    </form>
+    <p class="plan-builder__note">São sugestões gerais de exercícios. Ajuste cargas e técnica de acordo com sua realidade e, se possível, com orientação profissional.</p>
+  </section>
 
   <section class="workout-form" aria-labelledby="workout-form-title">
     <h2 id="workout-form-title">Criar uma ficha</h2>
@@ -14,12 +66,12 @@
         <small>Informe um nome para a ficha.</small>
       }
 
-      <label for="workout-exercises">Exercícios (um por linha)</label>
+      <label for="workout-exercises">Exercícios (um por linha; inclua séries e repetições)</label>
       <textarea
         id="workout-exercises"
         rows="5"
         formControlName="exercises"
-        placeholder="Supino reto&#10;Remada baixa&#10;Desenvolvimento"
+        placeholder="Supino reto — 3×8&#10;Remada baixa — 3×10&#10;Desenvolvimento — 3×10"
       ></textarea>
       <button type="submit">Salvar ficha</button>
     </form>

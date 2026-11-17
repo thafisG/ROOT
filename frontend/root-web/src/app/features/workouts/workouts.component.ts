@@ -3,6 +3,9 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InteractionService } from '../../core/interaction/interaction.service';
 import { ActionFeedbackService } from '../../core/feedback/action-feedback.service';
 import { WorkoutRoutine, WorkoutService } from './workout.service';
+import { WorkoutDraft, WorkoutPlanAnswers, WORKOUT_PRESETS, generateWorkoutPlan } from './workout-plans';
+import { FitnessGoal, GOAL_OPTIONS, ExperienceLevel } from '../onboarding/models/onboarding.models';
+import { UserService } from '../../core/user/user.service';
 
 @Component({
   selector: 'app-root-workouts',
@@ -16,13 +19,22 @@ export class WorkoutsComponent {
   private readonly workouts = inject(WorkoutService);
   private readonly interactions = inject(InteractionService);
   private readonly feedback = inject(ActionFeedbackService);
+  private readonly userService = inject(UserService);
 
   protected readonly routines = this.workouts.routines;
+  protected readonly presets = WORKOUT_PRESETS;
+  protected readonly goalOptions = GOAL_OPTIONS;
   protected readonly activeWorkoutId = signal<string | null>(null);
   protected readonly completedExercises = signal<string[]>([]);
   protected readonly form = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(80)]],
     exercises: ['', Validators.required],
+  });
+  protected readonly planForm = this.fb.nonNullable.group({
+    goal: [this.userService.profile()?.goal ?? 'general_health', Validators.required],
+    daysPerWeek: [this.userService.profile()?.availableDaysPerWeek ?? 3, [Validators.required, Validators.min(1), Validators.max(7)]],
+    experienceLevel: [this.userService.profile()?.experienceLevel ?? 'beginner', Validators.required],
+    sessionMinutes: [45, Validators.required],
   });
   protected readonly activeWorkout = computed(
     () => this.routines().find((routine) => routine.id === this.activeWorkoutId()) ?? null,
@@ -41,6 +53,28 @@ export class WorkoutsComponent {
     this.workouts.create(this.form.controls.name.value, exercises);
     this.form.reset();
     this.feedback.show('Ficha salva. Ela já está disponível em Fichas salvas.');
+  }
+
+  protected addPreset(preset: WorkoutDraft): void {
+    this.workouts.create(preset.name, preset.exercises);
+    this.feedback.show(`Ficha “${preset.name}” adicionada aos seus treinos.`);
+  }
+
+  protected buildPlan(): void {
+    this.planForm.markAllAsTouched();
+    if (this.planForm.invalid) return;
+
+    const values = this.planForm.getRawValue();
+    const answers: WorkoutPlanAnswers = {
+      goal: values.goal as FitnessGoal,
+      daysPerWeek: values.daysPerWeek,
+      experienceLevel: values.experienceLevel as ExperienceLevel,
+      sessionMinutes: values.sessionMinutes as 30 | 45 | 60,
+    };
+    const plan = generateWorkoutPlan(answers);
+    plan.forEach((routine) => this.workouts.create(routine.name, routine.exercises));
+    const recoveryNote = values.daysPerWeek > 5 ? ' Separei até dois dias para recuperação.' : '';
+    this.feedback.show(`Plano montado com ${plan.length} fichas.${recoveryNote} Você pode revisar e ajustar cada exercício.`);
   }
 
   protected startWorkout(routine: WorkoutRoutine): void {
