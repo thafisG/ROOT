@@ -1,144 +1,126 @@
 <details class="manual-builder">
   <summary>
     <span class="manual-builder__icon" aria-hidden="true">✦</span>
-    <span class="manual-builder__summary">
-      <strong>Criar minha ficha</strong>
-      <small>Escolha como quer adicionar seus exercícios</small>
-    </span>
+    <span class="manual-builder__summary"><strong>Criar minha ficha</strong><small>Escolha como quer adicionar seus exercícios</small></span>
     <span class="manual-builder__chevron" aria-hidden="true"></span>
   </summary>
 
   <div class="manual-builder__content">
-    <div class="manual-builder__intro">
-      <span aria-hidden="true">🏋️</span>
-      <p>Vamos por partes. Escolha um jeito de começar e revise tudo antes de salvar.</p>
-    </div>
+    <div class="manual-builder__intro"><span aria-hidden="true">🏋️</span><p>Monte uma ou mais fichas do seu jeito. Você pode dar nomes diferentes e reorganizar os exercícios antes de salvar.</p></div>
 
     <div class="manual-builder__mode-grid" role="group" aria-label="Como deseja criar a ficha">
-      <button type="button" class="manual-builder__mode" [class.manual-builder__mode--selected]="selectedMode() === 'message'" [attr.aria-pressed]="selectedMode() === 'message'" (click)="selectMode('message')">
-        <span class="manual-builder__mode-icon" aria-hidden="true">💬</span>
-        <strong>Mensagem do professor</strong>
-        <small>Cole as orientações que recebeu</small>
-      </button>
-      <button type="button" class="manual-builder__mode" [class.manual-builder__mode--selected]="selectedMode() === 'photo'" [attr.aria-pressed]="selectedMode() === 'photo'" (click)="selectMode('photo')">
-        <span class="manual-builder__mode-icon" aria-hidden="true">📷</span>
-        <strong>Foto da ficha</strong>
-        <small>O app reconhece os exercícios</small>
-      </button>
-      <button type="button" class="manual-builder__mode" [class.manual-builder__mode--selected]="selectedMode() === 'manual'" [attr.aria-pressed]="selectedMode() === 'manual'" (click)="selectMode('manual')">
-        <span class="manual-builder__mode-icon" aria-hidden="true">✍️</span>
-        <strong>Adicionar exercícios</strong>
-        <small>Preencha um exercício por vez</small>
-      </button>
+      <button type="button" class="manual-builder__mode" [class.manual-builder__mode--selected]="selectedMode() === 'message'" [attr.aria-pressed]="selectedMode() === 'message'" (click)="selectMode('message')"><span class="manual-builder__mode-icon" aria-hidden="true">💬</span><strong>Mensagem do professor</strong><small>Cole as orientações que recebeu</small></button>
+      <button type="button" class="manual-builder__mode" [class.manual-builder__mode--selected]="selectedMode() === 'photo'" [attr.aria-pressed]="selectedMode() === 'photo'" (click)="selectMode('photo')"><span class="manual-builder__mode-icon" aria-hidden="true">📷</span><strong>Foto da ficha</strong><small>Tentaremos ler exercícios e grupos</small></button>
+      <button type="button" class="manual-builder__mode" [class.manual-builder__mode--selected]="selectedMode() === 'manual'" [attr.aria-pressed]="selectedMode() === 'manual'" (click)="selectMode('manual')"><span class="manual-builder__mode-icon" aria-hidden="true">✍️</span><strong>Adicionar exercícios</strong><small>Personalize cada detalhe</small></button>
     </div>
 
     @if (selectedMode(); as mode) {
       <section class="manual-builder__step" aria-live="polite">
         <div class="manual-builder__section-heading">
-          <div>
-            <span class="manual-builder__step-label">PASSO 1 DE 2</span>
-            <h3>{{ mode === 'message' ? 'Cole a mensagem recebida' : mode === 'photo' ? 'Escolha a foto da sua ficha' : 'Adicione seu primeiro exercício' }}</h3>
-          </div>
-          <button type="button" class="manual-builder__change-mode" (click)="selectedMode.set(null)">Trocar opção</button>
+          <div><span class="manual-builder__step-label">PASSO 1 DE 2</span><h3>{{ mode === 'message' ? 'Cole a mensagem recebida' : mode === 'photo' ? 'Escolha a foto da sua ficha' : 'Personalize seu treino' }}</h3></div>
+          <button type="button" class="manual-builder__change-mode" (click)="deselectMode()">Fechar e limpar</button>
         </div>
 
         @if (mode === 'message' || mode === 'photo') {
-          <app-workout-import
-            [mode]="mode"
-              (exercisesImported)="addImportedExercises($event)"
-          />
+          <app-workout-import [mode]="mode" (exercisesImported)="addImportedExercises($event)" />
         } @else {
-          <p class="manual-builder__helper">Não precisa preencher tudo de uma vez. Comece pelo nome e ajuste séries e repetições se quiser.</p>
-          <label class="manual-builder__group-picker">Adicionar à ficha
-            <select [value]="activeGroup()" (change)="activeGroup.set($any($event.target).value)">
-              @for (groupName of groupNames(); track groupName) { <option [value]="groupName">{{ groupName }}</option> }
-            </select>
-          </label>
+          <p class="manual-builder__helper">Dê um nome para cada ficha e personalize o exercício com séries, repetições, descanso, carga e observações.</p>
+          @if (groups().length === 0) {
+            <button type="button" class="manual-builder__add-group" (click)="addGroup('', 'manual')">+ Criar minha primeira ficha</button>
+          } @else {
+            <label class="manual-builder__group-picker">Adicionar exercício à ficha
+              <select [value]="activeGroupId()" (change)="activeGroupId.set($any($event.target).value)">
+                @for (group of groups(); track group.id) { <option [value]="group.id">{{ group.name || 'Dê um nome para esta ficha' }}</option> }
+              </select>
+            </label>
+            @if (groupById(activeGroupId()); as activeGroup) {
+              <label class="manual-builder__group-name-input">Nome desta ficha
+                <input [value]="activeGroup.name" maxlength="40" placeholder="Ex.: Segunda — superiores" (input)="renameGroup(activeGroup.id, $event)" />
+              </label>
+            }
+            <button type="button" class="manual-builder__add-group" (click)="addGroup('', 'manual')">+ Adicionar outra ficha</button>
+          }
           <fieldset class="manual-builder__fields" [formGroup]="exerciseForm">
-            <label class="manual-builder__exercise-name">
-              <span>Nome do exercício</span>
-              <input formControlName="name" placeholder="Ex.: Agachamento livre" />
-            </label>
-            <label>
-              <span>Séries</span>
-              <input type="number" min="1" max="20" formControlName="sets" />
-            </label>
-            <label>
-              <span>Repetições</span>
-              <input type="number" min="1" max="100" formControlName="repetitions" />
-            </label>
-            <label>
-              <span>Descanso (s)</span>
-              <input type="number" min="0" max="300" step="15" formControlName="restSeconds" />
-            </label>
+            <label class="manual-builder__exercise-name"><span>Nome do exercício</span><input formControlName="name" placeholder="Ex.: Agachamento livre" /></label>
+            <label><span>Séries</span><input type="number" min="1" max="20" formControlName="sets" /></label>
+            <label><span>Repetições</span><input type="number" min="1" max="100" formControlName="repetitions" /></label>
+            <label><span>Descanso (s)</span><input type="number" min="0" max="300" step="15" formControlName="restSeconds" /></label>
+            <label class="manual-builder__exercise-customize"><span>Carga ou equipamento (opcional)</span><input formControlName="load" maxlength="40" placeholder="Ex.: halteres de 5 kg" /></label>
+            <label class="manual-builder__exercise-customize"><span>Observação (opcional)</span><textarea formControlName="notes" maxlength="160" rows="2" placeholder="Ex.: ajustar a carga conforme orientação do professor"></textarea></label>
             <button type="button" class="manual-builder__add" (click)="addExercise()">+ Adicionar exercício</button>
           </fieldset>
-          @if (exerciseForm.controls.name.invalid && exerciseForm.controls.name.touched) {
-            <small class="manual-builder__error">Escreva o nome para adicionar este exercício.</small>
-          }
+          @if (exerciseForm.controls.name.invalid && exerciseForm.controls.name.touched) { <small class="manual-builder__error">Escreva o nome para adicionar este exercício.</small> }
         }
-
-        @if (exerciseError()) {
-          <p class="manual-builder__error" role="alert">{{ exerciseError() }}</p>
-        }
+        @if (exerciseError()) { <p class="manual-builder__error" role="alert">{{ exerciseError() }}</p> }
       </section>
     } @else {
-      <p class="manual-builder__hint">Você pode trocar de opção quando quiser. Os exercícios já adicionados ficam guardados nesta ficha.</p>
+      <p class="manual-builder__hint">Ao fechar uma opção, o conteúdo dela é removido do rascunho. As fichas salvas continuam disponíveis.</p>
     }
 
-    @if (exercises().length > 0) {
+    @if (groups().length > 0) {
       <section class="manual-builder__exercise-entry" aria-labelledby="exercise-entry-title">
         <div class="manual-builder__section-heading">
-          <div>
-            <span class="manual-builder__step-label">PASSO 2 DE 2</span>
-            <h3 id="exercise-entry-title">Revise sua ficha</h3>
-            <p>Confira os dados e remova o que não precisar.</p>
-          </div>
+          <div><span class="manual-builder__step-label">PASSO 2 DE 2</span><h3 id="exercise-entry-title">Revise suas fichas</h3><p>Personalize os nomes e mova os exercícios antes de salvar.</p></div>
           <span class="manual-builder__count">{{ exercises().length }}</span>
         </div>
-        <div class="manual-builder__progress">
-          <div class="manual-builder__progress-copy"><span>{{ progressLabel() }}</span><strong>{{ progress() }}%</strong></div>
-          <progress [value]="progress()" max="100">{{ progress() }}%</progress>
-        </div>
+
+        @if (exercises().length > 0) {
+          <div class="manual-builder__progress"><div class="manual-builder__progress-copy"><span>{{ progressLabel() }}</span><strong>{{ progress() }}%</strong></div><progress [value]="progress()" max="100">{{ progress() }}%</progress></div>
+          <div class="manual-builder__bulk-actions">
+            <label class="manual-builder__select-all"><input type="checkbox" [checked]="selectedExerciseIds().size === exercises().length" [indeterminate]="selectedExerciseIds().size > 0 && selectedExerciseIds().size < exercises().length" (change)="toggleAllExerciseSelection($event)" />Selecionar todos</label>
+            <span>{{ selectedExerciseIds().size }} selecionados</span>
+            <button type="button" class="manual-builder__trash" [disabled]="selectedExerciseIds().size === 0" (click)="deleteSelectedExercises()"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 5.5h13M8 3.5h4m-7 2 1 12h8l1-12M8 8v6m4-6v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>Apagar selecionados</button>
+            <button type="button" class="manual-builder__trash manual-builder__trash--all" (click)="confirmClearAll.set(true)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 5.5h13M8 3.5h4m-7 2 1 12h8l1-12M8 8v6m4-6v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>Apagar tudo</button>
+          </div>
+          @if (confirmClearAll()) {
+            <div class="manual-builder__confirm-clear" role="alertdialog" aria-label="Confirmar exclusão de todos os exercícios"><p>Apagar todos os {{ exercises().length }} exercícios deste rascunho?</p><button type="button" (click)="deleteAllDraftExercises()">Sim, apagar tudo</button><button type="button" (click)="confirmClearAll.set(false)">Cancelar</button></div>
+          }
+          @if (lastMovedExercise()) { <p class="manual-builder__move-feedback" role="status">{{ lastMovedExercise() }}</p> }
+        }
+
         <div class="manual-builder__groups">
-          @for (groupName of groupNames(); track groupName) {
+          @for (group of groups(); track group.id) {
             <section class="manual-builder__group">
               <div class="manual-builder__group-heading">
-                <label><span class="visually-hidden">Nome da ficha</span><input [value]="groupName" maxlength="40" (change)="renameGroup(groupName, $event)" /></label>
-                <span>{{ exercisesInGroup(groupName).length }} exercícios</span>
+                <label><span class="visually-hidden">Nome da ficha</span><input [value]="group.name" maxlength="40" placeholder="Dê um nome para esta ficha" (input)="renameGroup(group.id, $event)" /></label>
+                <div class="manual-builder__group-meta">
+                  @if (group.sourceMode === 'photo') { <small>Identificada na foto</small> }
+                  @if (activeGroupId() === group.id && selectedMode() === 'manual') { <small class="manual-builder__active-tag">Selecionada para novos exercícios</small> }
+                  <span>{{ exercisesInGroup(group.id).length }} exercícios</span>
+                </div>
               </div>
-              @if (exercisesInGroup(groupName).length) {
-                <ol class="manual-builder__exercise-list" [attr.aria-label]="'Exercícios de ' + groupName">
-                  @for (exercise of exercisesInGroup(groupName); track exercise.id; let index = $index) {
+              @if (exercisesInGroup(group.id).length > 0) {
+                <ol class="manual-builder__exercise-list" [attr.aria-label]="'Exercícios de ' + (group.name || 'ficha sem nome')">
+                  @for (exercise of exercisesInGroup(group.id); track exercise.id; let index = $index) {
                     <li>
+                      <input class="manual-builder__exercise-check" type="checkbox" [checked]="selectedExerciseIds().has(exercise.id)" [attr.aria-label]="'Selecionar ' + exercise.name" (change)="toggleExerciseSelection(exercise.id, $event)" />
                       <span class="manual-builder__number">{{ index + 1 }}</span>
                       <label><span class="visually-hidden">Nome do exercício {{ index + 1 }}</span><input [value]="exercise.name" maxlength="80" (input)="updateExercise(exercise.id, 'name', $event)" /></label>
-                      <label><span class="visually-hidden">Séries</span><input type="number" min="1" max="20" [value]="exercise.sets" (input)="updateExercise(exercise.id, 'sets', $event)" /></label>
-                      <span aria-hidden="true">×</span>
+                      <label><span class="visually-hidden">Séries</span><input type="number" min="1" max="20" [value]="exercise.sets" (input)="updateExercise(exercise.id, 'sets', $event)" /></label><span aria-hidden="true">×</span>
                       <label><span class="visually-hidden">Repetições</span><input type="number" min="1" max="100" [value]="exercise.repetitions" (input)="updateExercise(exercise.id, 'repetitions', $event)" /></label>
                       <label class="manual-builder__rest-value"><span class="visually-hidden">Descanso em segundos</span><input type="number" min="0" max="300" step="15" [value]="exercise.restSeconds" (input)="updateExercise(exercise.id, 'restSeconds', $event)" /></label>
-                      <select class="manual-builder__move" [value]="exercise.groupName ?? 'Treino A'" aria-label="Mover exercício para outra ficha" (change)="moveExercise(exercise.id, $event)">
-                        @for (option of groupNames(); track option) { <option [value]="option">{{ option }}</option> }
+                      <details class="manual-builder__exercise-extra">
+                        <summary>Personalizar carga e observações</summary>
+                        <label>Carga ou equipamento<input [value]="exercise.load ?? ''" maxlength="40" placeholder="Ex.: halteres de 5 kg" (input)="updateExerciseText(exercise.id, 'load', $event)" /></label>
+                        <label>Observação<textarea [value]="exercise.notes ?? ''" maxlength="160" rows="2" placeholder="Dica ou orientação do professor" (input)="updateExerciseText(exercise.id, 'notes', $event)"></textarea></label>
+                      </details>
+                      <select class="manual-builder__move" [value]="moveDestinations()[exercise.id] ?? exercise.groupId" [attr.aria-label]="'Escolher ficha de destino para ' + exercise.name" (change)="setMoveDestination(exercise.id, $event)">
+                        @for (option of groups(); track option.id) { <option [value]="option.id">{{ option.name || 'Ficha sem nome' }}</option> }
                       </select>
-                      @if (exercisesInGroup(groupName).length > 1) {
-                        <button type="button" class="manual-builder__separate" (click)="separateExercise(exercise)">Separar</button>
-                      }
+                      <button type="button" class="manual-builder__move-button" [disabled]="(moveDestinations()[exercise.id] ?? exercise.groupId) === group.id" (click)="moveExercise(exercise.id, group.id)">Mover</button>
+                      @if (exercisesInGroup(group.id).length > 1) { <button type="button" class="manual-builder__separate" (click)="separateExercise(exercise)">Separar</button> }
                       <button type="button" class="manual-builder__remove" [attr.aria-label]="'Remover ' + exercise.name" (click)="removeExercise(exercise.id)">×</button>
                     </li>
                   }
                 </ol>
-              } @else {
-                <p class="manual-builder__empty-group">Ainda sem exercícios. Selecione este grupo ao adicionar ou mova um exercício para cá.</p>
-              }
+              } @else { <p class="manual-builder__empty-group">Ainda sem exercícios. Você pode adicionar um ou mover um exercício para esta ficha.</p> }
             </section>
           }
         </div>
-        <button type="button" class="manual-builder__add-group" (click)="addGroup()">+ Criar outra ficha</button>
+        <button type="button" class="manual-builder__add-group" (click)="addGroup('', selectedMode() ?? 'manual')">+ Criar outra ficha</button>
       </section>
     }
 
-    @if (exercises().length > 0) {
-      <button type="button" class="manual-builder__save" (click)="saveRoutines()">Salvar {{ groupNames().length > 1 ? 'fichas' : 'ficha' }}</button>
-    }
+    @if (exercises().length > 0) { <button type="button" class="manual-builder__save" (click)="saveRoutines()">Salvar {{ groups().length > 1 ? 'fichas' : 'ficha' }}</button> }
   </div>
 </details>

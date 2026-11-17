@@ -193,9 +193,6 @@
                   <span class="workout-disclosure__chevron" aria-hidden="true"></span>
                 </summary>
                 <ul>@for (exercise of routine.exercises; track exercise) { <li>{{ exercise }}</li> }</ul>
-                @if (routine.referenceImage) {
-                  <img class="workout-routine__image" [src]="routine.referenceImage" [alt]="'Foto de referência da ficha ' + routine.name" loading="lazy" />
-                }
               </details>
               <div class="workout-routine__actions">
                 <button type="button" (click)="startWorkout(routine)">Iniciar treino</button>
