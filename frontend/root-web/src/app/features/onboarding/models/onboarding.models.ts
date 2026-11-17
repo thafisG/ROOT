@@ -6,9 +6,6 @@ export type ExperienceLevel = 'beginner' | 'intermediate' | 'advanced';
 export interface UserProfile {
   name: string;
   email: string;
-  age: number;
-  heightCm: number;
-  weightKg: number;
   goal: FitnessGoal;
   experienceLevel: ExperienceLevel;
   availableDaysPerWeek: number;
@@ -81,7 +78,6 @@ export const EXPERIENCE_OPTIONS: ExperienceOption[] = [
 
 export const ONBOARDING_STEP_LABELS = [
   'Boas-vindas',
-  'Dados físicos',
   'Objetivo',
   'Rotina',
   'Resumo',

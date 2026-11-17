@@ -1,0 +1,25 @@
+<main class="auth-page">
+  <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <p class="auth-card__eyebrow">ROOT · Bem-vindo de volta</p>
+    <h1>Entrar</h1>
+    <p class="auth-card__description">Use o e-mail associado ao seu perfil neste dispositivo.</p>
+
+    <label for="login-email">E-mail</label>
+    <input id="login-email" type="email" autocomplete="email" formControlName="email" />
+    @if (form.controls.email.invalid && form.controls.email.touched) {
+      <span class="auth-card__error">Informe um e-mail válido.</span>
+    }
+    @if (error()) {
+      <p class="auth-card__error" role="alert">{{ error() }}</p>
+    }
+
+    <button type="submit">Continuar</button>
+    @if (!hasLocalProfile()) {
+      <p class="auth-card__footnote">
+        Este dispositivo ainda não tem um perfil ROOT.
+        <a routerLink="/onboarding">Criar perfil</a>
+      </p>
+    }
+    <p class="auth-card__footnote">Seu perfil fica salvo neste dispositivo. Sincronização entre aparelhos ainda não está disponível.</p>
+  </form>
+</main>

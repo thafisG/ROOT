@@ -11,20 +11,14 @@
             <app-root-step-welcome [form]="form" />
           }
           @case (1) {
-            <app-root-step-physical [form]="form" />
-          }
-          @case (2) {
             <app-root-step-goal [form]="form" />
           }
-          @case (3) {
+          @case (2) {
             <app-root-step-routine [form]="form" />
           }
-          @case (4) {
+          @case (3) {
             <app-root-step-summary
               [name]="form.value.name!"
-              [age]="form.value.age!"
-              [heightCm]="form.value.heightCm!"
-              [weightKg]="form.value.weightKg!"
               [goal]="form.value.goal!"
               [experienceLevel]="form.value.experienceLevel!"
               [availableDaysPerWeek]="form.value.availableDaysPerWeek!"

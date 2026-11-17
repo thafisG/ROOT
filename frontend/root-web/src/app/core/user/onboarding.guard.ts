@@ -6,12 +6,14 @@ export const requireOnboardingGuard: CanActivateFn = () => {
   const userService = inject(UserService);
   const router = inject(Router);
 
-  return userService.isOnboarded() ? true : router.parseUrl('/onboarding');
+  if (userService.isAuthenticated()) return true;
+  return router.parseUrl(userService.isOnboarded() ? '/login' : '/onboarding');
 };
 
 export const redirectIfOnboardedGuard: CanActivateFn = () => {
   const userService = inject(UserService);
   const router = inject(Router);
 
-  return userService.isOnboarded() ? router.parseUrl('/dashboard') : true;
+  if (userService.isAuthenticated()) return router.parseUrl('/dashboard');
+  return userService.isOnboarded() ? router.parseUrl('/login') : true;
 };

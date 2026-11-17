@@ -1,0 +1,108 @@
+.profile-page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: var(--space-24) var(--space-16);
+}
+
+.profile-page__header {
+  margin-bottom: var(--space-32);
+
+  h1 {
+    margin: 0 0 var(--space-8);
+    color: var(--text-primary);
+    font: 600 1.75rem var(--font-display);
+  }
+
+  p:last-child {
+    margin: 0;
+    color: var(--text-secondary);
+    font: 0.875rem/1.5 var(--font-body);
+  }
+}
+
+.profile-page__eyebrow {
+  margin: 0 0 var(--space-8);
+  color: var(--color-primary-600);
+  font: 600 0.75rem var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-12);
+  margin-bottom: var(--space-16);
+  padding: var(--space-24);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-sm);
+
+  h2 {
+    margin: 0;
+    color: var(--text-primary);
+    font: 600 1.0625rem var(--font-body);
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-secondary);
+    font: 0.875rem/1.5 var(--font-body);
+  }
+
+  dl {
+    width: 100%;
+    margin: 0;
+  }
+
+  dl div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-16);
+    padding: var(--space-12) 0;
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  dt {
+    color: var(--text-secondary);
+    font: 0.875rem var(--font-body);
+  }
+
+  dd {
+    margin: 0;
+    color: var(--text-primary);
+    font: 500 0.875rem var(--font-body);
+    text-align: right;
+  }
+}
+
+.profile-page__secondary,
+.profile-page__danger {
+  padding: var(--space-8) var(--space-12);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-primary);
+  font: 500 0.875rem var(--font-body);
+  cursor: pointer;
+}
+
+.profile-page__danger {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.profile-page__confirmation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+  padding: var(--space-16);
+  border-radius: var(--radius-md);
+  background: var(--color-accent-50);
+
+  p {
+    flex-basis: 100%;
+    color: var(--text-primary);
+  }
+}

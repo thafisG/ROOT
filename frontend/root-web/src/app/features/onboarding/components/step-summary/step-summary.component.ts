@@ -9,9 +9,6 @@ import { GOAL_OPTIONS, EXPERIENCE_OPTIONS } from '../../models/onboarding.models
 })
 export class StepSummaryComponent {
   readonly name = input.required<string>();
-  readonly age = input.required<number>();
-  readonly heightCm = input.required<number>();
-  readonly weightKg = input.required<number>();
   readonly goal = input.required<string>();
   readonly experienceLevel = input.required<string>();
   readonly availableDaysPerWeek = input.required<number>();

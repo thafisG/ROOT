@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { StorageService } from '../storage/storage.service';
+import { z } from 'zod';
 import {
   InteractionEvent,
   InteractionType,
@@ -8,13 +9,24 @@ import {
 
 const STORAGE_KEY = 'interactions';
 const MAX_HISTORY = 500;
+const interactionEventSchema = z.object({
+  id: z.string().min(1),
+  type: z.enum([
+    'workout_completed',
+    'habit_completed',
+    'recommendation_clicked',
+    'recommendation_dismissed',
+  ]),
+  category: z.enum(['strength', 'mobility', 'hydration', 'sleep', 'nutrition', 'cardio']),
+  createdAt: z.string().refine((value) => !Number.isNaN(Date.parse(value))),
+});
 
 @Injectable({ providedIn: 'root' })
 export class InteractionService {
   private readonly storage = inject(StorageService);
 
   private readonly _history = signal<InteractionEvent[]>(
-    this.storage.read<InteractionEvent[]>(STORAGE_KEY, []),
+    this.storage.read(STORAGE_KEY, [], z.array(interactionEventSchema)),
   );
 
   readonly history = this._history.asReadonly();
@@ -36,5 +48,10 @@ export class InteractionService {
     return this._history()
       .filter((event) => event.type !== 'recommendation_dismissed')
       .slice(0, limit);
+  }
+
+  clearHistory(): void {
+    this._history.set([]);
+    this.storage.clear(STORAGE_KEY);
   }
 }

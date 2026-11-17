@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { OnboardingHeroComponent } from './components/onboarding-hero/onboarding-hero.component';
 import { OnboardingProgressComponent } from './components/onboarding-progress/onboarding-progress.component';
 import { StepWelcomeComponent } from './components/step-welcome/step-welcome.component';
-import { StepPhysicalComponent } from './components/step-physical/step-physical.component';
 import { StepGoalComponent } from './components/step-goal/step-goal.component';
 import { StepRoutineComponent } from './components/step-routine/step-routine.component';
 import { StepSummaryComponent } from './components/step-summary/step-summary.component';
@@ -13,7 +12,6 @@ import { ONBOARDING_STEP_LABELS, UserProfile } from './models/onboarding.models'
 
 const STEP_FIELDS: string[][] = [
   ['name', 'email'],
-  ['age', 'heightCm', 'weightKg'],
   ['goal'],
   ['experienceLevel', 'availableDaysPerWeek'],
   [],
@@ -26,7 +24,6 @@ const STEP_FIELDS: string[][] = [
     OnboardingHeroComponent,
     OnboardingProgressComponent,
     StepWelcomeComponent,
-    StepPhysicalComponent,
     StepGoalComponent,
     StepRoutineComponent,
     StepSummaryComponent,
@@ -47,15 +44,6 @@ export class OnboardingComponent {
   protected readonly form = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
-    age: [null as number | null, [Validators.required, Validators.min(12), Validators.max(100)]],
-    heightCm: [
-      null as number | null,
-      [Validators.required, Validators.min(100), Validators.max(230)],
-    ],
-    weightKg: [
-      null as number | null,
-      [Validators.required, Validators.min(30), Validators.max(300)],
-    ],
     goal: ['', Validators.required],
     experienceLevel: ['', Validators.required],
     availableDaysPerWeek: [3, [Validators.required, Validators.min(1), Validators.max(7)]],
@@ -85,9 +73,6 @@ export class OnboardingComponent {
     const profile: UserProfile = {
       name: value.name!,
       email: value.email!,
-      age: value.age!,
-      heightCm: value.heightCm!,
-      weightKg: value.weightKg!,
       goal: value.goal as UserProfile['goal'],
       experienceLevel: value.experienceLevel as UserProfile['experienceLevel'],
       availableDaysPerWeek: value.availableDaysPerWeek!,

@@ -5,6 +5,11 @@ export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 
   {
+    path: 'login',
+    loadComponent: () => import('./features/auth/login.component').then((m) => m.LoginComponent),
+  },
+
+  {
     path: 'onboarding',
     canActivate: [redirectIfOnboardedGuard],
     loadComponent: () =>
@@ -51,10 +56,7 @@ export const routes: Routes = [
       {
         path: 'perfil',
         loadComponent: () =>
-          import('./shared/ui/placeholder-page/placeholder-page.component').then(
-            (m) => m.PlaceholderPageComponent,
-          ),
-        data: { title: 'Perfil', description: 'Edição de perfil chega na próxima fase.' },
+          import('./features/profile/profile.component').then((m) => m.ProfileComponent),
       },
     ],
   },
