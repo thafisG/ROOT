@@ -26,6 +26,10 @@ export class WorkoutManualBuilderComponent {
   protected readonly groupNames = signal<string[]>(['Treino A']);
   protected readonly activeGroup = signal('Treino A');
   protected readonly selectedMode = signal<'message' | 'photo' | 'manual' | null>(null);
+  protected readonly selectedExerciseIds = signal<Set<string>>(new Set());
+  protected readonly moveDestinations = signal<Record<string, string>>({});
+  protected readonly lastMovedExercise = signal('');
+  protected readonly confirmClearAll = signal(false);
   protected readonly exerciseError = signal('');
   protected readonly progress = computed(() => Math.min(100, Math.round((this.exercises().length / 3) * 100)));
   protected readonly progressLabel = computed(() => {
@@ -49,6 +53,9 @@ export class WorkoutManualBuilderComponent {
 
   private clearMode(mode: 'message' | 'photo' | 'manual'): void {
     this.exercises.update((items) => items.filter((item) => item.sourceMode !== mode));
+    const remainingIds = new Set(this.exercises().map((item) => item.id));
+    this.selectedExerciseIds.update((ids) => new Set([...ids].filter((id) => remainingIds.has(id))));
+    this.moveDestinations.update((destinations) => Object.fromEntries(Object.entries(destinations).filter(([id]) => remainingIds.has(id))));
     const usedGroups = new Set(this.exercises().map((item) => item.groupName ?? 'Treino A'));
     this.groupNames.update((groups) => groups.filter((name) => name === 'Treino A' || usedGroups.has(name)));
     if (!this.groupNames().includes(this.activeGroup())) this.activeGroup.set(this.groupNames()[0] ?? 'Treino A');
@@ -87,6 +94,7 @@ export class WorkoutManualBuilderComponent {
 
   protected removeExercise(id: string): void {
     this.exercises.update((items) => items.filter((item) => item.id !== id));
+    this.selectedExerciseIds.update((ids) => new Set([...ids].filter((selectedId) => selectedId !== id)));
     this.exerciseError.set('');
   }
 
@@ -109,9 +117,60 @@ export class WorkoutManualBuilderComponent {
     if (this.activeGroup() === previousName) this.activeGroup.set(newName);
   }
 
-  protected moveExercise(id: string, event: Event): void {
+  protected setMoveDestination(id: string, event: Event): void {
     const groupName = (event.target as HTMLSelectElement).value;
+    this.moveDestinations.update((destinations) => ({ ...destinations, [id]: groupName }));
+  }
+
+  protected moveExercise(id: string, currentGroup: string): void {
+    const groupName = this.moveDestinations()[id] ?? currentGroup;
+    if (!this.groupNames().includes(groupName) || groupName === currentGroup) return;
     this.exercises.update((items) => items.map((item) => item.id === id ? { ...item, groupName } : item));
+    const exercise = this.exercises().find((item) => item.id === id);
+    this.lastMovedExercise.set(exercise ? `${exercise.name} movido para ${groupName}.` : 'Exercício movido.');
+    this.selectedExerciseIds.update((ids) => new Set([...ids].filter((selectedId) => selectedId !== id)));
+  }
+
+  protected toggleExerciseSelection(id: string, event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.selectedExerciseIds.update((ids) => {
+      const next = new Set(ids);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }
+
+  protected toggleAllExerciseSelection(event: Event): void {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.selectedExerciseIds.set(checked ? new Set(this.exercises().map((item) => item.id)) : new Set());
+  }
+
+  protected deleteSelectedExercises(): void {
+    const ids = this.selectedExerciseIds();
+    if (!ids.size) return;
+    this.exercises.update((items) => items.filter((item) => !ids.has(item.id)));
+    this.selectedExerciseIds.set(new Set());
+    this.pruneEmptyGroups();
+    this.feedback.show(`${ids.size} ${ids.size === 1 ? 'exercício removido' : 'exercícios removidos'} do rascunho.`);
+  }
+
+  protected deleteAllDraftExercises(): void {
+    const count = this.exercises().length;
+    if (!count) return;
+    this.exercises.set([]);
+    this.selectedExerciseIds.set(new Set());
+    this.moveDestinations.set({});
+    this.groupNames.set(['Treino A']);
+    this.activeGroup.set('Treino A');
+    this.confirmClearAll.set(false);
+    this.feedback.show('Todos os exercícios do rascunho foram apagados.');
+  }
+
+  private pruneEmptyGroups(): void {
+    const usedGroups = new Set(this.exercises().map((item) => item.groupName ?? 'Treino A'));
+    this.groupNames.update((groups) => groups.filter((name) => name === 'Treino A' || usedGroups.has(name)));
+    if (!this.groupNames().includes(this.activeGroup())) this.activeGroup.set(this.groupNames()[0] ?? 'Treino A');
   }
 
   protected exercisesInGroup(groupName: string): WorkoutExerciseDraft[] {
@@ -155,6 +214,9 @@ export class WorkoutManualBuilderComponent {
     }
     this.exerciseForm.reset({ name: '', sets: 3, repetitions: 10, restSeconds: 60 });
     this.exercises.set([]);
+    this.selectedExerciseIds.set(new Set());
+    this.moveDestinations.set({});
+    this.lastMovedExercise.set('');
     this.groupNames.set(['Treino A']);
     this.activeGroup.set('Treino A');
     this.feedback.show(`${groupsWithExercises.length} ${groupsWithExercises.length === 1 ? 'ficha salva' : 'fichas salvas'}. Já estão disponíveis em Fichas salvas.`);

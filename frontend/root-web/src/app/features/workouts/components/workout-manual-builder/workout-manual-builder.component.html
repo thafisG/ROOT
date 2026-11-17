@@ -100,6 +100,29 @@
           <div class="manual-builder__progress-copy"><span>{{ progressLabel() }}</span><strong>{{ progress() }}%</strong></div>
           <progress [value]="progress()" max="100">{{ progress() }}%</progress>
         </div>
+        <div class="manual-builder__bulk-actions">
+          <label class="manual-builder__select-all">
+            <input type="checkbox" [checked]="selectedExerciseIds().size === exercises().length" [indeterminate]="selectedExerciseIds().size > 0 && selectedExerciseIds().size < exercises().length" (change)="toggleAllExerciseSelection($event)" />
+            Selecionar todos
+          </label>
+          <span>{{ selectedExerciseIds().size }} selecionados</span>
+          <button type="button" class="manual-builder__trash" [disabled]="selectedExerciseIds().size === 0" (click)="deleteSelectedExercises()">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 5.5h13M8 3.5h4m-7 2 1 12h8l1-12M8 8v6m4-6v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            Apagar selecionados
+          </button>
+          <button type="button" class="manual-builder__trash manual-builder__trash--all" (click)="confirmClearAll.set(true)">
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.5 5.5h13M8 3.5h4m-7 2 1 12h8l1-12M8 8v6m4-6v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            Apagar tudo
+          </button>
+        </div>
+        @if (confirmClearAll()) {
+          <div class="manual-builder__confirm-clear" role="alertdialog" aria-label="Confirmar exclusão de todos os exercícios">
+            <p>Apagar todos os {{ exercises().length }} exercícios deste rascunho?</p>
+            <button type="button" (click)="deleteAllDraftExercises()">Sim, apagar tudo</button>
+            <button type="button" (click)="confirmClearAll.set(false)">Cancelar</button>
+          </div>
+        }
+        @if (lastMovedExercise()) { <p class="manual-builder__move-feedback" role="status">{{ lastMovedExercise() }}</p> }
         <div class="manual-builder__groups">
           @for (groupName of groupNames(); track groupName) {
             <section class="manual-builder__group">
@@ -111,15 +134,17 @@
                 <ol class="manual-builder__exercise-list" [attr.aria-label]="'Exercícios de ' + groupName">
                   @for (exercise of exercisesInGroup(groupName); track exercise.id; let index = $index) {
                     <li>
+                      <input class="manual-builder__exercise-check" type="checkbox" [checked]="selectedExerciseIds().has(exercise.id)" [attr.aria-label]="'Selecionar ' + exercise.name" (change)="toggleExerciseSelection(exercise.id, $event)" />
                       <span class="manual-builder__number">{{ index + 1 }}</span>
                       <label><span class="visually-hidden">Nome do exercício {{ index + 1 }}</span><input [value]="exercise.name" maxlength="80" (input)="updateExercise(exercise.id, 'name', $event)" /></label>
                       <label><span class="visually-hidden">Séries</span><input type="number" min="1" max="20" [value]="exercise.sets" (input)="updateExercise(exercise.id, 'sets', $event)" /></label>
                       <span aria-hidden="true">×</span>
                       <label><span class="visually-hidden">Repetições</span><input type="number" min="1" max="100" [value]="exercise.repetitions" (input)="updateExercise(exercise.id, 'repetitions', $event)" /></label>
                       <label class="manual-builder__rest-value"><span class="visually-hidden">Descanso em segundos</span><input type="number" min="0" max="300" step="15" [value]="exercise.restSeconds" (input)="updateExercise(exercise.id, 'restSeconds', $event)" /></label>
-                      <select class="manual-builder__move" [value]="exercise.groupName ?? 'Treino A'" aria-label="Mover exercício para outra ficha" (change)="moveExercise(exercise.id, $event)">
+                      <select class="manual-builder__move" [value]="moveDestinations()[exercise.id] ?? (exercise.groupName ?? 'Treino A')" [attr.aria-label]="'Escolher ficha de destino para ' + exercise.name" (change)="setMoveDestination(exercise.id, $event)">
                         @for (option of groupNames(); track option) { <option [value]="option">{{ option }}</option> }
                       </select>
+                      <button type="button" class="manual-builder__move-button" [disabled]="(moveDestinations()[exercise.id] ?? (exercise.groupName ?? 'Treino A')) === groupName" (click)="moveExercise(exercise.id, groupName)">Mover</button>
                       @if (exercisesInGroup(groupName).length > 1) {
                         <button type="button" class="manual-builder__separate" (click)="separateExercise(exercise)">Separar</button>
                       }
