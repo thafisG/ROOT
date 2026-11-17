@@ -83,7 +83,11 @@
             <section class="manual-builder__group">
               <div class="manual-builder__group-heading">
                 <label><span class="visually-hidden">Nome da ficha</span><input [value]="group.name" maxlength="40" placeholder="Dê um nome para esta ficha" (input)="renameGroup(group.id, $event)" /></label>
-                <span>{{ exercisesInGroup(group.id).length }} exercícios</span>
+                <div class="manual-builder__group-meta">
+                  @if (group.sourceMode === 'photo') { <small>Identificada na foto</small> }
+                  @if (activeGroupId() === group.id && selectedMode() === 'manual') { <small class="manual-builder__active-tag">Selecionada para novos exercícios</small> }
+                  <span>{{ exercisesInGroup(group.id).length }} exercícios</span>
+                </div>
               </div>
               @if (exercisesInGroup(group.id).length > 0) {
                 <ol class="manual-builder__exercise-list" [attr.aria-label]="'Exercícios de ' + (group.name || 'ficha sem nome')">

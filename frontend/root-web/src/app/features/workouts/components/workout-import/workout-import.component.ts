@@ -112,16 +112,32 @@ export class WorkoutImportComponent {
     const exercises: WorkoutExerciseDraft[] = [];
     let groupName: string | undefined;
 
-    for (const line of lines) {
-      const section = line.match(/^(?:(treino|ficha|grupo)\s+([a-z0-9]+)(?:\s*[-–—:]\s*.+)?|([A-D])\s*(?::|[-–—]\s*.+))$/i);
+    const exerciseLine = (value: string) => /^(.+?)(?:\s*[—–-]\s*|\s+)(\d{1,2})\s*(?:x|×|\*)\s*(\d{1,3})\b.*$/i.test(value);
+    for (let index = 0; index < lines.length; index += 1) {
+      const line = lines[index];
+      const section = line.match(/^(?:(treino|ficha|grupo)\s+([a-z0-9]+)(?:\s*[-–—:]\s*(.+))?|([A-D])\s*(?::|[-–—]\s*(.+)))$/i);
       if (section) {
-        groupName = section[3] ? `Treino ${section[3].toUpperCase()}` : `${section[1][0].toUpperCase()}${section[1].slice(1).toLowerCase()} ${section[2].toUpperCase()}`;
+        if (section[1]) {
+          const prefix = `${section[1][0].toUpperCase()}${section[1].slice(1).toLowerCase()} ${section[2].toUpperCase()}`;
+          groupName = section[3] ? `${prefix} — ${section[3].trim()}` : prefix;
+        } else {
+          groupName = `Treino ${section[4].toUpperCase()}${section[5] ? ` — ${section[5].trim()}` : ''}`;
+        }
         continue;
       }
       if (/^(treino|ficha|grupo|exercícios?)(\s+[a-z0-9]+)?\s*:?$/i.test(line)) continue;
 
       const match = line.match(/^(.+?)(?:\s*[—–-]\s*|\s+)(\d{1,2})\s*(?:x|×|\*)\s*(\d{1,3})\b.*$/i);
-      if (!match) continue;
+      if (!match) {
+        const nextLine = lines[index + 1];
+        const weekdayHeading = line.match(/^(segunda|terça|terca|quarta|quinta|sexta|sábado|sabado|domingo)(?:-feira)?(?:\s*[-–—:]\s*(.+))?$/i);
+        if (weekdayHeading) {
+          groupName = `${weekdayHeading[1]}-feira${weekdayHeading[2] ? ` — ${weekdayHeading[2].trim()}` : ''}`;
+        } else if (line.length <= 40 && nextLine && exerciseLine(nextLine) && !/^(séries|repetições|descanso|observações?)\b/i.test(line)) {
+          groupName = line.replace(/\s*[:—–-]\s*$/, '').trim();
+        }
+        continue;
+      }
       const name = match[1].trim().replace(/[.,:;]+$/, '');
       const sets = Number(match[2]);
       const repetitions = Number(match[3]);
