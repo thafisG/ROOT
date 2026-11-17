@@ -42,6 +42,7 @@ export class DashboardComponent {
   private readonly userService = inject(UserService);
 
   protected readonly showAlternatives = signal(false);
+  protected readonly activeRecommendation = signal<Recommendation | null>(null);
 
   protected readonly userName = computed(() => this.userService.profile()?.name ?? 'Visitante');
 
@@ -95,8 +96,16 @@ export class DashboardComponent {
 
   protected onAcceptRecommendation(recommendation: Recommendation): void {
     this.interactionService.register('recommendation_clicked', recommendation.category.id);
-    this.interactionService.register('habit_completed', recommendation.category.id);
+    this.activeRecommendation.set(recommendation);
     this.showAlternatives.set(false);
+  }
+
+  protected onCompleteRecommendation(): void {
+    const recommendation = this.activeRecommendation();
+    if (!recommendation) return;
+
+    this.interactionService.register('habit_completed', recommendation.category.id);
+    this.activeRecommendation.set(null);
   }
 
   protected onDismissRecommendation(recommendation: Recommendation): void {
@@ -108,9 +117,7 @@ export class DashboardComponent {
   }
 
   protected onSelectAlternative(recommendation: Recommendation): void {
-    this.interactionService.register('recommendation_clicked', recommendation.category.id);
-    this.interactionService.register('habit_completed', recommendation.category.id);
-    this.showAlternatives.set(false);
+    this.onAcceptRecommendation(recommendation);
   }
 
   protected onCompleteWorkout(): void {

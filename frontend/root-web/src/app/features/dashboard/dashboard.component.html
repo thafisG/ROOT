@@ -17,6 +17,12 @@
       (dismiss)="onDismissRecommendation(recommendation)"
     />
 
+    @if (activeRecommendation(); as active) {
+      <button type="button" class="dashboard__complete-recommendation" (click)="onCompleteRecommendation()">
+        Marcar {{ active.category.label.toLowerCase() }} como concluída
+      </button>
+    }
+
     @if (showAlternatives()) {
       <div class="dashboard__alternatives">
         @for (alt of recommendationState().alternatives; track alt.category.id) {

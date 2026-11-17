@@ -34,6 +34,21 @@
   margin: 0;
 }
 
+.dashboard__complete-recommendation {
+  align-self: flex-start;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  padding: var(--space-8) var(--space-12);
+  font: inherit;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--border-strong);
+  }
+}
+
 .dashboard__alternatives {
   display: flex;
   flex-direction: column;

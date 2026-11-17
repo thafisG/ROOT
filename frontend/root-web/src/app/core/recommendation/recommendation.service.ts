@@ -21,7 +21,11 @@ export class RecommendationService {
   readonly result: Signal<RecommendationResult> = computed(() => {
     const history = this.interactions.history();
 
-    if (history.length < MIN_INTERACTIONS_TO_RECOMMEND) {
+    const completedActivities = history.filter(
+      (event) => event.type === 'habit_completed' || event.type === 'workout_completed',
+    );
+
+    if (completedActivities.length < MIN_INTERACTIONS_TO_RECOMMEND) {
       return { isLearning: true, primary: null, alternatives: [] };
     }
 
