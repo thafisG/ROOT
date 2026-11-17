@@ -1,57 +1,162 @@
 <main class="nutrition-page">
   <header class="nutrition-page__header">
-    <p class="nutrition-page__eyebrow">Alimentação e hidratação</p>
-    <h1>Nutrição</h1>
-    <p>Registre hábitos simples para enxergar sua rotina alimentar com mais clareza.</p>
+    <div>
+      <p class="nutrition-page__eyebrow">Bem-estar no seu ritmo</p>
+      <h1>Nutrição</h1>
+      <p>Registre refeições, acompanhe sua rotina e organize um plano alimentar.</p>
+    </div>
+    <a class="nutrition-page__professional-link" routerLink="/acompanhamento">Encontrar nutricionista</a>
   </header>
 
-  <section class="nutrition-card" aria-labelledby="hydration-title">
+  <section class="nutrition-card hydration-card" aria-labelledby="hydration-title">
     <div>
+      <p class="nutrition-card__eyebrow">Hábito rápido</p>
       <h2 id="hydration-title">Hidratação</h2>
       <p>{{ waterGlassesToday() }} copos registrados hoje</p>
     </div>
-    <button type="button" (click)="logWater()">Registrar um copo de água</button>
+    <button type="button" class="nutrition-button" (click)="logWater()">Registrar um copo de água <span aria-hidden="true">＋10 XP</span></button>
   </section>
 
-  <section class="nutrition-card" aria-labelledby="meal-title">
-    <h2 id="meal-title">Registrar refeição</h2>
+  <section class="nutrition-card meal-log" aria-labelledby="meal-title">
+    <div class="nutrition-card__heading">
+      <div>
+        <p class="nutrition-card__eyebrow">Pequenos passos contam</p>
+        <h2 id="meal-title">Registrar uma refeição</h2>
+      </div>
+      <span class="meal-log__streak" aria-label="Marcos diários">{{ dailyMealCount() }}/3</span>
+    </div>
+    <div class="meal-log__progress">
+      <div class="meal-log__progress-copy"><span>{{ mealProgressLabel() }}</span><strong>{{ mealProgress() }}%</strong></div>
+      <progress [value]="mealProgress()" max="100">{{ mealProgress() }}%</progress>
+    </div>
+
     <form [formGroup]="mealForm" (ngSubmit)="logMeal()" novalidate>
+      <fieldset class="meal-log__types">
+        <legend>Qual refeição você fez?</legend>
+        <div class="meal-log__type-grid">
+          @for (mealType of mealTypes; track mealType.value) {
+            <button
+              type="button"
+              [class.meal-log__type--selected]="mealForm.controls.type.value === mealType.value"
+              [attr.aria-pressed]="mealForm.controls.type.value === mealType.value"
+              (click)="selectMealType(mealType.value)"
+            >{{ mealType.label }}</button>
+          }
+        </div>
+      </fieldset>
       <label for="meal-description">O que você comeu?</label>
-      <input
-        id="meal-description"
-        formControlName="meal"
-        maxlength="120"
-        placeholder="Ex.: almoço — arroz, feijão e legumes"
-      />
-      @if (mealForm.controls.meal.invalid && mealForm.controls.meal.touched) {
-        <small>Descreva sua refeição para registrá-la.</small>
+      <input id="meal-description" formControlName="description" maxlength="160" placeholder="Ex.: arroz, feijão e legumes" />
+      @if (mealForm.controls.description.invalid && mealForm.controls.description.touched) {
+        <small class="nutrition-error">Descreva sua refeição para registrar.</small>
       }
-      <button type="submit">Salvar refeição</button>
+      <button type="submit" class="nutrition-button">Registrar refeição <span aria-hidden="true">＋10 XP</span></button>
     </form>
   </section>
 
+  <section class="nutrition-card nutrition-plan" aria-labelledby="nutrition-plan-title">
+    <details>
+      <summary>
+        <span class="nutrition-plan__badge" aria-hidden="true">✦</span>
+        <span class="nutrition-plan__summary"><strong id="nutrition-plan-title">Cadastrar plano alimentar</strong><small>Organize as refeições de um plano seu ou passado por nutricionista</small></span>
+        <span class="nutrition-plan__chevron" aria-hidden="true"></span>
+      </summary>
+      <div class="nutrition-plan__content">
+        <form [formGroup]="planForm" (ngSubmit)="savePlan()" novalidate>
+          <label for="plan-name">Nome do plano</label>
+          <input id="plan-name" formControlName="name" maxlength="80" placeholder="Ex.: Meu plano da semana" />
+          @if (planForm.controls.name.invalid && planForm.controls.name.touched) {
+            <small class="nutrition-error">Dê um nome para este plano.</small>
+          }
+
+          <fieldset class="nutrition-plan__source">
+            <legend>De onde veio este plano?</legend>
+            <button type="button" [class.nutrition-choice--selected]="planForm.controls.source.value === 'personal'" [attr.aria-pressed]="planForm.controls.source.value === 'personal'" (click)="planForm.controls.source.setValue('personal')">Estou organizando</button>
+            <button type="button" [class.nutrition-choice--selected]="planForm.controls.source.value === 'professional'" [attr.aria-pressed]="planForm.controls.source.value === 'professional'" (click)="planForm.controls.source.setValue('professional')">Minha nutricionista passou</button>
+          </fieldset>
+
+          <fieldset class="nutrition-plan__meal-type">
+            <legend>Adicionar uma refeição</legend>
+            <div class="meal-log__type-grid">
+              @for (mealType of mealTypes; track mealType.value) {
+                <button type="button" [class.meal-log__type--selected]="planForm.controls.mealType.value === mealType.value" [attr.aria-pressed]="planForm.controls.mealType.value === mealType.value" (click)="selectPlanMealType(mealType.value)">{{ mealType.label }}</button>
+              }
+            </div>
+          </fieldset>
+          <label for="plan-meal-description">Alimentos ou orientação da refeição</label>
+          <textarea id="plan-meal-description" rows="3" maxlength="220" formControlName="mealDescription" placeholder="Ex.: arroz, feijão, frango e salada"></textarea>
+          @if (planForm.controls.mealDescription.invalid && planForm.controls.mealDescription.touched) {
+            <small class="nutrition-error">Descreva esta refeição para adicioná-la.</small>
+          }
+          <button type="button" class="nutrition-button nutrition-button--secondary" (click)="addPlanMeal()">Adicionar refeição ao plano</button>
+        </form>
+
+        @if (planMeals().length) {
+          <div class="nutrition-plan__draft">
+            <h3>Rascunho · {{ planMeals().length }} {{ planMeals().length === 1 ? 'refeição' : 'refeições' }}</h3>
+            @for (meal of planMeals(); track meal.id) {
+              <div class="nutrition-plan__draft-meal">
+                <span><strong>{{ mealTypeLabel(meal.type) }}</strong><small>{{ meal.description }}</small></span>
+                <button type="button" [attr.aria-label]="'Remover ' + mealTypeLabel(meal.type)" (click)="removePlanMeal(meal.id)">×</button>
+              </div>
+            }
+          </div>
+        }
+        @if (planError()) { <p class="nutrition-error" role="alert">{{ planError() }}</p> }
+        <button type="button" class="nutrition-button" [disabled]="!planMeals().length" (click)="savePlan()">Salvar plano</button>
+      </div>
+    </details>
+  </section>
+
+  <section class="nutrition-card nutrition-ideas" aria-labelledby="nutrition-ideas-title">
+    <div class="nutrition-card__heading">
+      <div><p class="nutrition-card__eyebrow">Ideias flexíveis</p><h2 id="nutrition-ideas-title">Sugestões de dieta</h2></div>
+    </div>
+    <p class="nutrition-ideas__note">Inspirações gerais, sem calorias ou restrições. Escolha “Adicionar ao plano” para adaptar ao seu gosto.</p>
+    <div class="nutrition-ideas__grid">
+      @for (idea of mealIdeas; track idea.title) {
+        <article>
+          <span class="nutrition-ideas__type">{{ mealTypeLabel(idea.type) }}</span>
+          <h3>{{ idea.title }}</h3>
+          <p>{{ idea.description }}</p>
+          <button type="button" class="nutrition-button nutrition-button--secondary" (click)="usePlanIdea(idea)">Adicionar ao plano</button>
+        </article>
+      }
+    </div>
+    <p class="nutrition-ideas__source">As sugestões seguem orientações gerais do <a href="https://www.gov.br/saude/pt-br/composicao/saps/promocao-da-saude/guias-alimentares/guias-alimentares" target="_blank" rel="noopener noreferrer">Guia Alimentar para a População Brasileira</a>. Elas não substituem um plano individual.</p>
+  </section>
+
+  @if (plans().length) {
+    <section class="nutrition-card" aria-labelledby="saved-plans-title">
+      <div class="nutrition-card__heading"><h2 id="saved-plans-title">Meus planos</h2><span class="nutrition-plan__badge">{{ plans().length }}</span></div>
+      <div class="nutrition-plan__saved-list">
+        @for (plan of plans(); track plan.id) {
+          <article>
+            <details>
+              <summary><span><strong>{{ plan.name }}</strong><small>{{ planSourceLabel(plan.source) }} · {{ plan.meals.length }} refeições</small></span><span class="nutrition-plan__chevron" aria-hidden="true"></span></summary>
+              <ul>@for (meal of plan.meals; track meal.id) { <li><strong>{{ mealTypeLabel(meal.type) }}</strong><span>{{ meal.description }}</span></li> }</ul>
+            </details>
+            <button type="button" class="nutrition-delete" [attr.aria-label]="'Apagar plano ' + plan.name" (click)="deletePlan(plan.id)">Apagar plano</button>
+          </article>
+        }
+      </div>
+    </section>
+  }
+
   <section class="nutrition-card" aria-labelledby="nutrition-history-title">
-    <h2 id="nutrition-history-title">Registros recentes</h2>
+    <div class="nutrition-card__heading"><h2 id="nutrition-history-title">Registros recentes</h2><a routerLink="/acompanhamento">Precisa de ajuda profissional?</a></div>
     @if (nutritionEntries().length === 0) {
       <p class="nutrition-card__empty">Seus registros de refeições e hidratação aparecerão aqui.</p>
     } @else {
-      <ul>
+      <ul class="nutrition-history">
         @for (entry of nutritionEntries().slice(0, 10); track entry.id) {
-          <li>
-            <span>{{ entry.details }}</span>
-            <time [attr.datetime]="entry.createdAt">{{ formatDate(entry.createdAt) }}</time>
-            <button
-              type="button"
-              [attr.aria-label]="'Apagar registro: ' + entry.details"
-              (click)="deleteEntry(entry.id)"
-            >
-              Apagar
-            </button>
-          </li>
+          <li><span>{{ entry.details }}</span><time [attr.datetime]="entry.createdAt">{{ formatDate(entry.createdAt) }}</time><button type="button" [attr.aria-label]="'Apagar registro: ' + entry.details" (click)="deleteEntry(entry.id)">Apagar</button></li>
         }
       </ul>
     }
   </section>
 
-  <p class="nutrition-page__note">O ROOT ajuda a acompanhar hábitos. Orientações nutricionais personalizadas devem ser feitas com um profissional habilitado.</p>
+  <p class="nutrition-page__note">Registros e planos ficam salvos neste dispositivo. Sugestões gerais não substituem orientação individual de um profissional habilitado.</p>
+  @if (activeActivity(); as activity) {
+    <app-guided-activity-modal [activity]="activity" (complete)="completeActivity($event)" (dismiss)="dismissActivity()" />
+  }
 </main>

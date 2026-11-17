@@ -9,6 +9,7 @@ import { RecentHabitsComponent } from './components/recent-habits/recent-habits.
 import { SuggestedActivitiesComponent } from './components/suggested-activities/suggested-activities.component';
 import { InteractionService } from '../../core/interaction/interaction.service';
 import { ActionFeedbackService } from '../../core/feedback/action-feedback.service';
+import { GuidedActivity, GuidedActivityModalComponent } from '../../shared/ui/guided-activity-modal/guided-activity-modal.component';
 import { calculateActivityStreak } from '../../core/interaction/activity-metrics';
 import { RecommendationService } from '../../core/recommendation/recommendation.service';
 import { UserService } from '../../core/user/user.service';
@@ -33,6 +34,7 @@ import {
     WeeklySummaryComponent,
     RecentHabitsComponent,
     SuggestedActivitiesComponent,
+    GuidedActivityModalComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dashboard.component.html',
@@ -45,7 +47,8 @@ export class DashboardComponent {
   private readonly userService = inject(UserService);
 
   protected readonly showAlternatives = signal(false);
-  protected readonly activeRecommendation = signal<Recommendation | null>(null);
+  protected readonly activeActivity = signal<GuidedActivity | null>(null);
+  protected readonly pendingRecommendationClickId = signal<string | null>(null);
 
   protected readonly userName = computed(() => this.userService.profile()?.name ?? 'Visitante');
 
@@ -114,19 +117,29 @@ export class DashboardComponent {
   );
 
   protected onAcceptRecommendation(recommendation: Recommendation): void {
-    this.interactionService.register('recommendation_clicked', recommendation.category.id);
-    this.activeRecommendation.set(recommendation);
+    const clicked = this.interactionService.register('recommendation_clicked', recommendation.category.id);
+    this.pendingRecommendationClickId.set(clicked.id);
+    this.activeActivity.set({
+      category: recommendation.category,
+      title: recommendation.title,
+      durationMinutes: recommendation.durationMinutes,
+    });
     this.showAlternatives.set(false);
-    this.feedback.show(`Recomendação de ${recommendation.category.label.toLowerCase()} iniciada. Marque como concluída ao terminar.`);
+    this.feedback.show('Escolha como quer fazer esta atividade.');
   }
 
-  protected onCompleteRecommendation(): void {
-    const recommendation = this.activeRecommendation();
-    if (!recommendation) return;
+  protected completeActivity(activity: GuidedActivity): void {
+    this.interactionService.register('habit_completed', activity.category.id as HabitCategoryId, activity.details || activity.title);
+    this.activeActivity.set(null);
+    this.pendingRecommendationClickId.set(null);
+    this.feedback.show(`${activity.title} concluída. Você ganhou 10 XP.`);
+  }
 
-    this.interactionService.register('habit_completed', recommendation.category.id);
-    this.activeRecommendation.set(null);
-    this.feedback.show('Atividade concluída. Você ganhou 10 XP.');
+  protected dismissActivity(): void {
+    const clickId = this.pendingRecommendationClickId();
+    if (clickId) this.interactionService.deleteEvent(clickId);
+    this.pendingRecommendationClickId.set(null);
+    this.activeActivity.set(null);
   }
 
   protected onDismissRecommendation(recommendation: Recommendation): void {
@@ -143,8 +156,7 @@ export class DashboardComponent {
   }
 
   protected onSelectActivity(activity: SuggestedActivity): void {
-    this.interactionService.register('habit_completed', activity.category.id, activity.title);
-    this.feedback.show(`${activity.title} concluída. Você ganhou 10 XP.`);
+    this.activeActivity.set(activity);
   }
 
   protected onDeleteActivity(id: string): void {
