@@ -110,7 +110,7 @@ export class WorkoutImportComponent {
       .map((line) => line.replace(/^\s*(?:[-*•]|\d+[.)])\s*/, '').trim())
       .filter(Boolean);
     const exercises: WorkoutExerciseDraft[] = [];
-    let groupName = 'Treino A';
+    let groupName: string | undefined;
 
     for (const line of lines) {
       const section = line.match(/^(?:(treino|ficha|grupo)\s+([a-z0-9]+)(?:\s*[-–—:]\s*.+)?|([A-D])\s*(?::|[-–—]\s*.+))$/i);
@@ -133,7 +133,7 @@ export class WorkoutImportComponent {
         sets: Math.min(sets, 20),
         repetitions: Math.min(repetitions, 100),
         restSeconds: 60,
-        groupName,
+        ...(groupName ? { groupName } : {}),
       });
       if (exercises.length === 20) break;
     }

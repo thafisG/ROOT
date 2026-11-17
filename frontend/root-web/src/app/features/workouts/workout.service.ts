@@ -17,14 +17,17 @@ export interface WorkoutExerciseDraft {
   repetitions: number;
   restSeconds: number;
   groupName?: string;
+  groupId?: string;
   sourceMode?: 'message' | 'photo' | 'manual';
+  load?: string;
+  notes?: string;
 }
 
 const STORAGE_KEY = 'workout-routines';
 const workoutRoutineSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1).max(80),
-  exercises: z.array(z.string().min(1).max(80)).min(1).max(20),
+  exercises: z.array(z.string().min(1).max(300)).min(1).max(20),
   createdAt: z.string().refine((value) => !Number.isNaN(Date.parse(value))),
   referenceImage: z.string().max(650_000).optional(),
 });
