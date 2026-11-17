@@ -209,27 +209,6 @@
 
 .plan-builder__footer { display: flex; align-items: center; justify-content: space-between; gap: var(--space-12); }
 .plan-builder__footer p { max-width: 300px; margin: 0; color: var(--text-muted); font-size: 0.6875rem; line-height: 1.45; }
-.workout-form label span { color: var(--text-muted); font-size: 0.6875rem; font-weight: 400; }
-
-.workout-form input,
-.workout-form textarea {
-  width: 100%;
-  box-sizing: border-box;
-  padding: var(--space-12);
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-md);
-  color: var(--text-primary);
-  background: var(--bg-page);
-  font: 0.875rem/1.45 var(--font-body);
-  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
-  &::placeholder { color: var(--text-muted); }
-  &:hover { border-color: var(--border-strong); }
-  &:focus { border-color: var(--color-primary-500); outline: none; box-shadow: var(--shadow-focus); }
-}
-
-.workout-form textarea { min-height: 104px; resize: vertical; }
-.field-error { margin-top: calc(var(--space-8) * -1); color: var(--color-error); font-size: 0.75rem; }
-
 .workout-list { padding: var(--space-20); }
 .workout-list h2 { margin: 0; font-size: 1rem; }
 .workout-list__heading { margin-bottom: var(--space-12); }

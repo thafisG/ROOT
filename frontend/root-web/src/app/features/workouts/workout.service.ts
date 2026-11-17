@@ -7,6 +7,15 @@ export interface WorkoutRoutine {
   name: string;
   exercises: string[];
   createdAt: string;
+  referenceImage?: string;
+}
+
+export interface WorkoutExerciseDraft {
+  id: string;
+  name: string;
+  sets: number;
+  repetitions: number;
+  restSeconds: number;
 }
 
 const STORAGE_KEY = 'workout-routines';
@@ -15,6 +24,7 @@ const workoutRoutineSchema = z.object({
   name: z.string().min(1).max(80),
   exercises: z.array(z.string().min(1).max(80)).min(1).max(20),
   createdAt: z.string().refine((value) => !Number.isNaN(Date.parse(value))),
+  referenceImage: z.string().max(650_000).optional(),
 });
 
 @Injectable({ providedIn: 'root' })
@@ -26,12 +36,13 @@ export class WorkoutService {
 
   readonly routines = this._routines.asReadonly();
 
-  create(name: string, exercises: string[]): WorkoutRoutine {
+  create(name: string, exercises: string[], referenceImage?: string | null): WorkoutRoutine {
     const routine: WorkoutRoutine = {
       id: crypto.randomUUID(),
       name: name.trim(),
       exercises: exercises.map((exercise) => exercise.trim()).filter(Boolean).slice(0, 20),
       createdAt: new Date().toISOString(),
+      ...(referenceImage ? { referenceImage } : {}),
     };
     const updated = [routine, ...this._routines()];
     this._routines.set(updated);

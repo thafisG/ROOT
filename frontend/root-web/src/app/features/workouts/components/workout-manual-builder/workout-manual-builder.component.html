@@ -1,0 +1,100 @@
+<details class="manual-builder">
+  <summary>
+    <span class="manual-builder__icon" aria-hidden="true">＋</span>
+    <span class="manual-builder__summary">
+      <strong>Criar ficha manualmente</strong>
+      <small>Monte o treino exercício por exercício</small>
+    </span>
+    <span class="manual-builder__chevron" aria-hidden="true"></span>
+  </summary>
+
+  <div class="manual-builder__content">
+    <form class="manual-builder__routine" [formGroup]="routineForm" novalidate>
+      <label for="manual-routine-name">1. Dê um nome à ficha</label>
+      <input id="manual-routine-name" formControlName="name" placeholder="Ex.: Treino A — superiores" />
+      @if (routineForm.controls.name.invalid && routineForm.controls.name.touched) {
+        <small class="manual-builder__error">Informe um nome para a ficha.</small>
+      }
+    </form>
+
+    <app-workout-import
+      (exercisesImported)="addImportedExercises($event)"
+      (referenceImageChanged)="referenceImage.set($event)"
+    />
+
+    <section class="manual-builder__exercise-entry" aria-labelledby="exercise-entry-title">
+      <div class="manual-builder__section-heading">
+        <div>
+          <h3 id="exercise-entry-title">2. Adicione os exercícios</h3>
+          <p>Campos guiados ajudam a deixar a ficha pronta para acompanhar.</p>
+        </div>
+        <span class="manual-builder__count">{{ exercises().length }}</span>
+      </div>
+
+      <div class="manual-builder__progress">
+        <div class="manual-builder__progress-copy">
+          <span>{{ progressLabel() }}</span>
+          <strong>{{ exercises().length }}/3</strong>
+        </div>
+        <progress [value]="progress()" max="100">{{ progress() }}%</progress>
+      </div>
+
+      <fieldset class="manual-builder__fields" [formGroup]="exerciseForm">
+        <label class="manual-builder__exercise-name">
+          <span>Exercício</span>
+          <input formControlName="name" placeholder="Ex.: Supino reto" />
+        </label>
+        <label>
+          <span>Séries</span>
+          <input type="number" min="1" max="20" formControlName="sets" />
+        </label>
+        <label>
+          <span>Repetições</span>
+          <input type="number" min="1" max="100" formControlName="repetitions" />
+        </label>
+        <label>
+          <span>Descanso (s)</span>
+          <input type="number" min="0" max="300" step="15" formControlName="restSeconds" />
+        </label>
+        <button type="button" class="manual-builder__add" (click)="addExercise()">Adicionar exercício</button>
+      </fieldset>
+
+      @if (exerciseForm.controls.name.invalid && exerciseForm.controls.name.touched) {
+        <small class="manual-builder__error">Informe o nome do exercício.</small>
+      }
+      @if (exerciseError()) {
+        <p class="manual-builder__error" role="alert">{{ exerciseError() }}</p>
+      }
+
+      @if (exercises().length > 0) {
+        <ol class="manual-builder__exercise-list" aria-label="Exercícios desta ficha">
+          @for (exercise of exercises(); track exercise.id; let index = $index) {
+            <li>
+              <span class="manual-builder__number">{{ index + 1 }}</span>
+              <label>
+                <span class="visually-hidden">Nome do exercício {{ index + 1 }}</span>
+                <input [value]="exercise.name" maxlength="80" (input)="updateExercise(exercise.id, 'name', $event)" />
+              </label>
+              <label>
+                <span class="visually-hidden">Séries</span>
+                <input type="number" min="1" max="20" [value]="exercise.sets" (input)="updateExercise(exercise.id, 'sets', $event)" />
+              </label>
+              <span aria-hidden="true">×</span>
+              <label>
+                <span class="visually-hidden">Repetições</span>
+                <input type="number" min="1" max="100" [value]="exercise.repetitions" (input)="updateExercise(exercise.id, 'repetitions', $event)" />
+              </label>
+              <label class="manual-builder__rest-value">
+                <span class="visually-hidden">Descanso em segundos</span>
+                <input type="number" min="0" max="300" step="15" [value]="exercise.restSeconds" (input)="updateExercise(exercise.id, 'restSeconds', $event)" />
+              </label>
+              <button type="button" class="manual-builder__remove" [attr.aria-label]="'Remover ' + exercise.name" (click)="removeExercise(exercise.id)">×</button>
+            </li>
+          }
+        </ol>
+      }
+    </section>
+
+    <button type="button" class="manual-builder__save" (click)="saveRoutine()">Salvar ficha</button>
+  </div>
+</details>

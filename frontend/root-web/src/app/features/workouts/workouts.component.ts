@@ -11,10 +11,11 @@ import {
   ExperienceLevel,
 } from '../onboarding/models/onboarding.models';
 import { UserService } from '../../core/user/user.service';
+import { WorkoutManualBuilderComponent } from './components/workout-manual-builder/workout-manual-builder.component';
 
 @Component({
   selector: 'app-root-workouts',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, WorkoutManualBuilderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './workouts.component.html',
   styleUrl: './workouts.component.scss',
@@ -34,10 +35,6 @@ export class WorkoutsComponent {
   protected readonly sessionOptions: readonly (30 | 45 | 60)[] = [30, 45, 60];
   protected readonly activeWorkoutId = signal<string | null>(null);
   protected readonly completedExercises = signal<string[]>([]);
-  protected readonly form = this.fb.nonNullable.group({
-    name: ['', [Validators.required, Validators.maxLength(80)]],
-    exercises: ['', Validators.required],
-  });
   protected readonly planForm = this.fb.nonNullable.group({
     goal: [this.userService.profile()?.goal ?? 'general_health', Validators.required],
     daysPerWeek: [this.userService.profile()?.availableDaysPerWeek ?? 3, [Validators.required, Validators.min(1), Validators.max(7)]],
@@ -47,21 +44,6 @@ export class WorkoutsComponent {
   protected readonly activeWorkout = computed(
     () => this.routines().find((routine) => routine.id === this.activeWorkoutId()) ?? null,
   );
-
-  protected createWorkout(): void {
-    this.form.markAllAsTouched();
-    if (this.form.invalid) return;
-
-    const exercises = this.form.controls.exercises.value
-      .split('\n')
-      .map((exercise) => exercise.trim())
-      .filter(Boolean);
-    if (exercises.length === 0) return;
-
-    this.workouts.create(this.form.controls.name.value, exercises);
-    this.form.reset();
-    this.feedback.show('Ficha salva. Ela já está disponível em Fichas salvas.');
-  }
 
   protected selectGoal(goal: FitnessGoal): void {
     this.planForm.controls.goal.setValue(goal);

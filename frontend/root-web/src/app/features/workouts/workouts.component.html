@@ -167,34 +167,7 @@
         </div>
       </details>
 
-      <details class="workout-disclosure">
-        <summary>
-          <span class="workout-disclosure__icon" aria-hidden="true">＋</span>
-          <span class="workout-disclosure__text">
-            <strong>Criar ficha manualmente</strong>
-            <small>Adicione seu próprio treino</small>
-          </span>
-          <span class="workout-disclosure__chevron" aria-hidden="true"></span>
-        </summary>
-        <div class="workout-disclosure__content workout-form">
-          <form [formGroup]="form" (ngSubmit)="createWorkout()" novalidate>
-            <label for="workout-name">Nome da ficha</label>
-            <input id="workout-name" formControlName="name" placeholder="Ex.: Treino A — superiores" />
-            @if (form.controls.name.invalid && form.controls.name.touched) {
-              <small class="field-error">Informe um nome para a ficha.</small>
-            }
-
-            <label for="workout-exercises">Exercícios <span>um por linha; inclua séries e repetições</span></label>
-            <textarea
-              id="workout-exercises"
-              rows="4"
-              formControlName="exercises"
-              placeholder="Supino reto — 3×8&#10;Remada baixa — 3×10&#10;Desenvolvimento — 3×10"
-            ></textarea>
-            <button type="submit">Salvar ficha</button>
-          </form>
-        </div>
-      </details>
+      <app-workout-manual-builder />
     </section>
 
     <section class="workout-list" aria-labelledby="workout-list-title">
@@ -220,6 +193,9 @@
                   <span class="workout-disclosure__chevron" aria-hidden="true"></span>
                 </summary>
                 <ul>@for (exercise of routine.exercises; track exercise) { <li>{{ exercise }}</li> }</ul>
+                @if (routine.referenceImage) {
+                  <img class="workout-routine__image" [src]="routine.referenceImage" [alt]="'Foto de referência da ficha ' + routine.name" loading="lazy" />
+                }
               </details>
               <div class="workout-routine__actions">
                 <button type="button" (click)="startWorkout(routine)">Iniciar treino</button>
