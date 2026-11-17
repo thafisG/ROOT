@@ -3,10 +3,15 @@
     <h3 id="workout-import-title">{{ mode() === 'message' ? 'Cole a mensagem do professor' : 'Envie uma foto da ficha' }}</h3>
     <span>Opcional</span>
   </div>
-  <p class="workout-import__standard">
-    Padrão: <strong>Exercício — séries×repetições</strong>, um por linha. Exemplo: <em>Supino reto — 3×8</em>.
-    Confira o que for reconhecido antes de salvar.
-  </p>
+  @if (mode() === 'message') {
+    <p class="workout-import__standard">
+      Use uma linha por exercício: <strong>Supino reto — 3×8</strong>. Para separar fichas, inclua títulos como <strong>Treino A</strong> e <strong>Treino B</strong>. Confira o resultado antes de salvar.
+    </p>
+  } @else {
+    <p class="workout-import__standard">
+      Vou tentar ler exercícios e títulos como <strong>Treino A</strong> e <strong>Treino B</strong>. A leitura pode não identificar todos os grupos; você poderá organizar cada exercício antes de salvar.
+    </p>
+  }
   @if (mode() === 'message') {
     <label for="coach-message">Mensagem do professor</label>
     <textarea

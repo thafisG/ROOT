@@ -108,10 +108,18 @@ export class WorkoutImportComponent {
       .replace(/\r/g, '\n')
       .split(/[\n;]+/)
       .map((line) => line.replace(/^\s*(?:[-*•]|\d+[.)])\s*/, '').trim())
-      .filter((line) => line && !/^(treino|ficha|exercícios?)(\s+[a-z0-9]+)?\s*:?$/i.test(line));
+      .filter(Boolean);
     const exercises: WorkoutExerciseDraft[] = [];
+    let groupName = 'Treino A';
 
     for (const line of lines) {
+      const section = line.match(/^(?:(treino|ficha|grupo)\s+([a-z0-9]+)(?:\s*[-–—:]\s*.+)?|([A-D])\s*(?::|[-–—]\s*.+))$/i);
+      if (section) {
+        groupName = section[3] ? `Treino ${section[3].toUpperCase()}` : `${section[1][0].toUpperCase()}${section[1].slice(1).toLowerCase()} ${section[2].toUpperCase()}`;
+        continue;
+      }
+      if (/^(treino|ficha|grupo|exercícios?)(\s+[a-z0-9]+)?\s*:?$/i.test(line)) continue;
+
       const match = line.match(/^(.+?)(?:\s*[—–-]\s*|\s+)(\d{1,2})\s*(?:x|×|\*)\s*(\d{1,3})\b.*$/i);
       if (!match) continue;
       const name = match[1].trim().replace(/[.,:;]+$/, '');
@@ -125,6 +133,7 @@ export class WorkoutImportComponent {
         sets: Math.min(sets, 20),
         repetitions: Math.min(repetitions, 100),
         restSeconds: 60,
+        groupName,
       });
       if (exercises.length === 20) break;
     }

@@ -16,9 +16,6 @@ export class WorkoutManualBuilderComponent {
   private readonly workouts = inject(WorkoutService);
   private readonly feedback = inject(ActionFeedbackService);
 
-  protected readonly routineForm = this.fb.nonNullable.group({
-    name: ['', [Validators.required, Validators.maxLength(80)]],
-  });
   protected readonly exerciseForm = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(80)]],
     sets: [3, [Validators.required, Validators.min(1), Validators.max(20)]],
@@ -26,8 +23,9 @@ export class WorkoutManualBuilderComponent {
     restSeconds: [60, [Validators.required, Validators.min(0), Validators.max(300)]],
   });
   protected readonly exercises = signal<WorkoutExerciseDraft[]>([]);
+  protected readonly groupNames = signal<string[]>(['Treino A']);
+  protected readonly activeGroup = signal('Treino A');
   protected readonly selectedMode = signal<'message' | 'photo' | 'manual' | null>(null);
-  protected readonly referenceImage = signal<string | null>(null);
   protected readonly exerciseError = signal('');
   protected readonly progress = computed(() => Math.min(100, Math.round((this.exercises().length / 3) * 100)));
   protected readonly progressLabel = computed(() => {
@@ -38,8 +36,24 @@ export class WorkoutManualBuilderComponent {
   });
 
   protected selectMode(mode: 'message' | 'photo' | 'manual'): void {
+    const currentMode = this.selectedMode();
+    if (currentMode === mode) {
+      this.clearMode(mode);
+      this.selectedMode.set(null);
+      return;
+    }
+    if (currentMode) this.clearMode(currentMode);
     this.selectedMode.set(mode);
     this.exerciseError.set('');
+  }
+
+  private clearMode(mode: 'message' | 'photo' | 'manual'): void {
+    this.exercises.update((items) => items.filter((item) => item.sourceMode !== mode));
+    const usedGroups = new Set(this.exercises().map((item) => item.groupName ?? 'Treino A'));
+    this.groupNames.update((groups) => groups.filter((name) => name === 'Treino A' || usedGroups.has(name)));
+    if (!this.groupNames().includes(this.activeGroup())) this.activeGroup.set(this.groupNames()[0] ?? 'Treino A');
+    if (mode === 'manual') this.exerciseForm.reset({ name: '', sets: 3, repetitions: 10, restSeconds: 60 });
+    if (mode === 'photo') this.exerciseError.set('');
   }
 
   protected addExercise(): void {
@@ -53,7 +67,7 @@ export class WorkoutManualBuilderComponent {
 
     this.exercises.update((items) => [
       ...items,
-      { id: crypto.randomUUID(), ...this.exerciseForm.getRawValue() },
+      { id: crypto.randomUUID(), ...this.exerciseForm.getRawValue(), groupName: this.activeGroup(), sourceMode: 'manual' },
     ]);
     this.exerciseForm.controls.name.reset();
     this.exerciseForm.controls.name.markAsUntouched();
@@ -76,32 +90,73 @@ export class WorkoutManualBuilderComponent {
     this.exerciseError.set('');
   }
 
+  protected addGroup(): void {
+    const nextIndex = this.groupNames().length;
+    const suffix = String.fromCharCode(65 + Math.min(nextIndex, 25));
+    let name = `Treino ${suffix}`;
+    let version = 2;
+    while (this.groupNames().includes(name)) name = `Treino ${suffix} ${version++}`;
+    this.groupNames.update((groups) => [...groups, name]);
+    this.activeGroup.set(name);
+  }
+
+  protected renameGroup(previousName: string, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const newName = input.value.trim().slice(0, 40);
+    if (!newName || newName === previousName || this.groupNames().includes(newName)) return;
+    this.groupNames.update((groups) => groups.map((name) => name === previousName ? newName : name));
+    this.exercises.update((items) => items.map((item) => item.groupName === previousName ? { ...item, groupName: newName } : item));
+    if (this.activeGroup() === previousName) this.activeGroup.set(newName);
+  }
+
+  protected moveExercise(id: string, event: Event): void {
+    const groupName = (event.target as HTMLSelectElement).value;
+    this.exercises.update((items) => items.map((item) => item.id === id ? { ...item, groupName } : item));
+  }
+
+  protected exercisesInGroup(groupName: string): WorkoutExerciseDraft[] {
+    return this.exercises().filter((item) => (item.groupName ?? 'Treino A') === groupName);
+  }
+
+  protected separateExercise(item: WorkoutExerciseDraft): void {
+    this.addGroup();
+    const newGroup = this.groupNames()[this.groupNames().length - 1];
+    this.exercises.update((items) => items.map((exercise) => exercise.id === item.id ? { ...exercise, groupName: newGroup } : exercise));
+  }
+
   protected addImportedExercises(imported: WorkoutExerciseDraft[]): void {
     if (!imported.length) return;
     const remaining = Math.max(0, 20 - this.exercises().length);
-    const added = imported.slice(0, remaining);
+    const sourceMode: 'photo' | 'message' = this.selectedMode() === 'photo' ? 'photo' : 'message';
+    const added = imported.slice(0, remaining).map((item) => ({ ...item, sourceMode }));
+    const groups = [...new Set(added.map((item) => item.groupName?.trim()).filter((name): name is string => !!name))];
+    this.groupNames.update((current) => [...current, ...groups.filter((name) => !current.includes(name))]);
     this.exercises.update((items) => [...items, ...added]);
+    if (groups.length) this.activeGroup.set(groups[0]);
     if (added.length < imported.length) this.exerciseError.set('A ficha aceita até 20 exercícios; alguns itens não foram adicionados.');
     this.feedback.show(`${added.length} exercícios importados. Confira e ajuste a ficha.`);
   }
 
-  protected saveRoutine(): void {
-    this.routineForm.markAllAsTouched();
+  protected saveRoutines(): void {
     this.exerciseError.set('');
-    if (this.routineForm.invalid) return;
     if (!this.exercises().length) {
-      this.exerciseError.set('Adicione pelo menos um exercício antes de salvar.');
+      this.exerciseError.set('Adicione pelo menos um exercício antes de salvar as fichas.');
       return;
     }
 
-    const exerciseList = this.exercises().map((item) =>
-      `${item.name.trim()} — ${item.sets}×${item.repetitions}${item.restSeconds ? ` — descanso ${item.restSeconds}s` : ''}`,
-    );
-    this.workouts.create(this.routineForm.controls.name.value, exerciseList, this.referenceImage());
-    this.routineForm.reset();
+    const groupsWithExercises = this.groupNames()
+      .map((name) => ({ name, exercises: this.exercises().filter((item) => item.groupName === name) }))
+      .filter((group) => group.exercises.length > 0);
+    for (const group of groupsWithExercises) {
+      const exerciseList = group.exercises.map((item) =>
+        `${item.name.trim()} — ${item.sets}×${item.repetitions}${item.restSeconds ? ` — descanso ${item.restSeconds}s` : ''}`,
+      );
+      this.workouts.create(group.name, exerciseList);
+    }
     this.exerciseForm.reset({ name: '', sets: 3, repetitions: 10, restSeconds: 60 });
     this.exercises.set([]);
-    this.referenceImage.set(null);
-    this.feedback.show('Ficha salva. Ela já está disponível em Fichas salvas.');
+    this.groupNames.set(['Treino A']);
+    this.activeGroup.set('Treino A');
+    this.feedback.show(`${groupsWithExercises.length} ${groupsWithExercises.length === 1 ? 'ficha salva' : 'fichas salvas'}. Já estão disponíveis em Fichas salvas.`);
   }
 }

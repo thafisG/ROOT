@@ -45,11 +45,15 @@
         @if (mode === 'message' || mode === 'photo') {
           <app-workout-import
             [mode]="mode"
-            (exercisesImported)="addImportedExercises($event)"
-            (referenceImageChanged)="referenceImage.set($event)"
+              (exercisesImported)="addImportedExercises($event)"
           />
         } @else {
           <p class="manual-builder__helper">Não precisa preencher tudo de uma vez. Comece pelo nome e ajuste séries e repetições se quiser.</p>
+          <label class="manual-builder__group-picker">Adicionar à ficha
+            <select [value]="activeGroup()" (change)="activeGroup.set($any($event.target).value)">
+              @for (groupName of groupNames(); track groupName) { <option [value]="groupName">{{ groupName }}</option> }
+            </select>
+          </label>
           <fieldset class="manual-builder__fields" [formGroup]="exerciseForm">
             <label class="manual-builder__exercise-name">
               <span>Nome do exercício</span>
@@ -96,31 +100,45 @@
           <div class="manual-builder__progress-copy"><span>{{ progressLabel() }}</span><strong>{{ progress() }}%</strong></div>
           <progress [value]="progress()" max="100">{{ progress() }}%</progress>
         </div>
-        <ol class="manual-builder__exercise-list" aria-label="Exercícios desta ficha">
-          @for (exercise of exercises(); track exercise.id; let index = $index) {
-            <li>
-              <span class="manual-builder__number">{{ index + 1 }}</span>
-              <label><span class="visually-hidden">Nome do exercício {{ index + 1 }}</span><input [value]="exercise.name" maxlength="80" (input)="updateExercise(exercise.id, 'name', $event)" /></label>
-              <label><span class="visually-hidden">Séries</span><input type="number" min="1" max="20" [value]="exercise.sets" (input)="updateExercise(exercise.id, 'sets', $event)" /></label>
-              <span aria-hidden="true">×</span>
-              <label><span class="visually-hidden">Repetições</span><input type="number" min="1" max="100" [value]="exercise.repetitions" (input)="updateExercise(exercise.id, 'repetitions', $event)" /></label>
-              <label class="manual-builder__rest-value"><span class="visually-hidden">Descanso em segundos</span><input type="number" min="0" max="300" step="15" [value]="exercise.restSeconds" (input)="updateExercise(exercise.id, 'restSeconds', $event)" /></label>
-              <button type="button" class="manual-builder__remove" [attr.aria-label]="'Remover ' + exercise.name" (click)="removeExercise(exercise.id)">×</button>
-            </li>
+        <div class="manual-builder__groups">
+          @for (groupName of groupNames(); track groupName) {
+            <section class="manual-builder__group">
+              <div class="manual-builder__group-heading">
+                <label><span class="visually-hidden">Nome da ficha</span><input [value]="groupName" maxlength="40" (change)="renameGroup(groupName, $event)" /></label>
+                <span>{{ exercisesInGroup(groupName).length }} exercícios</span>
+              </div>
+              @if (exercisesInGroup(groupName).length) {
+                <ol class="manual-builder__exercise-list" [attr.aria-label]="'Exercícios de ' + groupName">
+                  @for (exercise of exercisesInGroup(groupName); track exercise.id; let index = $index) {
+                    <li>
+                      <span class="manual-builder__number">{{ index + 1 }}</span>
+                      <label><span class="visually-hidden">Nome do exercício {{ index + 1 }}</span><input [value]="exercise.name" maxlength="80" (input)="updateExercise(exercise.id, 'name', $event)" /></label>
+                      <label><span class="visually-hidden">Séries</span><input type="number" min="1" max="20" [value]="exercise.sets" (input)="updateExercise(exercise.id, 'sets', $event)" /></label>
+                      <span aria-hidden="true">×</span>
+                      <label><span class="visually-hidden">Repetições</span><input type="number" min="1" max="100" [value]="exercise.repetitions" (input)="updateExercise(exercise.id, 'repetitions', $event)" /></label>
+                      <label class="manual-builder__rest-value"><span class="visually-hidden">Descanso em segundos</span><input type="number" min="0" max="300" step="15" [value]="exercise.restSeconds" (input)="updateExercise(exercise.id, 'restSeconds', $event)" /></label>
+                      <select class="manual-builder__move" [value]="exercise.groupName ?? 'Treino A'" aria-label="Mover exercício para outra ficha" (change)="moveExercise(exercise.id, $event)">
+                        @for (option of groupNames(); track option) { <option [value]="option">{{ option }}</option> }
+                      </select>
+                      @if (exercisesInGroup(groupName).length > 1) {
+                        <button type="button" class="manual-builder__separate" (click)="separateExercise(exercise)">Separar</button>
+                      }
+                      <button type="button" class="manual-builder__remove" [attr.aria-label]="'Remover ' + exercise.name" (click)="removeExercise(exercise.id)">×</button>
+                    </li>
+                  }
+                </ol>
+              } @else {
+                <p class="manual-builder__empty-group">Ainda sem exercícios. Selecione este grupo ao adicionar ou mova um exercício para cá.</p>
+              }
+            </section>
           }
-        </ol>
+        </div>
+        <button type="button" class="manual-builder__add-group" (click)="addGroup()">+ Criar outra ficha</button>
       </section>
     }
 
     @if (exercises().length > 0) {
-      <form class="manual-builder__routine" [formGroup]="routineForm" (ngSubmit)="saveRoutine()" novalidate>
-        <label for="manual-routine-name">Dê um nome à ficha</label>
-        <input id="manual-routine-name" formControlName="name" placeholder="Ex.: Treino A — superiores" />
-        @if (routineForm.controls.name.invalid && routineForm.controls.name.touched) {
-          <small class="manual-builder__error">Informe um nome para salvar.</small>
-        }
-        <button type="submit" class="manual-builder__save">Salvar minha ficha</button>
-      </form>
+      <button type="button" class="manual-builder__save" (click)="saveRoutines()">Salvar {{ groupNames().length > 1 ? 'fichas' : 'ficha' }}</button>
     }
   </div>
 </details>

@@ -16,6 +16,8 @@ export interface WorkoutExerciseDraft {
   sets: number;
   repetitions: number;
   restSeconds: number;
+  groupName?: string;
+  sourceMode?: 'message' | 'photo' | 'manual';
 }
 
 const STORAGE_KEY = 'workout-routines';
