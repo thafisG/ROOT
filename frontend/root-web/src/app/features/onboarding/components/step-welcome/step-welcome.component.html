@@ -29,4 +29,18 @@
       <span class="field__error">Informe um e-mail válido.</span>
     }
   </label>
+
+  <label class="field">
+    <span class="field__label">Senha</span>
+    <input
+      class="field__input"
+      type="password"
+      formControlName="password"
+      placeholder="Mínimo de 8 caracteres"
+      autocomplete="new-password"
+    />
+    @if (form().get('password')?.invalid && form().get('password')?.touched) {
+      <span class="field__error">Crie uma senha com pelo menos 8 caracteres.</span>
+    }
+  </label>
 </div>

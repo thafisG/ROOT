@@ -2,24 +2,26 @@
   <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()" novalidate>
     <p class="auth-card__eyebrow">ROOT · Bem-vindo de volta</p>
     <h1>Entrar</h1>
-    <p class="auth-card__description">Use o e-mail associado ao seu perfil neste dispositivo.</p>
+    <p class="auth-card__description">Entre com seu e-mail e senha para acessar sua conta em qualquer dispositivo.</p>
+    @if (!isSupabaseConfigured) {
+      <p class="auth-card__footnote">Configure a chave publishable do Supabase para habilitar o acesso.</p>
+    }
 
     <label for="login-email">E-mail</label>
     <input id="login-email" type="email" autocomplete="email" formControlName="email" />
     @if (form.controls.email.invalid && form.controls.email.touched) {
       <span class="auth-card__error">Informe um e-mail válido.</span>
     }
+    <label for="login-password">Senha</label>
+    <input id="login-password" type="password" autocomplete="current-password" formControlName="password" />
+    @if (form.controls.password.invalid && form.controls.password.touched) {
+      <span class="auth-card__error">Informe sua senha.</span>
+    }
     @if (error()) {
       <p class="auth-card__error" role="alert">{{ error() }}</p>
     }
 
     <button type="submit">Continuar</button>
-    @if (!hasLocalProfile()) {
-      <p class="auth-card__footnote">
-        Este dispositivo ainda não tem um perfil ROOT.
-        <a routerLink="/onboarding">Criar perfil</a>
-      </p>
-    }
-    <p class="auth-card__footnote">Seu perfil fica salvo neste dispositivo. Sincronização entre aparelhos ainda não está disponível.</p>
+    <p class="auth-card__footnote">Ainda não tem conta? <a routerLink="/onboarding">Criar perfil</a></p>
   </form>
 </main>

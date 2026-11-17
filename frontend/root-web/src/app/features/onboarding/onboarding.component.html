@@ -32,11 +32,15 @@
           @if (currentStep() > 0) {
             <button type="button" class="onboarding__back" (click)="back()">Voltar</button>
           }
-          <button type="submit" class="onboarding__next">
-            {{ currentStep() === lastStepIndex ? 'Começar a usar o ROOT' : 'Continuar' }}
+          <button type="submit" class="onboarding__next" [disabled]="submitting()">
+            {{ submitting() ? 'Criando sua conta…' : currentStep() === lastStepIndex ? 'Começar a usar o ROOT' : 'Continuar' }}
           </button>
         </div>
       </form>
+      @if (error()) {
+        <p class="onboarding__error" role="alert">{{ error() }}</p>
+      }
+      <p class="onboarding__login">Já tem uma conta? <a routerLink="/login">Entrar</a></p>
     </div>
   </div>
 </div>
