@@ -14,7 +14,7 @@ Este documento traduz a Visão de Produto (Fase 1) e o Design System (Fase 2) em
 | Plataforma | Web responsivo + PWA instalável (mobile-first) |
 | Persistência v1 | localStorage, com camada de abstração para API futura |
 | Público-alvo | Pessoas que já praticam alguma atividade física, mas de forma desequilibrada ou inconsistente (ver Personas, Fase 1) |
-| Fora de escopo v1 | Backend real, autenticação multi-dispositivo, integração com wearables, IA generativa |
+| Fora de escopo v1 | Backend real, autenticação multi-dispositivo, profissionais verificados/agendamento, integração com wearables, IA generativa |
 
 ---
 
@@ -23,8 +23,9 @@ Este documento traduz a Visão de Produto (Fase 1) e o Design System (Fase 2) em
 ### 2.1 Objetivos de Produto
 
 1. Provar, de ponta a ponta, que um sistema de recomendação simples (baseado em regras) consegue gerar sugestões relevantes e explicáveis a partir de dados comportamentais locais.
-2. Entregar uma experiência mobile-first coesa, acessível (WCAG AA) e visualmente distinta do padrão "fitness app".
+2. Entregar uma experiência mobile-first para hábitos e treino de academia, acessível (WCAG AA), conectada a bem-estar e nutrição.
 3. Demonstrar uma arquitetura Angular por features, pronta para escalar para um backend real sem refatoração estrutural.
+4. Reconhecer consistência com progressão leve, sem punir descanso ou perda de sequência.
 
 ### 2.2 Métricas de Sucesso (mesmo em contexto de portfólio, tratadas como se fossem produção)
 
@@ -65,8 +66,8 @@ Cada feature abaixo corresponde a um módulo da arquitetura Angular (Fase 1, se�
 - RF-07 — Exibir saudação contextual (nome + período do dia).
 - RF-08 — Exibir streak atual (dias consecutivos com pelo menos um registro).
 - RF-09 — Exibir a Recommendation Card em posição de destaque (topo, acima da dobra em mobile).
-- RF-10 — Exibir treino do dia (se houver um planejado) separadamente da recomendação.
-- RF-11 — Exibir gráfico semanal de atividade por categoria (ver Chart component, Fase 3).
+- RF-10 — Oferecer acesso às fichas de treino sem apresentar como agendado um treino que não foi planejado.
+- RF-11 — Exibir a contagem real de atividades concluídas por categoria nos últimos 7 dias.
 - RF-12 — Exibir métricas rápidas: calorias, tempo ativo, hidratação, sono — cada uma como Metric Card navegável para o detalhe.
 - RF-13 — Exibir até 3 objetivos em andamento com barra de progresso.
 - RF-14 — Exibir lista de atividade recente (últimos 5 registros).
@@ -79,45 +80,63 @@ Cada feature abaixo corresponde a um módulo da arquitetura Angular (Fase 1, se�
 ### 3.3 Workouts
 
 **Requisitos funcionais:**
-- RF-16 — Listar biblioteca de treinos filtrável por categoria.
-- RF-17 — Exibir detalhe do treino (exercícios, duração estimada, nível).
-- RF-18 — Permitir execução guiada do treino (passo a passo, com timer quando aplicável).
-- RF-19 — Registrar conclusão do treino, alimentando o InteractionService.
-- RF-20 — Exibir histórico de treinos realizados.
+- RF-16 — A pessoa deve poder criar fichas de academia com nome e lista de exercícios.
+- RF-17 — A pessoa deve poder iniciar uma ficha, marcar cada exercício e concluir a sessão.
+- RF-18 — A conclusão deve ser registrada como atividade de força, alimentar o histórico e conceder XP.
+- RF-19 — As fichas devem persistir localmente e ser removidas pela ação de apagar dados.
 
-### 3.4 Goals
+### 3.4 Nutrition (hidratação e refeições)
 
-**Requisitos funcionais:**
-- RF-21 — Criar objetivo com categoria, meta (frequência-alvo) e prazo opcional.
-- RF-22 — Calcular e exibir progresso do objetivo em tempo real a partir dos registros existentes.
-- RF-23 — Objetivos ativos devem influenciar o cálculo de score do Recommendation Engine a partir da estratégia v3 (frequência + recência + objetivo).
+- RF-20 — A pessoa deve poder registrar copos de água e refeições com poucas ações.
+- RF-21 — Registros devem alimentar o histórico e a recomendação sem impor contagem de calorias.
+- RF-22 — O produto deve diferenciar registro de hábitos de orientação nutricional profissional.
 
-### 3.5 Nutrition (hidratação e refeições)
+### 3.5 Progressão de hábitos
 
-**Requisitos funcionais:**
-- RF-24 — Registro rápido de hidratação (incremento por toque, sem formulário longo).
-- RF-25 — Registro simplificado de refeições (categoria + horário, sem contagem calórica detalhada na v1).
+- RF-23 — Cada atividade concluída deve gerar 10 XP e cada 100 XP deve avançar um nível.
+- RF-24 — XP deve persistir localmente e ser removido junto com o histórico.
+- RF-25 — Descanso, dispensa de recomendação e sequência interrompida não devem retirar pontos.
 
-### 3.6 Sleep
+### 3.6 Conta e privacidade
 
-**Requisitos funcionais:**
-- RF-26 — Registro de horário de início/fim de sono (manual na v1).
-- RF-27 — Exibir tendência de sono dos últimos 7 dias.
+- RF-26 — O cadastro deve solicitar nome, e-mail, objetivo, experiência e disponibilidade semanal; não deve solicitar idade, altura ou peso enquanto esses dados não tiverem uso definido.
+- RF-27 — Um perfil local existente deve permitir entrar novamente pelo e-mail e sair sem apagar dados.
+- RF-28 — Sem perfil local, a entrada deve encaminhar ao cadastro.
+- RF-29 — A pessoa deve poder apagar perfil, fichas e histórico do dispositivo.
+- RF-30 — A interface deve explicar que o login local não sincroniza dados entre aparelhos.
 
-### 3.7 Analytics
+### 3.7 Acompanhamento profissional
 
-**Requisitos funcionais:**
-- RF-28 — Exibir visão de equilíbrio entre categorias (ver Fase 1, seção 6.2 do Dashboard priorizado) — não apenas volume, mas distribuição.
-- RF-29 — Exibir tendências de frequência e recência por categoria.
-- RF-30 — Gerar relatório semanal/mensal navegável.
+- RF-31 — A v1 deve apresentar treino e registros de nutrição integrados.
+- RF-32 — Conexão com personal trainer ou nutricionista deve ser identificada como futura até que verificação, comunicação e agendamento reais estejam disponíveis.
 
-### 3.8 Profile & Settings
+### 3.8 Goals
 
 **Requisitos funcionais:**
-- RF-31 — Editar dados pessoais e preferências definidos no onboarding.
-- RF-32 — Gerenciar notificações (tipos, horários).
-- RF-33 — Alternar aparência (toggle preparado para dark mode, mesmo sem tema escuro implementado na v1 — ver nota abaixo).
-- RF-34 — Exportar/limpar dados locais (transparência de dados, já que a persistência v1 é local).
+- RF-33 — Criar objetivo com categoria, meta (frequência-alvo) e prazo opcional.
+- RF-34 — Calcular e exibir progresso do objetivo em tempo real a partir dos registros existentes.
+- RF-35 — Objetivos ativos devem influenciar o cálculo de score do Recommendation Engine a partir da estratégia v3 (frequência + recência + objetivo).
+
+### 3.9 Sleep
+
+**Requisitos funcionais:**
+- RF-36 — Registro de horário de início/fim de sono (manual na v1).
+- RF-37 — Exibir tendência de sono dos últimos 7 dias.
+
+### 3.10 Analytics
+
+**Requisitos funcionais:**
+- RF-38 — Exibir visão de equilíbrio entre categorias — não apenas volume, mas distribuição.
+- RF-39 — Exibir tendências de frequência e recência por categoria.
+- RF-40 — Gerar relatório semanal/mensal navegável.
+
+### 3.11 Profile & Settings
+
+**Requisitos funcionais:**
+- RF-41 — Editar dados pessoais e preferências definidos no onboarding.
+- RF-42 — Gerenciar notificações (tipos, horários).
+- RF-43 — Alternar aparência (toggle preparado para dark mode, mesmo sem tema escuro implementado na v1).
+- RF-44 — Exportar/limpar dados locais (transparência de dados, já que a persistência v1 é local).
 
 ---
 
@@ -131,7 +150,7 @@ Cada feature abaixo corresponde a um módulo da arquitetura Angular (Fase 1, se�
 | **PWA** | Instalável, funcional offline para leitura de dados já sincronizados (localStorage), com Service Worker para cache de assets estáticos. |
 | **Persistência** | Toda leitura/escrita de dados deve passar por uma camada de abstração (`StorageService`) que hoje implementa localStorage e amanhã pode implementar REST/Firebase/Supabase sem alterar consumidores. |
 | **Escalabilidade de código** | Arquitetura por features (Fase 1); nenhuma lógica de negócio no `shared`; Recommendation Engine isolado em serviços próprios e versionável. |
-| **Segurança/Privacidade** | Dados sensíveis (peso, sono, hidratação) tratados como locais por padrão; nenhuma telemetria implícita — requisito ligado ao RF-34 (exportar/limpar dados). |
+| **Segurança/Privacidade** | Dados do perfil e hábitos tratados como locais por padrão; nenhuma telemetria implícita — requisito ligado ao RF-29 (apagar dados). |
 | **Internacionalização** | Estrutura de textos preparada para i18n (strings centralizadas), mesmo que a v1 seja mono-idioma (pt-BR). |
 
 ---
@@ -157,7 +176,7 @@ Explicitamente **não** fazem parte da v1, para manter o foco no diferencial (Re
 - Contagem calórica detalhada de refeições
 - Recomendações baseadas em modelo de ML treinado (arquitetura preparada, mas v1 usa regras — ver Fase 1, versionamento v1-v5)
 - Funcionalidades sociais (compartilhamento, comparação entre usuários)
-- Notificações push reais (a UI de configuração existe — RF-32 — mas o envio efetivo é simulado/local)
+- Notificações push reais (a UI de configuração existe — RF-42 — mas o envio efetivo é simulado/local)
 
 ---
 

@@ -48,7 +48,7 @@ export const GOAL_OPTIONS: GoalOption[] = [
     value: 'mobility',
     label: 'Mobilidade',
     description: 'Ganhar flexibilidade e evitar lesões',
-    icon: 'leaf',
+    icon: 'activity',
   },
   {
     value: 'wellbeing',

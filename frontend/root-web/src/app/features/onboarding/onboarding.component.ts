@@ -8,7 +8,9 @@ import { StepGoalComponent } from './components/step-goal/step-goal.component';
 import { StepRoutineComponent } from './components/step-routine/step-routine.component';
 import { StepSummaryComponent } from './components/step-summary/step-summary.component';
 import { UserService } from '../../core/user/user.service';
+import { InteractionService } from '../../core/interaction/interaction.service';
 import { ONBOARDING_STEP_LABELS, UserProfile } from './models/onboarding.models';
+import { WorkoutService } from '../workouts/workout.service';
 
 const STEP_FIELDS: string[][] = [
   ['name', 'email'],
@@ -35,6 +37,8 @@ const STEP_FIELDS: string[][] = [
 export class OnboardingComponent {
   private readonly fb = inject(FormBuilder);
   private readonly userService = inject(UserService);
+  private readonly interactionService = inject(InteractionService);
+  private readonly workoutService = inject(WorkoutService);
   private readonly router = inject(Router);
 
   protected readonly stepLabels = ONBOARDING_STEP_LABELS;
@@ -47,10 +51,21 @@ export class OnboardingComponent {
     goal: ['', Validators.required],
     experienceLevel: ['', Validators.required],
     availableDaysPerWeek: [3, [Validators.required, Validators.min(1), Validators.max(7)]],
+    confirmReplace: [false],
   });
 
+  protected get replacesExistingProfile(): boolean {
+    const existingEmail = this.userService.profile()?.email.trim().toLocaleLowerCase();
+    const newEmail = (this.form.controls.email.value ?? '').trim().toLocaleLowerCase();
+    return !!existingEmail && !!newEmail && existingEmail !== newEmail;
+  }
+
   protected next(): void {
-    const fields = STEP_FIELDS[this.currentStep()];
+    const fields = [...STEP_FIELDS[this.currentStep()]];
+    if (this.currentStep() === this.lastStepIndex && this.replacesExistingProfile) {
+      this.form.controls.confirmReplace.setValidators(Validators.requiredTrue);
+      fields.push('confirmReplace');
+    }
     fields.forEach((field) => this.form.get(field)?.markAsTouched());
 
     const isStepValid = fields.every((field) => this.form.get(field)?.valid);
@@ -78,6 +93,11 @@ export class OnboardingComponent {
       availableDaysPerWeek: value.availableDaysPerWeek!,
       createdAt: new Date().toISOString(),
     };
+
+    if (this.replacesExistingProfile) {
+      this.interactionService.clearHistory();
+      this.workoutService.clearAll();
+    }
 
     this.userService.saveProfile(profile);
     this.router.navigateByUrl('/dashboard', { replaceUrl: true });

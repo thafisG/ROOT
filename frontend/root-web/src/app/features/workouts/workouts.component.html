@@ -1,0 +1,76 @@
+<main class="workouts-page">
+  <header class="workouts-page__header">
+    <p class="workouts-page__eyebrow">Treino de academia</p>
+    <h1>Seus treinos</h1>
+    <p>Monte uma ficha com seus exercícios e marque cada etapa enquanto treina.</p>
+  </header>
+
+  <section class="workout-form" aria-labelledby="workout-form-title">
+    <h2 id="workout-form-title">Criar uma ficha</h2>
+    <form [formGroup]="form" (ngSubmit)="createWorkout()" novalidate>
+      <label for="workout-name">Nome da ficha</label>
+      <input id="workout-name" formControlName="name" placeholder="Ex.: Treino A — superiores" />
+      @if (form.controls.name.invalid && form.controls.name.touched) {
+        <small>Informe um nome para a ficha.</small>
+      }
+
+      <label for="workout-exercises">Exercícios (um por linha)</label>
+      <textarea
+        id="workout-exercises"
+        rows="5"
+        formControlName="exercises"
+        placeholder="Supino reto&#10;Remada baixa&#10;Desenvolvimento"
+      ></textarea>
+      <button type="submit">Salvar ficha</button>
+    </form>
+  </section>
+
+  @if (activeWorkout(); as active) {
+    <section class="workout-session" aria-labelledby="workout-session-title">
+      <h2 id="workout-session-title">{{ active.name }}</h2>
+      <p>Marque os exercícios que você concluiu.</p>
+      <ul>
+        @for (exercise of active.exercises; track exercise) {
+          <li>
+            <label>
+              <input
+                type="checkbox"
+                [checked]="completedExercises().includes(exercise)"
+                (change)="toggleExercise(exercise)"
+              />
+              {{ exercise }}
+            </label>
+          </li>
+        }
+      </ul>
+      <button
+        type="button"
+        [disabled]="completedExercises().length !== active.exercises.length"
+        (click)="finishWorkout()"
+      >
+        Finalizar e registrar treino
+      </button>
+    </section>
+  } @else {
+    <section class="workout-list" aria-labelledby="workout-list-title">
+      <h2 id="workout-list-title">Fichas salvas</h2>
+      @if (routines().length === 0) {
+        <p class="workout-list__empty">Crie sua primeira ficha para começar a treinar pelo ROOT.</p>
+      } @else {
+        @for (routine of routines(); track routine.id) {
+          <article class="workout-routine">
+            <div>
+              <h3>{{ routine.name }}</h3>
+              <p>{{ routine.exercises.length }} exercícios</p>
+            </div>
+            <button type="button" (click)="startWorkout(routine)">Iniciar treino</button>
+            <details>
+              <summary>Ver exercícios</summary>
+              <ul>@for (exercise of routine.exercises; track exercise) { <li>{{ exercise }}</li> }</ul>
+            </details>
+          </article>
+        }
+      }
+    </section>
+  }
+</main>

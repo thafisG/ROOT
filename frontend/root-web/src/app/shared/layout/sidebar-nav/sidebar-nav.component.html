@@ -1,5 +1,5 @@
 <div class="sidebar__brand">
-  <img src="logo-root.2.1.png" alt="ROOT" width="20" height="20">
+  <app-root-icon name="dumbbell" [size]="20" />
   <span>ROOT</span>
 </div>
 
@@ -10,6 +10,7 @@
       [class.sidebar__link--primary]="item.isPrimary"
       [routerLink]="item.route"
       routerLinkActive="sidebar__link--active"
+      ariaCurrentWhenActive="page"
     >
       <app-root-icon [name]="item.icon" [size]="20" />
       <span>{{ item.label }}</span>

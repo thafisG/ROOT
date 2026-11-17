@@ -88,6 +88,11 @@
   cursor: pointer;
 }
 
+.profile-card a {
+  color: var(--color-primary-700);
+  font: 500 0.875rem var(--font-body);
+}
+
 .profile-page__danger {
   border-color: var(--color-error);
   color: var(--color-error);

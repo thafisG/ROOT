@@ -56,7 +56,7 @@ export interface NavItem {
 
 export const CATEGORIES: Record<HabitCategoryId, CategoryInfo> = {
   strength: { id: 'strength', label: 'Força', icon: 'dumbbell', colorVar: '--color-cat-strength' },
-  mobility: { id: 'mobility', label: 'Mobilidade', icon: 'leaf', colorVar: '--color-cat-mobility' },
+  mobility: { id: 'mobility', label: 'Mobilidade', icon: 'activity', colorVar: '--color-cat-mobility' },
   hydration: {
     id: 'hydration',
     label: 'Hidratação',
@@ -77,7 +77,7 @@ export const PRIMARY_NAV_ITEMS: NavItem[] = [
   { label: 'Início', icon: 'home', route: '/dashboard' },
   { label: 'Treinos', icon: 'dumbbell', route: '/treinos' },
   { label: 'Recomendações', icon: 'sparkles', route: '/recomendacoes', isPrimary: true },
-  { label: 'Analytics', icon: 'chart', route: '/analytics' },
+  { label: 'Nutrição', icon: 'apple', route: '/nutricao' },
   { label: 'Perfil', icon: 'user', route: '/perfil' },
 ];
 export type InteractionType =
@@ -88,4 +88,5 @@ export interface InteractionEvent {
   type: InteractionType;
   category: HabitCategoryId;
   createdAt: string;
+  details?: string;
 }

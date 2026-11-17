@@ -1,0 +1,53 @@
+<main class="nutrition-page">
+  <header class="nutrition-page__header">
+    <p class="nutrition-page__eyebrow">Alimentação e hidratação</p>
+    <h1>Nutrição</h1>
+    <p>Registre hábitos simples para enxergar sua rotina alimentar com mais clareza.</p>
+  </header>
+
+  <section class="nutrition-card" aria-labelledby="hydration-title">
+    <div>
+      <h2 id="hydration-title">Hidratação</h2>
+      <p>{{ waterGlassesToday() }} copos registrados hoje</p>
+    </div>
+    <button type="button" (click)="logWater()">Registrar um copo de água</button>
+  </section>
+
+  <section class="nutrition-card" aria-labelledby="meal-title">
+    <h2 id="meal-title">Registrar refeição</h2>
+    <form [formGroup]="mealForm" (ngSubmit)="logMeal()" novalidate>
+      <label for="meal-description">O que você comeu?</label>
+      <input
+        id="meal-description"
+        formControlName="meal"
+        maxlength="120"
+        placeholder="Ex.: almoço — arroz, feijão e legumes"
+      />
+      @if (mealForm.controls.meal.invalid && mealForm.controls.meal.touched) {
+        <small>Descreva sua refeição para registrá-la.</small>
+      }
+      <button type="submit">Salvar refeição</button>
+    </form>
+    @if (saved()) {
+      <p class="nutrition-card__success" role="status">Refeição registrada.</p>
+    }
+  </section>
+
+  <section class="nutrition-card" aria-labelledby="nutrition-history-title">
+    <h2 id="nutrition-history-title">Registros recentes</h2>
+    @if (nutritionEntries().length === 0) {
+      <p class="nutrition-card__empty">Seus registros de refeições e hidratação aparecerão aqui.</p>
+    } @else {
+      <ul>
+        @for (entry of nutritionEntries().slice(0, 10); track entry.id) {
+          <li>
+            <span>{{ entry.details }}</span>
+            <time [attr.datetime]="entry.createdAt">{{ formatDate(entry.createdAt) }}</time>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+  <p class="nutrition-page__note">O ROOT ajuda a acompanhar hábitos. Orientações nutricionais personalizadas devem ser feitas com um profissional habilitado.</p>
+</main>

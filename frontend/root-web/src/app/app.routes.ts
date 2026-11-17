@@ -30,10 +30,17 @@ export const routes: Routes = [
       {
         path: 'treinos',
         loadComponent: () =>
-          import('./shared/ui/placeholder-page/placeholder-page.component').then(
-            (m) => m.PlaceholderPageComponent,
-          ),
-        data: { title: 'Treinos', description: 'A biblioteca de treinos chega na próxima fase.' },
+          import('./features/workouts/workouts.component').then((m) => m.WorkoutsComponent),
+      },
+      {
+        path: 'nutricao',
+        loadComponent: () =>
+          import('./features/nutrition/nutrition.component').then((m) => m.NutritionComponent),
+      },
+      {
+        path: 'acompanhamento',
+        loadComponent: () =>
+          import('./features/coaching/coaching.component').then((m) => m.CoachingComponent),
       },
       {
         path: 'recomendacoes',

@@ -39,11 +39,8 @@
   width: 340px;
   height: 340px;
   opacity: 0.32;
-  filter: blur(1px);
-
-  path {
-    fill: currentColor;
-  }
+  border: 1px solid currentColor;
+  border-radius: 50%;
 }
 
 .hero__blob--a {

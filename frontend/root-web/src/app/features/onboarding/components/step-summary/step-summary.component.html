@@ -18,4 +18,17 @@
       <dd>{{ availableDaysPerWeek() }}</dd>
     </div>
   </dl>
+
+  @if (replacingProfile()) {
+    <div [formGroup]="form()" class="summary__replacement">
+      <p>Este dispositivo já tem outro perfil. Ao continuar, o perfil atual, as fichas de treino e o histórico local serão apagados.</p>
+      <label>
+        <input type="checkbox" formControlName="confirmReplace" />
+        Entendo e quero criar este novo perfil neste dispositivo.
+      </label>
+      @if (form().get('confirmReplace')?.invalid && form().get('confirmReplace')?.touched) {
+        <span>Confirme para substituir o perfil atual.</span>
+      }
+    </div>
+  }
 </div>

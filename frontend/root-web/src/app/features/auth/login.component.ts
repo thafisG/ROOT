@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../core/user/user.service';
@@ -10,7 +10,7 @@ import { UserService } from '../../core/user/user.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly users = inject(UserService);
   private readonly router = inject(Router);
@@ -21,13 +21,22 @@ export class LoginComponent {
     email: ['', [Validators.required, Validators.email]],
   });
 
+  ngOnInit(): void {
+    if (!this.hasLocalProfile()) {
+      void this.router.navigateByUrl('/onboarding', { replaceUrl: true });
+    }
+  }
+
   protected submit(): void {
     this.error.set('');
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
 
     if (!this.users.signInWithEmail(this.form.controls.email.value)) {
-      this.error.set('Não encontramos um perfil com esse e-mail neste dispositivo.');
+      void this.router.navigateByUrl(
+        this.hasLocalProfile() ? '/onboarding?register=1' : '/onboarding',
+        { replaceUrl: true },
+      );
       return;
     }
 

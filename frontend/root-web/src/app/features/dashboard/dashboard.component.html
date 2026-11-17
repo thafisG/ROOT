@@ -1,5 +1,6 @@
 <main class="dashboard">
   <app-root-greeting-header [userName]="userName()" [streakDays]="streakDays()" />
+  <app-root-gamification-summary [experiencePoints]="experiencePoints()" />
 
   @if (recommendationState().isLearning) {
     <div class="dashboard__learning">
@@ -48,6 +49,7 @@
       <section class="dashboard__workout-empty" aria-labelledby="workout-empty-title">
         <h3 id="workout-empty-title">Nenhum treino agendado</h3>
         <p>Escolha uma das sugestões para começar uma atividade hoje.</p>
+        <a routerLink="/treinos">Criar ou iniciar um treino</a>
       </section>
       <app-root-weekly-summary [stats]="weeklyStats()" />
       <app-root-suggested-activities
