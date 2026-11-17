@@ -54,7 +54,7 @@ export class OnboardingComponent implements OnInit {
   protected readonly form = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(8)]],
+    password: this.fb.nonNullable.control('', [Validators.required, Validators.minLength(8)]),
     goal: ['', Validators.required],
     experienceLevel: ['', Validators.required],
     availableDaysPerWeek: [3, [Validators.required, Validators.min(1), Validators.max(7)]],
