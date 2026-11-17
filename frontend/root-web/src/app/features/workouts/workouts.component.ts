@@ -4,7 +4,12 @@ import { InteractionService } from '../../core/interaction/interaction.service';
 import { ActionFeedbackService } from '../../core/feedback/action-feedback.service';
 import { WorkoutRoutine, WorkoutService } from './workout.service';
 import { WorkoutDraft, WorkoutPlanAnswers, WORKOUT_PRESETS, generateWorkoutPlan } from './workout-plans';
-import { FitnessGoal, GOAL_OPTIONS, ExperienceLevel } from '../onboarding/models/onboarding.models';
+import {
+  EXPERIENCE_OPTIONS,
+  FitnessGoal,
+  GOAL_OPTIONS,
+  ExperienceLevel,
+} from '../onboarding/models/onboarding.models';
 import { UserService } from '../../core/user/user.service';
 
 @Component({
@@ -24,6 +29,9 @@ export class WorkoutsComponent {
   protected readonly routines = this.workouts.routines;
   protected readonly presets = WORKOUT_PRESETS;
   protected readonly goalOptions = GOAL_OPTIONS;
+  protected readonly experienceOptions = EXPERIENCE_OPTIONS;
+  protected readonly dayOptions = [1, 2, 3, 4, 5, 6, 7];
+  protected readonly sessionOptions: readonly (30 | 45 | 60)[] = [30, 45, 60];
   protected readonly activeWorkoutId = signal<string | null>(null);
   protected readonly completedExercises = signal<string[]>([]);
   protected readonly form = this.fb.nonNullable.group({
@@ -53,6 +61,22 @@ export class WorkoutsComponent {
     this.workouts.create(this.form.controls.name.value, exercises);
     this.form.reset();
     this.feedback.show('Ficha salva. Ela já está disponível em Fichas salvas.');
+  }
+
+  protected selectGoal(goal: FitnessGoal): void {
+    this.planForm.controls.goal.setValue(goal);
+  }
+
+  protected selectDays(days: number): void {
+    this.planForm.controls.daysPerWeek.setValue(days);
+  }
+
+  protected selectExperience(level: ExperienceLevel): void {
+    this.planForm.controls.experienceLevel.setValue(level);
+  }
+
+  protected selectDuration(minutes: 30 | 45 | 60): void {
+    this.planForm.controls.sessionMinutes.setValue(minutes);
   }
 
   protected addPreset(preset: WorkoutDraft): void {

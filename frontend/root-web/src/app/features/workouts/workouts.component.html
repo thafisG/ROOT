@@ -1,86 +1,23 @@
 <main class="workouts-page">
   <header class="workouts-page__header">
-    <p class="workouts-page__eyebrow">Treino de academia</p>
-    <h1>Seus treinos</h1>
-    <p>Escolha uma ficha pronta, responda algumas perguntas para montar um plano ou crie sua própria ficha.</p>
-  </header>
-
-  <section class="workout-presets" aria-labelledby="workout-presets-title">
-    <h2 id="workout-presets-title">Sugestões avulsas</h2>
-    <p>Use uma ficha pronta como ponto de partida. Ela será copiada para seus treinos.</p>
-    <div class="workout-presets__grid">
-      @for (preset of presets; track preset.name) {
-        <article>
-          <h3>{{ preset.name }}</h3>
-          <details>
-            <summary>Ver exercícios</summary>
-            <ul>@for (exercise of preset.exercises; track exercise) { <li>{{ exercise }}</li> }</ul>
-          </details>
-          <button type="button" (click)="addPreset(preset)">Adicionar ficha</button>
-        </article>
-      }
+    <div>
+      <p class="workouts-page__eyebrow">Treino de academia</p>
+      <h1>Seus treinos</h1>
+      <p>Organize suas fichas e acompanhe cada sessão.</p>
     </div>
-  </section>
-
-  <section class="plan-builder" aria-labelledby="plan-builder-title">
-    <h2 id="plan-builder-title">Montar um plano para mim</h2>
-    <p>Responda algumas perguntas e o ROOT cria fichas para sua semana.</p>
-    <form [formGroup]="planForm" (ngSubmit)="buildPlan()" novalidate>
-      <label for="plan-goal">Qual é seu objetivo?</label>
-      <select id="plan-goal" formControlName="goal">
-        @for (option of goalOptions; track option.value) {
-          <option [value]="option.value">{{ option.label }}</option>
-        }
-      </select>
-
-      <label for="plan-days">Quantos dias por semana quer treinar?</label>
-      <input id="plan-days" type="number" min="1" max="7" formControlName="daysPerWeek" />
-      @if (planForm.controls.daysPerWeek.invalid && planForm.controls.daysPerWeek.touched) {
-        <small>Escolha de 1 a 7 dias por semana.</small>
-      }
-
-      <label for="plan-experience">Como descreve sua experiência?</label>
-      <select id="plan-experience" formControlName="experienceLevel">
-        <option value="beginner">Iniciante</option>
-        <option value="intermediate">Intermediário</option>
-        <option value="advanced">Avançado</option>
-      </select>
-
-      <label for="plan-duration">Quanto tempo tem por sessão?</label>
-      <select id="plan-duration" formControlName="sessionMinutes">
-        <option [ngValue]="30">30 minutos</option>
-        <option [ngValue]="45">45 minutos</option>
-        <option [ngValue]="60">60 minutos</option>
-      </select>
-      <button type="submit">Montar meu plano</button>
-    </form>
-    <p class="plan-builder__note">São sugestões gerais de exercícios. Ajuste cargas e técnica de acordo com sua realidade e, se possível, com orientação profissional.</p>
-  </section>
-
-  <section class="workout-form" aria-labelledby="workout-form-title">
-    <h2 id="workout-form-title">Criar uma ficha</h2>
-    <form [formGroup]="form" (ngSubmit)="createWorkout()" novalidate>
-      <label for="workout-name">Nome da ficha</label>
-      <input id="workout-name" formControlName="name" placeholder="Ex.: Treino A — superiores" />
-      @if (form.controls.name.invalid && form.controls.name.touched) {
-        <small>Informe um nome para a ficha.</small>
-      }
-
-      <label for="workout-exercises">Exercícios (um por linha; inclua séries e repetições)</label>
-      <textarea
-        id="workout-exercises"
-        rows="5"
-        formControlName="exercises"
-        placeholder="Supino reto — 3×8&#10;Remada baixa — 3×10&#10;Desenvolvimento — 3×10"
-      ></textarea>
-      <button type="submit">Salvar ficha</button>
-    </form>
-  </section>
+    <span class="workouts-page__count">{{ routines().length }} {{ routines().length === 1 ? 'ficha' : 'fichas' }}</span>
+  </header>
 
   @if (activeWorkout(); as active) {
     <section class="workout-session" aria-labelledby="workout-session-title">
-      <h2 id="workout-session-title">{{ active.name }}</h2>
-      <p>Marque os exercícios que você concluiu.</p>
+      <div class="workout-section__heading">
+        <div>
+          <p class="workouts-page__eyebrow">Sessão em andamento</p>
+          <h2 id="workout-session-title">{{ active.name }}</h2>
+        </div>
+        <span class="workout-session__progress">{{ completedExercises().length }}/{{ active.exercises.length }}</span>
+      </div>
+      <p class="workout-session__hint">Marque os exercícios concluídos.</p>
       <ul>
         @for (exercise of active.exercises; track exercise) {
           <li>
@@ -90,7 +27,7 @@
                 [checked]="completedExercises().includes(exercise)"
                 (change)="toggleExercise(exercise)"
               />
-              {{ exercise }}
+              <span>{{ exercise }}</span>
             </label>
           </li>
         }
@@ -100,34 +37,202 @@
         [disabled]="completedExercises().length !== active.exercises.length"
         (click)="finishWorkout()"
       >
-        Finalizar e registrar treino
+        Finalizar treino
       </button>
     </section>
   } @else {
-    <section class="workout-list" aria-labelledby="workout-list-title">
-      <h2 id="workout-list-title">Fichas salvas</h2>
-      @if (routines().length === 0) {
-        <p class="workout-list__empty">Crie sua primeira ficha para começar a treinar pelo ROOT.</p>
-      } @else {
-        @for (routine of routines(); track routine.id) {
-          <article class="workout-routine">
-            <div>
-              <h3>{{ routine.name }}</h3>
-              <p>{{ routine.exercises.length }} exercícios</p>
+    <section class="workout-tools" aria-label="Criar ou escolher um treino">
+      <details class="workout-disclosure">
+        <summary>
+          <span class="workout-disclosure__icon" aria-hidden="true">✦</span>
+          <span class="workout-disclosure__text">
+            <strong>Sugestões prontas</strong>
+            <small>Comece por uma ficha avulsa</small>
+          </span>
+          <span class="workout-disclosure__chevron" aria-hidden="true"></span>
+        </summary>
+        <div class="workout-disclosure__content">
+          <div class="workout-presets__grid">
+            @for (preset of presets; track preset.name) {
+              <article class="workout-preset">
+                <div class="workout-preset__top">
+                  <h3>{{ preset.name }}</h3>
+                  <span>{{ preset.exercises.length }} exercícios</span>
+                </div>
+                <details class="workout-preset__details">
+                  <summary>Ver exercícios</summary>
+                  <ul>@for (exercise of preset.exercises; track exercise) { <li>{{ exercise }}</li> }</ul>
+                </details>
+                <button type="button" (click)="addPreset(preset)">Adicionar ficha</button>
+              </article>
+            }
+          </div>
+        </div>
+      </details>
+
+      <details class="workout-disclosure">
+        <summary class="workout-plan-card">
+          <svg class="workout-plan-card__art" viewBox="0 0 120 92" aria-hidden="true" focusable="false">
+            <rect width="120" height="92" rx="18" fill="var(--color-primary-50)" />
+            <circle cx="94" cy="23" r="12" fill="var(--color-accent-300)" opacity=".75" />
+            <path d="M18 72c14-16 26-18 39-7 12 10 24 8 43-10v21H18z" fill="var(--color-secondary-100)" />
+            <path d="M42 56h35M48 50v12M71 50v12M37 53v7M80 53v7" fill="none" stroke="var(--color-primary-700)" stroke-width="4" stroke-linecap="round" />
+            <circle cx="57" cy="31" r="7" fill="var(--color-primary-500)" />
+            <path d="m56 39-7 13 10 5 8-12m-17 10-8 9m17-6 9 5" fill="none" stroke="var(--color-primary-600)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="m22 25 2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="var(--color-accent-500)" />
+          </svg>
+          <span class="workout-plan-card__copy">
+            <small class="workout-plan-card__tag">RECOMENDADO PARA VOCÊ</small>
+            <strong>Monte um plano que cabe na sua rotina</strong>
+            <span>Escolha seu objetivo, disponibilidade e experiência.</span>
+          </span>
+          <span class="workout-plan-card__action">Personalizar <span class="workout-disclosure__chevron" aria-hidden="true"></span></span>
+        </summary>
+        <div class="workout-disclosure__content plan-builder">
+          <form [formGroup]="planForm" (ngSubmit)="buildPlan()" novalidate>
+            <fieldset class="choice-group">
+              <legend>Qual é seu objetivo?</legend>
+              <div class="choice-grid choice-grid--goals">
+                @for (option of goalOptions; track option.value) {
+                  <button
+                    type="button"
+                    class="choice-card"
+                    [class.choice-card--selected]="planForm.controls.goal.value === option.value"
+                    [attr.aria-pressed]="planForm.controls.goal.value === option.value"
+                    (click)="selectGoal(option.value)"
+                  >
+                    <strong>{{ option.label }}</strong>
+                    <small>{{ option.description }}</small>
+                  </button>
+                }
+              </div>
+            </fieldset>
+
+            <fieldset class="choice-group">
+              <legend>Quantos dias por semana?</legend>
+              <div class="choice-chips" aria-label="Dias de treino por semana">
+                @for (day of dayOptions; track day) {
+                  <button
+                    type="button"
+                    class="choice-chip"
+                    [class.choice-chip--selected]="planForm.controls.daysPerWeek.value === day"
+                    [attr.aria-pressed]="planForm.controls.daysPerWeek.value === day"
+                    (click)="selectDays(day)"
+                  >{{ day }}</button>
+                }
+              </div>
+              @if (planForm.controls.daysPerWeek.invalid && planForm.controls.daysPerWeek.touched) {
+                <small class="field-error">Escolha de 1 a 7 dias por semana.</small>
+              }
+            </fieldset>
+
+            <fieldset class="choice-group">
+              <legend>Como descreve sua experiência?</legend>
+              <div class="choice-grid choice-grid--experience">
+                @for (option of experienceOptions; track option.value) {
+                  <button
+                    type="button"
+                    class="choice-card"
+                    [class.choice-card--selected]="planForm.controls.experienceLevel.value === option.value"
+                    [attr.aria-pressed]="planForm.controls.experienceLevel.value === option.value"
+                    (click)="selectExperience(option.value)"
+                  >
+                    <strong>{{ option.label }}</strong>
+                    <small>{{ option.description }}</small>
+                  </button>
+                }
+              </div>
+            </fieldset>
+
+            <fieldset class="choice-group">
+              <legend>Tempo por sessão</legend>
+              <div class="choice-chips choice-chips--duration">
+                @for (minutes of sessionOptions; track minutes) {
+                  <button
+                    type="button"
+                    class="choice-chip choice-chip--wide"
+                    [class.choice-chip--selected]="planForm.controls.sessionMinutes.value === minutes"
+                    [attr.aria-pressed]="planForm.controls.sessionMinutes.value === minutes"
+                    (click)="selectDuration(minutes)"
+                  >{{ minutes }} min</button>
+                }
+              </div>
+            </fieldset>
+
+            <div class="plan-builder__footer">
+              <p>Você poderá revisar e ajustar cada ficha depois.</p>
+              <button type="submit">Montar meu plano</button>
             </div>
-            <button type="button" (click)="startWorkout(routine)">Iniciar treino</button>
-            <button
-              type="button"
-              class="workout-routine__delete"
-              [attr.aria-label]="'Apagar ficha ' + routine.name"
-              (click)="deleteWorkout(routine)"
-            >Apagar ficha</button>
-            <details>
-              <summary>Ver exercícios</summary>
-              <ul>@for (exercise of routine.exercises; track exercise) { <li>{{ exercise }}</li> }</ul>
-            </details>
-          </article>
-        }
+          </form>
+        </div>
+      </details>
+
+      <details class="workout-disclosure">
+        <summary>
+          <span class="workout-disclosure__icon" aria-hidden="true">＋</span>
+          <span class="workout-disclosure__text">
+            <strong>Criar ficha manualmente</strong>
+            <small>Adicione seu próprio treino</small>
+          </span>
+          <span class="workout-disclosure__chevron" aria-hidden="true"></span>
+        </summary>
+        <div class="workout-disclosure__content workout-form">
+          <form [formGroup]="form" (ngSubmit)="createWorkout()" novalidate>
+            <label for="workout-name">Nome da ficha</label>
+            <input id="workout-name" formControlName="name" placeholder="Ex.: Treino A — superiores" />
+            @if (form.controls.name.invalid && form.controls.name.touched) {
+              <small class="field-error">Informe um nome para a ficha.</small>
+            }
+
+            <label for="workout-exercises">Exercícios <span>um por linha; inclua séries e repetições</span></label>
+            <textarea
+              id="workout-exercises"
+              rows="4"
+              formControlName="exercises"
+              placeholder="Supino reto — 3×8&#10;Remada baixa — 3×10&#10;Desenvolvimento — 3×10"
+            ></textarea>
+            <button type="submit">Salvar ficha</button>
+          </form>
+        </div>
+      </details>
+    </section>
+
+    <section class="workout-list" aria-labelledby="workout-list-title">
+      <div class="workout-list__heading">
+        <div>
+          <p class="workouts-page__eyebrow">Sua rotina</p>
+          <h2 id="workout-list-title">Fichas salvas</h2>
+        </div>
+        <span class="workout-list__count">{{ routines().length }}</span>
+      </div>
+      @if (routines().length === 0) {
+        <p class="workout-list__empty">Suas fichas vão aparecer aqui. Escolha uma sugestão ou crie a sua.</p>
+      } @else {
+        <div class="workout-routine-list">
+          @for (routine of routines(); track routine.id) {
+            <article class="workout-routine">
+              <details class="workout-routine__details">
+                <summary>
+                  <span class="workout-routine__summary">
+                    <strong>{{ routine.name }}</strong>
+                    <small>{{ routine.exercises.length }} exercícios</small>
+                  </span>
+                  <span class="workout-disclosure__chevron" aria-hidden="true"></span>
+                </summary>
+                <ul>@for (exercise of routine.exercises; track exercise) { <li>{{ exercise }}</li> }</ul>
+              </details>
+              <div class="workout-routine__actions">
+                <button type="button" (click)="startWorkout(routine)">Iniciar treino</button>
+                <button
+                  type="button"
+                  class="workout-routine__delete"
+                  [attr.aria-label]="'Apagar ficha ' + routine.name"
+                  (click)="deleteWorkout(routine)"
+                >Apagar</button>
+              </div>
+            </article>
+          }
+        </div>
       }
     </section>
   }
