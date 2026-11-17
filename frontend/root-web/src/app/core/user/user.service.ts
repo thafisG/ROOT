@@ -79,30 +79,22 @@ export class UserService {
   async signInWithEmail(
     email: string,
     password: string,
-  ): Promise<{ ok: boolean; emailNotFound: boolean; error?: string }> {
+  ): Promise<{ ok: boolean; error?: string }> {
     if (!this.isSupabaseConfigured) {
       return {
         ok: false,
-        emailNotFound: false,
         error: 'Configure a chave publishable do Supabase em src/environments/environment.ts.',
       };
     }
 
     const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     if (error) {
-      const invalidCredentials =
-        error.code === 'invalid_credentials' ||
-        error.message.toLowerCase().includes('invalid login credentials');
-      return {
-        ok: false,
-        emailNotFound: invalidCredentials,
-        error: invalidCredentials ? 'E-mail não encontrado ou senha incorreta.' : this.authError(error.message),
-      };
+      return { ok: false, error: this.authError(error.message, error.code) };
     }
 
     this._isAuthenticated.set(true);
     this.restoreProfile(data.user);
-    return { ok: true, emailNotFound: false };
+    return { ok: true };
   }
 
   saveProfile(profile: UserProfile): void {
@@ -135,9 +127,22 @@ export class UserService {
     if (profile.success) this.saveProfile(profile.data);
   }
 
-  private authError(message: string): string {
+  private authError(message: string, code?: string): string {
+    if (code === 'invalid_credentials' || message.toLowerCase().includes('invalid login credentials')) {
+      return 'E-mail ou senha incorretos. Confira seus dados ou crie uma conta se ainda não tiver cadastro.';
+    }
+    if (code === 'email_not_confirmed') {
+      return 'Confirme seu e-mail pelo link enviado antes de entrar.';
+    }
+    if (code === 'over_email_send_rate_limit' || code === 'too_many_requests') {
+      return 'Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente novamente.';
+    }
+    if (code === 'invalid_api_key') {
+      return 'A chave do Supabase configurada no app é inválida.';
+    }
     if (message.toLowerCase().includes('already registered')) return 'Este e-mail já tem cadastro. Entre com sua senha.';
-    if (message.toLowerCase().includes('password')) return 'A senha precisa ter pelo menos 6 caracteres.';
+    if (message.toLowerCase().includes('password')) return 'A senha precisa ter pelo menos 8 caracteres.';
+    console.warn('Falha de autenticação Supabase:', code ?? 'sem código');
     return 'Não foi possível acessar sua conta agora. Tente novamente.';
   }
 }

@@ -41,13 +41,6 @@ export class LoginComponent {
     }
     if (!result.ok) {
       this.error.set(result.error ?? 'Não foi possível entrar.');
-      if (result.emailNotFound) {
-        this.feedback.show('Não encontramos uma conta com esses dados. Abrindo o cadastro.');
-        void this.router.navigateByUrl(
-          `/onboarding?register=1&email=${encodeURIComponent(this.form.controls.email.value.trim())}`,
-          { replaceUrl: true },
-        );
-      }
       return;
     }
 

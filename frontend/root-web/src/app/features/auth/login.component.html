@@ -22,6 +22,6 @@
     }
 
     <button type="submit">Continuar</button>
-    <p class="auth-card__footnote">Ainda não tem conta? <a routerLink="/onboarding">Criar perfil</a></p>
+    <p class="auth-card__footnote">Ainda não tem conta? <a [routerLink]="['/onboarding']" [queryParams]="{ register: 1, email: form.controls.email.value }">Criar perfil</a></p>
   </form>
 </main>
