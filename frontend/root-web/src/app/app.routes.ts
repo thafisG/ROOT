@@ -33,13 +33,9 @@ export const routes: Routes = [
       {
         path: 'recomendacoes',
         loadComponent: () =>
-          import('./shared/ui/placeholder-page/placeholder-page.component').then(
-            (m) => m.PlaceholderPageComponent,
+          import('./features/recommendations/recommendations.component').then(
+            (m) => m.RecommendationsComponent,
           ),
-        data: {
-          title: 'Recomendações',
-          description: 'O histórico completo de recomendações chega na próxima fase.',
-        },
       },
       {
         path: 'analytics',

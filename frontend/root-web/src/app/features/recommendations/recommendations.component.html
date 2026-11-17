@@ -1,0 +1,42 @@
+<main class="recommendations">
+  <header class="recommendations__header">
+    <p class="recommendations__eyebrow">Seu percurso</p>
+    <h1>Recomendações</h1>
+    <p>Acompanhe as sugestões que você iniciou, concluiu ou dispensou.</p>
+  </header>
+
+  <section class="recommendations__summary" aria-label="Resumo das atividades">
+    <article>
+      <strong>{{ startedCount() }}</strong>
+      <span>iniciadas</span>
+    </article>
+    <article>
+      <strong>{{ completedCount() }}</strong>
+      <span>concluídas</span>
+    </article>
+    <article>
+      <strong>{{ dismissedCount() }}</strong>
+      <span>dispensadas</span>
+    </article>
+  </section>
+
+  <section class="recommendations__history" aria-labelledby="recommendations-history-title">
+    <h2 id="recommendations-history-title">Atividade recente</h2>
+    @if (history().length === 0) {
+      <p class="recommendations__empty">
+        Ainda não há atividades registradas. Quando você iniciar ou dispensar uma sugestão, ela
+        aparecerá aqui.
+      </p>
+    } @else {
+      <ol>
+        @for (entry of history(); track entry.id) {
+          <li>
+            <span class="recommendations__category">{{ entry.categoryLabel }}</span>
+            <span class="recommendations__status">{{ entry.statusLabel }}</span>
+            <time [attr.datetime]="entry.createdAt">{{ entry.dateLabel }}</time>
+          </li>
+        }
+      </ol>
+    }
+  </section>
+</main>

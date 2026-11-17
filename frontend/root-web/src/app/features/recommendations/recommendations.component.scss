@@ -1,0 +1,122 @@
+@use 'tokens' as t;
+
+.recommendations {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--space-24) var(--space-16);
+
+  @include t.from-desktop {
+    padding: var(--space-48);
+  }
+}
+
+.recommendations__header {
+  margin-bottom: var(--space-32);
+
+  h1 {
+    margin: 0 0 var(--space-8);
+    color: var(--text-primary);
+    font: 600 1.75rem var(--font-display);
+  }
+
+  p:last-child {
+    margin: 0;
+    color: var(--text-secondary);
+    font: 0.9375rem var(--font-body);
+  }
+}
+
+.recommendations__eyebrow {
+  margin: 0 0 var(--space-8);
+  color: var(--color-primary-600);
+  font: 600 0.75rem var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.recommendations__summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-12);
+  margin-bottom: var(--space-32);
+
+  article {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    padding: var(--space-16);
+  }
+
+  strong {
+    color: var(--text-primary);
+    font: 600 1.5rem var(--font-body);
+  }
+
+  span {
+    color: var(--text-secondary);
+    font: 0.8125rem var(--font-body);
+  }
+}
+
+.recommendations__history {
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  padding: var(--space-24);
+
+  h2 {
+    margin: 0 0 var(--space-16);
+    color: var(--text-primary);
+    font: 600 1.0625rem var(--font-body);
+  }
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--space-4) var(--space-12);
+    padding: var(--space-12) 0;
+    border-bottom: 1px solid var(--border-default);
+
+    &:last-child {
+      border-bottom: 0;
+    }
+
+    @include t.from-tablet {
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+    }
+  }
+
+  time {
+    grid-column: 1 / -1;
+    color: var(--text-muted);
+    font: 0.75rem var(--font-body);
+
+    @include t.from-tablet {
+      grid-column: auto;
+    }
+  }
+}
+
+.recommendations__category {
+  color: var(--text-primary);
+  font: 500 0.875rem var(--font-body);
+}
+
+.recommendations__status {
+  color: var(--text-secondary);
+  font: 0.8125rem var(--font-body);
+}
+
+.recommendations__empty {
+  margin: 0;
+  color: var(--text-secondary);
+  font: 0.875rem/1.5 var(--font-body);
+}
