@@ -40,6 +40,13 @@
           <li>
             <span>{{ entry.details }}</span>
             <time [attr.datetime]="entry.createdAt">{{ formatDate(entry.createdAt) }}</time>
+            <button
+              type="button"
+              [attr.aria-label]="'Apagar registro: ' + entry.details"
+              (click)="deleteEntry(entry.id)"
+            >
+              Apagar
+            </button>
           </li>
         }
       </ul>

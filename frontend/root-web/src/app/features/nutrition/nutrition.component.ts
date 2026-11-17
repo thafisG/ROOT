@@ -64,4 +64,8 @@ export class NutritionComponent {
   protected formatDate(value: string): string {
     return new Date(value).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
   }
+
+  protected deleteEntry(id: string): void {
+    if (this.interactions.deleteEvent(id)) this.feedback.show('Registro de nutrição apagado do histórico.');
+  }
 }

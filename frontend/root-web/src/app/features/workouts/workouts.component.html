@@ -116,6 +116,12 @@
               <p>{{ routine.exercises.length }} exercícios</p>
             </div>
             <button type="button" (click)="startWorkout(routine)">Iniciar treino</button>
+            <button
+              type="button"
+              class="workout-routine__delete"
+              [attr.aria-label]="'Apagar ficha ' + routine.name"
+              (click)="deleteWorkout(routine)"
+            >Apagar ficha</button>
             <details>
               <summary>Ver exercícios</summary>
               <ul>@for (exercise of routine.exercises; track exercise) { <li>{{ exercise }}</li> }</ul>

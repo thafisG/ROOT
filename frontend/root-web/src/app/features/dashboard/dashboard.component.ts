@@ -158,6 +158,18 @@ export class DashboardComponent {
     this.feedback.show('Atividade concluída. Você ganhou 10 XP.');
   }
 
+  protected onDeleteActivity(id: string): void {
+    const deleted = this.interactionService.deleteEvent(id);
+    if (!deleted) return;
+
+    const wasCompleted = deleted.type === 'habit_completed' || deleted.type === 'workout_completed';
+    this.feedback.show(
+      wasCompleted
+        ? 'Registro apagado. Os 10 XP dessa atividade também foram removidos.'
+        : 'Ação apagada do histórico.',
+    );
+  }
+
   private formatRelativeTime(iso: string): string {
     const date = new Date(iso);
     const diffMinutes = Math.round((Date.now() - date.getTime()) / 60000);

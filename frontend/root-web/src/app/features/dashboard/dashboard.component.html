@@ -64,7 +64,7 @@
     </div>
 
     <aside class="dashboard__grid-side">
-      <app-root-recent-habits [entries]="recentHabits()" />
+      <app-root-recent-habits [entries]="recentHabits()" (deleteEntry)="onDeleteActivity($event)" />
     </aside>
   </div>
 </main>

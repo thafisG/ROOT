@@ -41,7 +41,7 @@ export class InteractionService {
   readonly history = this._history.asReadonly();
   readonly experiencePoints = this._experiencePoints.asReadonly();
 
-  register(type: InteractionType, category: HabitCategoryId, details?: string): void {
+  register(type: InteractionType, category: HabitCategoryId, details?: string): InteractionEvent {
     const event: InteractionEvent = {
       id: crypto.randomUUID(),
       type,
@@ -57,6 +57,8 @@ export class InteractionService {
       this._experiencePoints.update((points) => points + 10);
       this.storage.write(XP_STORAGE_KEY, this._experiencePoints());
     }
+
+    return event;
   }
 
   recentEntries(limit: number): InteractionEvent[] {
@@ -70,5 +72,20 @@ export class InteractionService {
     this.storage.clear(STORAGE_KEY);
     this._experiencePoints.set(0);
     this.storage.clear(XP_STORAGE_KEY);
+  }
+
+  deleteEvent(id: string): InteractionEvent | null {
+    const event = this._history().find((item) => item.id === id);
+    if (!event) return null;
+
+    this._history.set(this._history().filter((item) => item.id !== id));
+    this.storage.write(STORAGE_KEY, this._history());
+
+    if (event.type === 'habit_completed' || event.type === 'workout_completed') {
+      this._experiencePoints.update((points) => Math.max(0, points - 10));
+      this.storage.write(XP_STORAGE_KEY, this._experiencePoints());
+    }
+
+    return event;
   }
 }

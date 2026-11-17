@@ -34,6 +34,14 @@
             <span class="recommendations__category">{{ entry.categoryLabel }}</span>
             <span class="recommendations__status">{{ entry.statusLabel }}</span>
             <time [attr.datetime]="entry.createdAt">{{ entry.dateLabel }}</time>
+            <button
+              type="button"
+              class="recommendations__delete"
+              [attr.aria-label]="'Apagar ' + entry.statusLabel.toLowerCase() + ' de ' + entry.categoryLabel"
+              (click)="deleteEntry(entry)"
+            >
+              Apagar
+            </button>
           </li>
         }
       </ol>

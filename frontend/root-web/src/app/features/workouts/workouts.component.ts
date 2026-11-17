@@ -83,6 +83,11 @@ export class WorkoutsComponent {
     this.feedback.show(`Treino ${routine.name} iniciado.`);
   }
 
+  protected deleteWorkout(routine: WorkoutRoutine): void {
+    const deleted = this.workouts.delete(routine.id);
+    if (deleted) this.feedback.show(`Ficha “${deleted.name}” apagada.`);
+  }
+
   protected toggleExercise(exercise: string): void {
     this.completedExercises.update((completed) =>
       completed.includes(exercise)

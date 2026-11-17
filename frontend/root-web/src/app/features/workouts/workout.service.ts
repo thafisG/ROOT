@@ -39,6 +39,15 @@ export class WorkoutService {
     return routine;
   }
 
+  delete(id: string): WorkoutRoutine | null {
+    const routine = this._routines().find((item) => item.id === id);
+    if (!routine) return null;
+
+    this._routines.set(this._routines().filter((item) => item.id !== id));
+    this.storage.write(STORAGE_KEY, this._routines());
+    return routine;
+  }
+
   clearAll(): void {
     this._routines.set([]);
     this.storage.clear(STORAGE_KEY);

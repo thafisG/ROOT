@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { InteractionService } from '../../core/interaction/interaction.service';
 import { CATEGORIES, InteractionEvent } from '../dashboard/models/dashboard.models';
+import { ActionFeedbackService } from '../../core/feedback/action-feedback.service';
 
 interface RecommendationHistoryEntry extends InteractionEvent {
   categoryLabel: string;
@@ -16,6 +17,7 @@ interface RecommendationHistoryEntry extends InteractionEvent {
 })
 export class RecommendationsComponent {
   private readonly interactions = inject(InteractionService);
+  private readonly feedback = inject(ActionFeedbackService);
 
   protected readonly history = computed<RecommendationHistoryEntry[]>(() =>
     this.interactions
@@ -49,6 +51,18 @@ export class RecommendationsComponent {
         (event) => event.type === 'habit_completed' || event.type === 'workout_completed',
       ).length,
   );
+
+  protected deleteEntry(entry: InteractionEvent): void {
+    const removed = this.interactions.deleteEvent(entry.id);
+    if (!removed) return;
+
+    const wasCompleted = removed.type === 'habit_completed' || removed.type === 'workout_completed';
+    this.feedback.show(
+      wasCompleted
+        ? 'Atividade removida do histórico. Os 10 XP também foram retirados.'
+        : 'Ação removida do histórico.',
+    );
+  }
 
   private statusLabel(event: InteractionEvent): string {
     switch (event.type) {

@@ -103,6 +103,14 @@
     flex-shrink: 0;
     color: var(--text-muted);
   }
+
+  li button {
+    padding: var(--space-4) var(--space-8);
+    border: 1px solid var(--border-default);
+    color: var(--color-error);
+    background: transparent;
+    font: 0.6875rem var(--font-body);
+  }
 }
 
 .nutrition-card__success {

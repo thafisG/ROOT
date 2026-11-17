@@ -89,7 +89,7 @@
     }
 
     @include t.from-tablet {
-      grid-template-columns: 1fr auto auto;
+      grid-template-columns: 1fr auto auto auto;
       align-items: center;
     }
   }
@@ -103,6 +103,17 @@
       grid-column: auto;
     }
   }
+}
+
+.recommendations__delete {
+  justify-self: start;
+  padding: var(--space-4) var(--space-8);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--color-error);
+  background: transparent;
+  font: 0.6875rem var(--font-body);
+  cursor: pointer;
 }
 
 .recommendations__category {
