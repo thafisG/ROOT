@@ -19,7 +19,7 @@ export interface Recommendation {
 
 export interface WeeklyCategoryStat {
   category: CategoryInfo;
-  percentage: number;
+  count: number;
 }
 
 export type WorkoutLevel = 'Iniciante' | 'Intermediário' | 'Avançado';

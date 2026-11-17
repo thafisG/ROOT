@@ -45,12 +45,20 @@
 
   <div class="dashboard__grid">
     <div class="dashboard__grid-main">
-      <app-root-next-workout-card [workout]="nextWorkout()" (complete)="onCompleteWorkout()" />
+      <section class="dashboard__workout-empty" aria-labelledby="workout-empty-title">
+        <h3 id="workout-empty-title">Nenhum treino agendado</h3>
+        <p>Escolha uma das sugestões para começar uma atividade hoje.</p>
+      </section>
       <app-root-weekly-summary [stats]="weeklyStats()" />
       <app-root-suggested-activities
         [activities]="suggestedActivities()"
         (selectActivity)="onSelectActivity($event)"
       />
+      @if (activeSuggestedActivity(); as activity) {
+        <button type="button" class="dashboard__complete-recommendation" (click)="onCompleteSuggestedActivity()">
+          Marcar {{ activity.category.label.toLowerCase() }} como concluída
+        </button>
+      }
     </div>
 
     <aside class="dashboard__grid-side">

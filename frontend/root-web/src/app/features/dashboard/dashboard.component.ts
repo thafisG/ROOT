@@ -2,20 +2,17 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { IconComponent } from '../../shared/ui/icon/icon.component';
 import { GreetingHeaderComponent } from './components/greeting-header/greeting-header.component';
 import { RecommendationCardComponent } from './components/recommendation-card/recommendation-card.component';
-import { NextWorkoutCardComponent } from './components/next-workout-card/next-workout-card.component';
 import { WeeklySummaryComponent } from './components/weekly-summary/weekly-summary.component';
 import { RecentHabitsComponent } from './components/recent-habits/recent-habits.component';
 import { SuggestedActivitiesComponent } from './components/suggested-activities/suggested-activities.component';
 import { InteractionService } from '../../core/interaction/interaction.service';
 import { RecommendationService } from '../../core/recommendation/recommendation.service';
 import { UserService } from '../../core/user/user.service';
-import { ExperienceLevel } from '../onboarding/models/onboarding.models';
 import {
   CATEGORIES,
   HabitCategoryId,
   HabitLogEntry,
   InteractionEvent,
-  NextWorkout,
   Recommendation,
   SuggestedActivity,
   WeeklyCategoryStat,
@@ -27,7 +24,6 @@ import {
     IconComponent,
     GreetingHeaderComponent,
     RecommendationCardComponent,
-    NextWorkoutCardComponent,
     WeeklySummaryComponent,
     RecentHabitsComponent,
     SuggestedActivitiesComponent,
@@ -43,6 +39,7 @@ export class DashboardComponent {
 
   protected readonly showAlternatives = signal(false);
   protected readonly activeRecommendation = signal<Recommendation | null>(null);
+  protected readonly activeSuggestedActivity = signal<SuggestedActivity | null>(null);
 
   protected readonly userName = computed(() => this.userService.profile()?.name ?? 'Visitante');
 
@@ -52,22 +49,34 @@ export class DashboardComponent {
     this.calculateStreak(this.interactionService.history()),
   );
 
-  protected readonly nextWorkout = computed<NextWorkout>(() => ({
-    category: CATEGORIES.mobility,
-    name: 'Mobilidade completa — corpo todo',
-    scheduledLabel: 'Hoje, 18:30',
-    durationMinutes: 25,
-    level: this.mapExperienceToLevel(this.userService.profile()?.experienceLevel),
-    exerciseCount: 8,
-  }));
+  protected readonly suggestedActivities = computed<SuggestedActivity[]>(() => {
+    const activityDetails: Record<HabitCategoryId, { title: string; durationMinutes: number }> = {
+      strength: { title: 'Fazer um treino de força', durationMinutes: 25 },
+      mobility: { title: 'Fazer alongamento', durationMinutes: 8 },
+      hydration: { title: 'Registrar sua hidratação', durationMinutes: 1 },
+      sleep: { title: 'Registrar seu sono', durationMinutes: 1 },
+      nutrition: { title: 'Registrar uma refeição', durationMinutes: 2 },
+      cardio: { title: 'Fazer uma caminhada leve', durationMinutes: 15 },
+    };
+    const history = this.interactionService.history();
+    const weekStart = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const frequency = new Map<HabitCategoryId, number>();
 
-  protected readonly suggestedActivities = signal<SuggestedActivity[]>([
-    { id: 'a1', category: CATEGORIES.mobility, title: 'Alongamento matinal', durationMinutes: 8 },
-    { id: 'a2', category: CATEGORIES.hydration, title: 'Registrar hidratação', durationMinutes: 1 },
-    { id: 'a3', category: CATEGORIES.nutrition, title: 'Planejar refeições', durationMinutes: 5 },
-    { id: 'a4', category: CATEGORIES.sleep, title: 'Registrar sono da noite', durationMinutes: 1 },
-    { id: 'a5', category: CATEGORIES.cardio, title: 'Caminhada leve', durationMinutes: 15 },
-  ]);
+    for (const id of Object.keys(CATEGORIES) as HabitCategoryId[]) frequency.set(id, 0);
+    for (const event of history) {
+      if (
+        (event.type === 'habit_completed' || event.type === 'workout_completed') &&
+        new Date(event.createdAt).getTime() >= weekStart
+      ) {
+        frequency.set(event.category, (frequency.get(event.category) ?? 0) + 1);
+      }
+    }
+
+    return [...frequency.entries()]
+      .sort(([aId, aCount], [bId, bCount]) => aCount - bCount || aId.localeCompare(bId))
+      .slice(0, 5)
+      .map(([id]) => ({ id, category: CATEGORIES[id], ...activityDetails[id] }));
+  });
 
   protected readonly weeklyStats = computed<WeeklyCategoryStat[]>(() => {
     const history = this.interactionService.history();
@@ -81,7 +90,7 @@ export class DashboardComponent {
           new Date(e.createdAt).getTime() >= windowStart,
       ).length;
 
-      return { category: CATEGORIES[id], percentage: Math.min(100, count * 20) };
+      return { category: CATEGORIES[id], count };
     });
   });
 
@@ -120,12 +129,17 @@ export class DashboardComponent {
     this.onAcceptRecommendation(recommendation);
   }
 
-  protected onCompleteWorkout(): void {
-    this.interactionService.register('workout_completed', this.nextWorkout().category.id);
+  protected onSelectActivity(activity: SuggestedActivity): void {
+    this.interactionService.register('recommendation_clicked', activity.category.id);
+    this.activeSuggestedActivity.set(activity);
   }
 
-  protected onSelectActivity(activity: SuggestedActivity): void {
+  protected onCompleteSuggestedActivity(): void {
+    const activity = this.activeSuggestedActivity();
+    if (!activity) return;
+
     this.interactionService.register('habit_completed', activity.category.id);
+    this.activeSuggestedActivity.set(null);
   }
 
   private calculateStreak(history: InteractionEvent[]): number {
@@ -173,11 +187,5 @@ export class DashboardComponent {
       default:
         return `${label} atualizado`;
     }
-  }
-
-  private mapExperienceToLevel(level?: ExperienceLevel): NextWorkout['level'] {
-    if (level === 'beginner') return 'Iniciante';
-    if (level === 'advanced') return 'Avançado';
-    return 'Intermediário';
   }
 }
