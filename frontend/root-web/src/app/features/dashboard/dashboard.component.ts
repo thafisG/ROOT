@@ -8,6 +8,7 @@ import { WeeklySummaryComponent } from './components/weekly-summary/weekly-summa
 import { RecentHabitsComponent } from './components/recent-habits/recent-habits.component';
 import { SuggestedActivitiesComponent } from './components/suggested-activities/suggested-activities.component';
 import { InteractionService } from '../../core/interaction/interaction.service';
+import { ActionFeedbackService } from '../../core/feedback/action-feedback.service';
 import { calculateActivityStreak } from '../../core/interaction/activity-metrics';
 import { RecommendationService } from '../../core/recommendation/recommendation.service';
 import { UserService } from '../../core/user/user.service';
@@ -39,6 +40,7 @@ import {
 })
 export class DashboardComponent {
   private readonly interactionService = inject(InteractionService);
+  private readonly feedback = inject(ActionFeedbackService);
   private readonly recommendationService = inject(RecommendationService);
   private readonly userService = inject(UserService);
 
@@ -116,6 +118,7 @@ export class DashboardComponent {
     this.interactionService.register('recommendation_clicked', recommendation.category.id);
     this.activeRecommendation.set(recommendation);
     this.showAlternatives.set(false);
+    this.feedback.show(`Recomendação de ${recommendation.category.label.toLowerCase()} iniciada. Marque como concluída ao terminar.`);
   }
 
   protected onCompleteRecommendation(): void {
@@ -124,10 +127,12 @@ export class DashboardComponent {
 
     this.interactionService.register('habit_completed', recommendation.category.id);
     this.activeRecommendation.set(null);
+    this.feedback.show('Atividade concluída. Você ganhou 10 XP.');
   }
 
   protected onDismissRecommendation(recommendation: Recommendation): void {
     this.interactionService.register('recommendation_dismissed', recommendation.category.id);
+    this.feedback.show('Recomendação dispensada. Vou considerar sua escolha nas próximas sugestões.');
   }
 
   protected onToggleAlternatives(): void {
@@ -141,6 +146,7 @@ export class DashboardComponent {
   protected onSelectActivity(activity: SuggestedActivity): void {
     this.interactionService.register('recommendation_clicked', activity.category.id);
     this.activeSuggestedActivity.set(activity);
+    this.feedback.show(`${activity.title} iniciada. Marque como concluída ao terminar.`);
   }
 
   protected onCompleteSuggestedActivity(): void {
@@ -149,6 +155,7 @@ export class DashboardComponent {
 
     this.interactionService.register('habit_completed', activity.category.id);
     this.activeSuggestedActivity.set(null);
+    this.feedback.show('Atividade concluída. Você ganhou 10 XP.');
   }
 
   private formatRelativeTime(iso: string): string {

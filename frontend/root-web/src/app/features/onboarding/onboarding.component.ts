@@ -11,6 +11,7 @@ import { UserService } from '../../core/user/user.service';
 import { InteractionService } from '../../core/interaction/interaction.service';
 import { ONBOARDING_STEP_LABELS, UserProfile } from './models/onboarding.models';
 import { WorkoutService } from '../workouts/workout.service';
+import { ActionFeedbackService } from '../../core/feedback/action-feedback.service';
 
 const STEP_FIELDS: string[][] = [
   ['name', 'email'],
@@ -39,6 +40,7 @@ export class OnboardingComponent {
   private readonly userService = inject(UserService);
   private readonly interactionService = inject(InteractionService);
   private readonly workoutService = inject(WorkoutService);
+  private readonly feedback = inject(ActionFeedbackService);
   private readonly router = inject(Router);
 
   protected readonly stepLabels = ONBOARDING_STEP_LABELS;
@@ -84,6 +86,7 @@ export class OnboardingComponent {
 
   private confirm(): void {
     const value = this.form.getRawValue();
+    const replacesExistingProfile = this.replacesExistingProfile;
 
     const profile: UserProfile = {
       name: value.name!,
@@ -94,12 +97,17 @@ export class OnboardingComponent {
       createdAt: new Date().toISOString(),
     };
 
-    if (this.replacesExistingProfile) {
+    if (replacesExistingProfile) {
       this.interactionService.clearHistory();
       this.workoutService.clearAll();
     }
 
     this.userService.saveProfile(profile);
+    this.feedback.show(
+      replacesExistingProfile
+        ? 'Novo perfil criado. Os dados locais anteriores foram apagados.'
+        : 'Cadastro concluído. Boas-vindas ao ROOT!',
+    );
     this.router.navigateByUrl('/dashboard', { replaceUrl: true });
   }
 }

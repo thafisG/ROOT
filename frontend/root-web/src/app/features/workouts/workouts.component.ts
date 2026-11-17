@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InteractionService } from '../../core/interaction/interaction.service';
+import { ActionFeedbackService } from '../../core/feedback/action-feedback.service';
 import { WorkoutRoutine, WorkoutService } from './workout.service';
 
 @Component({
@@ -14,6 +15,7 @@ export class WorkoutsComponent {
   private readonly fb = inject(FormBuilder);
   private readonly workouts = inject(WorkoutService);
   private readonly interactions = inject(InteractionService);
+  private readonly feedback = inject(ActionFeedbackService);
 
   protected readonly routines = this.workouts.routines;
   protected readonly activeWorkoutId = signal<string | null>(null);
@@ -38,11 +40,13 @@ export class WorkoutsComponent {
 
     this.workouts.create(this.form.controls.name.value, exercises);
     this.form.reset();
+    this.feedback.show('Ficha salva. Ela já está disponível em Fichas salvas.');
   }
 
   protected startWorkout(routine: WorkoutRoutine): void {
     this.activeWorkoutId.set(routine.id);
     this.completedExercises.set([]);
+    this.feedback.show(`Treino ${routine.name} iniciado.`);
   }
 
   protected toggleExercise(exercise: string): void {
@@ -60,5 +64,6 @@ export class WorkoutsComponent {
     this.interactions.register('workout_completed', 'strength', routine.name);
     this.activeWorkoutId.set(null);
     this.completedExercises.set([]);
+    this.feedback.show(`Treino ${routine.name} concluído. Você ganhou 10 XP.`);
   }
 }
