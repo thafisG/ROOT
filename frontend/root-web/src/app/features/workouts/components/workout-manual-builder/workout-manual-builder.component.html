@@ -93,23 +93,31 @@
                 <ol class="manual-builder__exercise-list" [attr.aria-label]="'Exercícios de ' + (group.name || 'ficha sem nome')">
                   @for (exercise of exercisesInGroup(group.id); track exercise.id; let index = $index) {
                     <li>
-                      <input class="manual-builder__exercise-check" type="checkbox" [checked]="selectedExerciseIds().has(exercise.id)" [attr.aria-label]="'Selecionar ' + exercise.name" (change)="toggleExerciseSelection(exercise.id, $event)" />
-                      <span class="manual-builder__number">{{ index + 1 }}</span>
-                      <label><span class="visually-hidden">Nome do exercício {{ index + 1 }}</span><input [value]="exercise.name" maxlength="80" (input)="updateExercise(exercise.id, 'name', $event)" /></label>
-                      <label><span class="visually-hidden">Séries</span><input type="number" min="1" max="20" [value]="exercise.sets" (input)="updateExercise(exercise.id, 'sets', $event)" /></label><span aria-hidden="true">×</span>
-                      <label><span class="visually-hidden">Repetições</span><input type="number" min="1" max="100" [value]="exercise.repetitions" (input)="updateExercise(exercise.id, 'repetitions', $event)" /></label>
-                      <label class="manual-builder__rest-value"><span class="visually-hidden">Descanso em segundos</span><input type="number" min="0" max="300" step="15" [value]="exercise.restSeconds" (input)="updateExercise(exercise.id, 'restSeconds', $event)" /></label>
+                      <div class="manual-builder__exercise-main">
+                        <input class="manual-builder__exercise-check" type="checkbox" [checked]="selectedExerciseIds().has(exercise.id)" [attr.aria-label]="'Selecionar ' + exercise.name" (change)="toggleExerciseSelection(exercise.id, $event)" />
+                        <span class="manual-builder__number">{{ index + 1 }}</span>
+                        <label><span class="visually-hidden">Nome do exercício {{ index + 1 }}</span><input [value]="exercise.name" maxlength="80" (input)="updateExercise(exercise.id, 'name', $event)" /></label>
+                        <button type="button" class="manual-builder__remove" [attr.aria-label]="'Remover ' + exercise.name" (click)="removeExercise(exercise.id)">×</button>
+                      </div>
+                      <div class="manual-builder__exercise-specs">
+                        <label><span>Séries</span><input type="number" min="1" max="20" [value]="exercise.sets" (input)="updateExercise(exercise.id, 'sets', $event)" /></label>
+                        <label><span>Repetições</span><input type="number" min="1" max="100" [value]="exercise.repetitions" (input)="updateExercise(exercise.id, 'repetitions', $event)" /></label>
+                        <label><span>Descanso (s)</span><input type="number" min="0" max="300" step="15" [value]="exercise.restSeconds" (input)="updateExercise(exercise.id, 'restSeconds', $event)" /></label>
+                      </div>
                       <details class="manual-builder__exercise-extra">
                         <summary>Personalizar carga e observações</summary>
                         <label>Carga ou equipamento<input [value]="exercise.load ?? ''" maxlength="40" placeholder="Ex.: halteres de 5 kg" (input)="updateExerciseText(exercise.id, 'load', $event)" /></label>
                         <label>Observação<textarea [value]="exercise.notes ?? ''" maxlength="160" rows="2" placeholder="Dica ou orientação do professor" (input)="updateExerciseText(exercise.id, 'notes', $event)"></textarea></label>
                       </details>
-                      <select class="manual-builder__move" [value]="moveDestinations()[exercise.id] ?? exercise.groupId" [attr.aria-label]="'Escolher ficha de destino para ' + exercise.name" (change)="setMoveDestination(exercise.id, $event)">
-                        @for (option of groups(); track option.id) { <option [value]="option.id">{{ option.name || 'Ficha sem nome' }}</option> }
-                      </select>
-                      <button type="button" class="manual-builder__move-button" [disabled]="(moveDestinations()[exercise.id] ?? exercise.groupId) === group.id" (click)="moveExercise(exercise.id, group.id)">Mover</button>
-                      @if (exercisesInGroup(group.id).length > 1) { <button type="button" class="manual-builder__separate" (click)="separateExercise(exercise)">Separar</button> }
-                      <button type="button" class="manual-builder__remove" [attr.aria-label]="'Remover ' + exercise.name" (click)="removeExercise(exercise.id)">×</button>
+                      <div class="manual-builder__move-row">
+                        <label>Ficha de destino
+                          <select class="manual-builder__move" [value]="moveDestinations()[exercise.id] ?? exercise.groupId" [attr.aria-label]="'Escolher ficha de destino para ' + exercise.name" (change)="setMoveDestination(exercise.id, $event)">
+                            @for (option of groups(); track option.id) { <option [value]="option.id">{{ option.name || 'Ficha sem nome' }}</option> }
+                          </select>
+                        </label>
+                        <button type="button" class="manual-builder__move-button" [disabled]="(moveDestinations()[exercise.id] ?? exercise.groupId) === group.id" (click)="moveExercise(exercise.id, group.id)">Mover exercício</button>
+                        @if (exercisesInGroup(group.id).length > 1) { <button type="button" class="manual-builder__separate" (click)="separateExercise(exercise)">Criar ficha só para ele</button> }
+                      </div>
                     </li>
                   }
                 </ol>

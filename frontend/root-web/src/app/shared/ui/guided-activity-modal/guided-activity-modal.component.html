@@ -1,66 +1,88 @@
 <div class="guided-activity__backdrop" role="presentation" (click)="close()">
   <section class="guided-activity" role="dialog" aria-modal="true" aria-labelledby="guided-activity-title" (click)="$event.stopPropagation()" (keydown.escape)="close()">
-    <button type="button" class="guided-activity__close" aria-label="Fechar" (click)="close()">×</button>
-    <p class="guided-activity__eyebrow">UM PASSO DE CADA VEZ</p>
-    <h2 id="guided-activity-title">{{ activity().title }}</h2>
+    <header class="guided-activity__header">
+      <span class="guided-activity__category-icon" [style.color]="'var(' + activity().category.colorVar + ')'">
+        <app-root-icon [name]="activity().category.icon" [size]="22" />
+      </span>
+      <div class="guided-activity__heading-copy">
+        <p class="guided-activity__eyebrow">{{ activity().category.label }} · ROOT</p>
+        <h2 id="guided-activity-title">{{ activity().title }}</h2>
+      </div>
+      <button type="button" class="guided-activity__close" aria-label="Fechar e voltar" (click)="close()">×</button>
+    </header>
 
     @if (phase() === 'choose') {
       @if (isWater()) {
-        <p>Como prefere registrar seu copo de água?</p>
+        <p class="guided-activity__intro">Escolha como quer registrar sua água hoje.</p>
         <div class="guided-activity__choices">
-          <button type="button" (click)="startWaterGame()"><span aria-hidden="true">🥛</span><strong>Equilibrar o copo</strong><small>Um mini jogo rapidinho</small></button>
-          <button type="button" (click)="startWaterAnimation()"><span aria-hidden="true">💧</span><strong>Ver uma animação</strong><small>Uma pausa para beber água</small></button>
+          <button type="button" class="guided-activity__choice" (click)="startWaterGame()"><span class="guided-activity__choice-icon" aria-hidden="true">🎮</span><span><strong>Jogar Encha o Copo</strong><small>Pegue 5 gotinhas no desafio ROOT</small></span><span class="guided-activity__choice-arrow" aria-hidden="true">›</span></button>
+          <button type="button" class="guided-activity__choice" (click)="startWaterAnimation()"><span class="guided-activity__choice-icon" aria-hidden="true">💧</span><span><strong>Ver a animação</strong><small>Uma pausa rápida com companhia</small></span><span class="guided-activity__choice-arrow" aria-hidden="true">›</span></button>
         </div>
+        <button type="button" class="guided-activity__skip" (click)="finish()">Registrar sem participar</button>
       } @else if (isMeal()) {
-        <p>Você gostaria de companhia e apoio durante sua refeição?</p>
+        <p class="guided-activity__intro">Quer companhia virtual para este momento?</p>
         <div class="guided-activity__choices">
-          <button type="button" (click)="startSupport()"><span aria-hidden="true">🍽️</span><strong>Sim, quero companhia</strong><small>Uma animação acompanha sua pausa</small></button>
-          <button type="button" class="guided-activity__already" (click)="finish()">Já fiz minha refeição</button>
+          <button type="button" class="guided-activity__choice" (click)="startSupport()"><span class="guided-activity__choice-icon" aria-hidden="true">🍽️</span><span><strong>Sim, fica comigo</strong><small>Uma animação acompanha sua refeição</small></span><span class="guided-activity__choice-arrow" aria-hidden="true">›</span></button>
         </div>
+        <button type="button" class="guided-activity__skip" (click)="finish()">Registrar sem companhia</button>
       } @else if (isSleep()) {
-        <p>Quer ajuda para desacelerar ou já concluiu seu descanso?</p>
+        <p class="guided-activity__intro">Como você quer cuidar do seu descanso?</p>
         <div class="guided-activity__choices">
-          <button type="button" (click)="startSupport()"><span aria-hidden="true">🌙</span><strong>Quero ajuda para relaxar</strong><small>Uma animação tranquila para encerrar o dia</small></button>
-          <button type="button" class="guided-activity__already" (click)="finish()">Já descansei</button>
+          <button type="button" class="guided-activity__choice" (click)="startSupport()"><span class="guided-activity__choice-icon" aria-hidden="true">🌙</span><span><strong>Quero desacelerar</strong><small>Uma animação tranquila para encerrar o dia</small></span><span class="guided-activity__choice-arrow" aria-hidden="true">›</span></button>
         </div>
+        <button type="button" class="guided-activity__skip" (click)="finish()">Registrar sem animação</button>
       } @else {
-        <p>Como prefere fazer esta atividade?</p>
+        <p class="guided-activity__intro">Escolha o que funciona melhor para você agora.</p>
         <div class="guided-activity__choices">
-          <button type="button" (click)="startTimer()"><span aria-hidden="true">⏱️</span><strong>Começar agora</strong><small>Contar {{ activity().durationMinutes }} min nesta tela</small></button>
-          <button type="button" (click)="startSupport()"><span aria-hidden="true">🙋</span><strong>Quero ajuda</strong><small>Ver uma orientação simples antes de começar</small></button>
-          <button type="button" class="guided-activity__already" (click)="finish()">Já concluí em outro momento</button>
+          <button type="button" class="guided-activity__choice" (click)="startTimer()"><span class="guided-activity__choice-icon" aria-hidden="true">⏱️</span><span><strong>Começar agora</strong><small>Um temporizador de {{ activity().durationMinutes }} min</small></span><span class="guided-activity__choice-arrow" aria-hidden="true">›</span></button>
+          <button type="button" class="guided-activity__choice" (click)="startSupport()"><span class="guided-activity__choice-icon" aria-hidden="true">🙋</span><span><strong>Preciso de uma ideia</strong><small>Ver uma orientação simples para começar</small></span><span class="guided-activity__choice-arrow" aria-hidden="true">›</span></button>
         </div>
+        <button type="button" class="guided-activity__skip" (click)="finish()">Registrar sem temporizador</button>
       }
     } @else if (phase() === 'timer') {
+      <div class="guided-activity__step"><span>ATIVIDADE EM ANDAMENTO</span><strong>{{ activity().durationMinutes }} min</strong></div>
       <div class="guided-activity__timer" role="timer" aria-live="polite">{{ timeLabel }}</div>
-      <p class="guided-activity__note">Faça no seu ritmo. Você pode encerrar e registrar quando terminar.</p>
-      <button type="button" class="guided-activity__primary" (click)="finish()">Encerrar e registrar</button>
+      <p class="guided-activity__note">Faça no seu ritmo. Você pode encerrar quando terminar.</p>
+      <button type="button" class="guided-activity__primary" (click)="finish()">Finalizar e registrar</button>
+      <button type="button" class="guided-activity__skip" (click)="close()">Parar sem registrar</button>
     } @else if (phase() === 'water-game') {
-      <div class="guided-activity__glass" aria-hidden="true" [style.transform]="'rotate(' + ((balance() - 50) / 3) + 'deg)'">🥛</div>
-      <p>Ajuste o controle até o copo ficar equilibrado.</p>
-      <label class="guided-activity__range-label" for="glass-balance">Equilíbrio do copo</label>
-      <input id="glass-balance" class="guided-activity__range" type="range" min="0" max="100" [value]="balance()" (input)="updateBalance($event)" />
-      @if (waterGameReady()) {
-        <p class="guided-activity__success" role="status">Boa! O copo está equilibrado.</p>
-        <button type="button" class="guided-activity__primary" (click)="finish()">Confirmar que bebi água</button>
+      <div class="guided-activity__game-top"><span class="guided-activity__game-badge">DESAFIO ROOT</span><span class="guided-activity__game-time">{{ gameSeconds() }}s</span></div>
+      <div class="guided-activity__game-board" tabindex="0" aria-label="Área do jogo. Use as setas esquerda e direita para mover o copo." (keydown)="onGameKey($event)">
+        <span class="guided-activity__drop" aria-hidden="true" [style.left.%]="dropPosition()" [style.top.%]="dropHeight()">💧</span>
+        <span class="guided-activity__game-glass" aria-hidden="true" [style.left.%]="glassPosition()" [style.--water-fill]="caughtDrops() * 20 + '%' "><span>{{ caughtDrops() }}</span></span>
+      </div>
+      <div class="guided-activity__score"><span>Gotinhas</span><strong>{{ caughtDrops() }}<small> / 5</small></strong></div>
+      <p class="guided-activity__game-message" aria-live="polite">{{ gameMessage() }}</p>
+      @if (!gameEnded()) {
+        <div class="guided-activity__game-controls"><button type="button" aria-label="Mover copo para a esquerda" (click)="moveGlass(-1)">←</button><button type="button" aria-label="Mover copo para a direita" (click)="moveGlass(1)">→</button></div>
+      } @else if (caughtDrops() >= 5) {
+        <p class="guided-activity__game-win">Desafio completo! Agora confirme seu registro.</p>
+        <button type="button" class="guided-activity__primary" (click)="finish()">Confirmar copo de água</button>
+      } @else {
+        <div class="guided-activity__game-controls"><button type="button" class="guided-activity__primary" (click)="retryWaterGame()">Tentar de novo</button></div>
       }
+      <button type="button" class="guided-activity__skip" (click)="finish()">Registrar sem jogar</button>
     } @else if (phase() === 'water-animation') {
       <div class="guided-activity__scene guided-activity__scene--water" aria-hidden="true"><span class="guided-activity__face">🙂</span><span class="guided-activity__object">🥛</span></div>
-      <p>Faça uma pausa, beba um pouco de água e confirme quando quiser.</p>
+      <p class="guided-activity__note">Faça uma pausa, beba um pouco de água e confirme quando quiser.</p>
       <button type="button" class="guided-activity__primary" (click)="finish()">Confirmar copo de água</button>
+      <button type="button" class="guided-activity__skip" (click)="finish()">Registrar sem animação</button>
     } @else {
       @if (isMeal()) {
         <div class="guided-activity__scene guided-activity__scene--meal" aria-hidden="true"><span class="guided-activity__face">😊</span><span class="guided-activity__object">🍽️</span></div>
-        <p>Seu companheiro virtual fica aqui com você. Aproveite a refeição com calma; não precisa ter pressa.</p>
+        <p class="guided-activity__note">Seu companheiro virtual fica aqui com você. Aproveite com calma; não precisa ter pressa.</p>
         <button type="button" class="guided-activity__primary" (click)="finish()">Terminei minha refeição</button>
+        <button type="button" class="guided-activity__skip" (click)="finish()">Registrar agora</button>
       } @else if (isSleep()) {
         <div class="guided-activity__scene guided-activity__scene--sleep" aria-hidden="true"><span class="guided-activity__face">😌</span><span class="guided-activity__object">🌙</span></div>
-        <p>Inspire e solte o ar devagar, no seu ritmo. Quando estiver pronto, registre seu descanso.</p>
+        <p class="guided-activity__note">Inspire e solte o ar devagar, no seu ritmo. Quando estiver pronto, registre seu descanso.</p>
         <button type="button" class="guided-activity__primary" (click)="finish()">Registrar meu descanso</button>
+        <button type="button" class="guided-activity__skip" (click)="finish()">Registrar sem animação</button>
       } @else {
         <div class="guided-activity__support-icon" aria-hidden="true">{{ activity().category.icon === 'dumbbell' ? '🏋️' : activity().category.icon === 'activity' ? '🧘' : '🚶' }}</div>
         <p class="guided-activity__note">@if (activity().category.id === 'cardio') { Escolha um ritmo confortável e ajuste a duração ao que funciona para você. } @else if (activity().category.id === 'mobility') { Faça movimentos que já conhece, sem forçar. Pare se sentir desconforto. } @else { Você pode seguir sua ficha ou pedir orientação ao seu profissional de confiança. }</p>
         <button type="button" class="guided-activity__primary" (click)="startTimer()">Começar {{ activity().durationMinutes }} min</button>
+        <button type="button" class="guided-activity__skip" (click)="finish()">Registrar sem orientação</button>
       }
     }
   </section>
