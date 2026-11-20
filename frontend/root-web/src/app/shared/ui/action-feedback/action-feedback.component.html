@@ -1,0 +1,6 @@
+@if (current(); as feedback) {
+  <div class="action-feedback" role="status" aria-live="polite" aria-atomic="true" [attr.data-feedback-id]="feedback.id">
+    <p>{{ feedback.message }}</p>
+    <button type="button" aria-label="Fechar aviso" (click)="dismiss()">×</button>
+  </div>
+}

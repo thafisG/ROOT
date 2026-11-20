@@ -76,3 +76,17 @@
     box-shadow: var(--shadow-focus);
   }
 }
+
+.onboarding__error,
+.onboarding__login {
+  color: var(--text-secondary);
+  font: 0.8125rem/1.5 var(--font-body);
+}
+
+.onboarding__error {
+  color: var(--color-error);
+}
+
+.onboarding__login a {
+  color: var(--color-primary-700);
+}

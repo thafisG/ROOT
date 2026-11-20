@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { IconComponent } from '../../../../shared/ui/icon/icon.component';
 import { HabitLogEntry } from '../../models/dashboard.models';
 
@@ -11,4 +11,5 @@ import { HabitLogEntry } from '../../models/dashboard.models';
 })
 export class RecentHabitsComponent {
   readonly entries = input.required<HabitLogEntry[]>();
+  readonly deleteEntry = output<string>();
 }

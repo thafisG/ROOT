@@ -12,78 +12,78 @@ Convenção de nomenclatura: `categoria-propriedade-variante-escala`, ex: `color
 
 ### 1.1 Filosofia da paleta
 
-Paleta 100% terrosa, sem cores saturadas ou neon. Cada família de cor tem 10 estágios (50→900), seguindo o padrão: 50–100 para fundos suaves, 300–500 para elementos de destaque, 600–900 para texto e estados de alto contraste. Todos os pares texto/fundo abaixo atingem no mínimo **WCAG AA (4.5:1)** para texto padrão e **3:1** para texto grande/ícones.
+Paleta de neutros frios com coral energético, teal de recuperação e âmbar de nutrição. A interface preserva calma e legibilidade, enquanto as cores de categoria conectam visualmente com academia e movimento. Cada família usa fundos suaves e tons mais escuros para texto e ações.
 
 ### 1.2 Neutros — "Paper & Stone" (base da interface)
 
 | Token               | Hex       | Uso                                           |
 | ------------------- | --------- | --------------------------------------------- |
-| `color-neutral-0`   | `#FDFBF7` | Fundo principal (off-white/papel)             |
-| `color-neutral-50`  | `#F7F2EA` | Fundo secundário (linho)                      |
-| `color-neutral-100` | `#EDE4D3` | Fundo de cards / superfícies elevadas         |
-| `color-neutral-200` | `#E0D4BE` | Bordas sutis, divisores                       |
-| `color-neutral-300` | `#C9B99C` | Bordas de destaque, ícones inativos           |
-| `color-neutral-400` | `#A8977A` | Texto terciário / placeholder                 |
-| `color-neutral-500` | `#8A7A63` | Texto secundário                              |
-| `color-neutral-600` | `#6B5D4A` | Texto secundário forte                        |
-| `color-neutral-700` | `#4F4436` | Texto primário em fundos claros (alternativa) |
-| `color-neutral-800` | `#362E24` | Texto primário forte                          |
-| `color-neutral-900` | `#221C16` | Texto primário / títulos (ink)                |
+| `color-neutral-0`   | `#F8F9FA` | Fundo principal                               |
+| `color-neutral-50`  | `#F0F2F4` | Fundo secundário                              |
+| `color-neutral-100` | `#E4E7EB` | Superfícies elevadas                          |
+| `color-neutral-200` | `#D3D8DE` | Bordas sutis, divisores                       |
+| `color-neutral-300` | `#B4BDC7` | Bordas de destaque, ícones inativos           |
+| `color-neutral-400` | `#8995A3` | Texto terciário / placeholder                 |
+| `color-neutral-500` | `#687483` | Texto secundário                              |
+| `color-neutral-600` | `#4D5967` | Texto secundário forte                        |
+| `color-neutral-700` | `#37414D` | Texto de alto contraste                       |
+| `color-neutral-800` | `#252E38` | Texto primário forte                          |
+| `color-neutral-900` | `#171D24` | Texto primário / títulos                      |
 
 ### 1.3 Primária — "Terracotta" (marca, CTAs, recomendação ativa)
 
 | Token               | Hex       | Uso                                         |
 | ------------------- | --------- | ------------------------------------------- |
-| `color-primary-50`  | `#FBEDE6` | Fundo de destaque leve                      |
-| `color-primary-100` | `#F4D3C2` | Fundo de badge/chip                         |
-| `color-primary-200` | `#E8B191` | Hover suave                                 |
-| `color-primary-300` | `#D68F66` | Ícones e acentos                            |
-| `color-primary-400` | `#C97748` | Estado hover de botão primário              |
-| `color-primary-500` | `#B35E34` | **Cor de marca principal** — CTA primário   |
-| `color-primary-600` | `#94492A` | Estado pressed                              |
-| `color-primary-700` | `#743823` | Texto sobre fundo primary-50/100            |
-| `color-primary-800` | `#55291A` | Texto de alto contraste sobre fundos claros |
+| `color-primary-50`  | `#FCEDE8` | Fundo de destaque leve                      |
+| `color-primary-100` | `#F7D6CB` | Fundo de badge/chip                         |
+| `color-primary-200` | `#EBAF9A` | Hover suave                                 |
+| `color-primary-300` | `#DC856A` | Ícones e acentos                            |
+| `color-primary-400` | `#D4694A` | Estado hover de botão primário              |
+| `color-primary-500` | `#C65332` | **Cor de marca principal** — CTA primário   |
+| `color-primary-600` | `#A83F26` | Estado pressed                              |
+| `color-primary-700` | `#84321F` | Texto sobre fundo primary-50/100            |
+| `color-primary-800` | `#612719` | Texto de alto contraste sobre fundos claros |
 | `color-primary-900` | `#3A1C12` | Reservado / dark mode                       |
 
-### 1.4 Secundária — "Moss" (categorias de bem-estar, sucesso, mobilidade)
+### 1.4 Secundária — "Teal" (recuperação, mobilidade e confirmações)
 
 | Token                 | Hex       | Uso                                                   |
 | --------------------- | --------- | ----------------------------------------------------- |
-| `color-secondary-50`  | `#EEF0E4` | Fundo leve                                            |
-| `color-secondary-100` | `#D9DEC3` | Fundo de badge                                        |
-| `color-secondary-300` | `#A2AD79` | Acentos                                               |
-| `color-secondary-500` | `#707C48` | **Cor de sucesso / categoria mobilidade-recuperação** |
-| `color-secondary-700` | `#454C2C` | Texto sobre fundo secondary-50/100                    |
+| `color-secondary-50`  | `#E8F3F1` | Fundo leve                                            |
+| `color-secondary-100` | `#CDE5E1` | Fundo de badge                                        |
+| `color-secondary-300` | `#80B8AF` | Acentos                                               |
+| `color-secondary-500` | `#34786F` | **Cor de recuperação e mobilidade**                  |
+| `color-secondary-700` | `#24544E` | Texto sobre fundo secondary-50/100                    |
 | `color-secondary-900` | `#1D2013` | Reservado / dark mode                                 |
 
-### 1.5 Acento — "Ochre" (alertas suaves, destaques pontuais)
+### 1.5 Acento — "Amber" (nutrição e destaques pontuais)
 
 | Token              | Hex       | Uso                              |
 | ------------------ | --------- | -------------------------------- |
-| `color-accent-50`  | `#FBF1E1` | Fundo leve de aviso              |
-| `color-accent-300` | `#DDAE68` | Ícones de atenção                |
-| `color-accent-500` | `#C08A3E` | **Warning** — usar com moderação |
-| `color-accent-700` | `#8A611F` | Texto sobre fundo accent-50      |
+| `color-accent-50`  | `#FFF4DF` | Fundo leve de aviso              |
+| `color-accent-300` | `#E7B95D` | Ícones de atenção                |
+| `color-accent-500` | `#B87916` | **Nutrição / warning**           |
+| `color-accent-700` | `#76500D` | Texto sobre fundo accent-50      |
 
 ### 1.6 Semânticas
 
 | Token           | Hex                               | Uso                                 |
 | --------------- | --------------------------------- | ----------------------------------- |
-| `color-success` | `color-secondary-500` `#707C48`   | Confirmações, metas atingidas       |
-| `color-warning` | `color-accent-500` `#C08A3E`      | Atenção leve (ex: hidratação baixa) |
+| `color-success` | `color-secondary-500` `#34786F`   | Confirmações, metas atingidas       |
+| `color-warning` | `color-accent-500` `#B87916`      | Atenção leve (ex: hidratação baixa) |
 | `color-error`   | `#A8462F` (clay-red, dessaturado) | Erros de formulário, falhas de sync |
-| `color-info`    | `#6B7D8A` (slate-stone)           | Mensagens neutras do sistema        |
+| `color-info`    | `#3579A8` (blue)                  | Mensagens neutras do sistema        |
 
 ### 1.7 Categorias de Hábito (usadas em ícones, tags e gráficos — nunca no texto corrido)
 
 | Categoria  | Token                 | Hex                           |
 | ---------- | --------------------- | ----------------------------- |
-| Força      | `color-cat-strength`  | `#94492A` (primary-600)       |
-| Mobilidade | `color-cat-mobility`  | `#707C48` (secondary-500)     |
-| Hidratação | `color-cat-hydration` | `#6B7D8A` (slate)             |
-| Sono       | `color-cat-sleep`     | `#5C5470` (mauve dessaturado) |
-| Nutrição   | `color-cat-nutrition` | `#C08A3E` (accent-500)        |
-| Cardio     | `color-cat-cardio`    | `#B35E34` (primary-500)       |
+| Força      | `color-cat-strength`  | `#A83F26` (primary-600)       |
+| Mobilidade | `color-cat-mobility`  | `#34786F` (secondary-500)     |
+| Hidratação | `color-cat-hydration` | `#3579A8` (blue)              |
+| Sono       | `color-cat-sleep`     | `#66568D` (violet)            |
+| Nutrição   | `color-cat-nutrition` | `#B87916` (accent-500)        |
+| Cardio     | `color-cat-cardio`    | `#D85C3B` (coral)              |
 
 ### 1.8 Aplicação (light mode)
 
@@ -91,7 +91,7 @@ Paleta 100% terrosa, sem cores saturadas ou neon. Cada família de cor tem 10 es
 | ----------------- | ------------------------------------------------------ |
 | `bg-page`         | `color-neutral-0`                                      |
 | `bg-surface`      | `color-neutral-50`                                     |
-| `bg-card`         | `#FFFFFF` (branco puro sobre papel, para elevar cards) |
+| `bg-card`         | `#FFFFFF` (superfície elevada)                         |
 | `border-default`  | `color-neutral-200`                                    |
 | `border-strong`   | `color-neutral-300`                                    |
 | `text-primary`    | `color-neutral-900`                                    |
@@ -102,39 +102,39 @@ Paleta 100% terrosa, sem cores saturadas ou neon. Cada família de cor tem 10 es
 
 ### 1.9 Racional de Design — por que esta paleta
 
-**Por que tons terrosos e não a paleta "fitness padrão" (preto + neon)?**
-Apps de fitness convencionais usam preto/vermelho/verde vibrante porque comunicam intensidade e urgência — adequado para quem já está motivado, mas hostil para quem está tentando criar um hábito do zero (caso de Rafael, persona 2.2) ou para quem já sofre de fadiga de "cobrança" em apps de produtividade. Tons terrosos comunicam o oposto: permanência, natureza, ausência de julgamento. Isso é coerente com o princípio de produto "calma antes de estímulo" (seção 1.6 do documento de Fase 1).
+**Por que neutros frios com coral, teal e âmbar?**
+Neutros frios dão clareza de painel e se conectam com ferramentas de treino. Coral traz energia para ações, teal representa recuperação e âmbar destaca nutrição. A paleta evita tanto a estética de produtos naturais quanto o neon que pode transformar progresso em cobrança.
 
-**Por que terracotta como cor de marca, e não verde (o clichê de "saúde")?**
-Verde-saúde é o padrão de praticamente todo concorrente (Google Fit, muitos apps de nutrição). Terracotta diferencia visualmente o ROOT à primeira vista, mantém a família cromática terrosa e ainda carrega associação com energia/ação (mais quente que o verde), o que faz sentido para uma cor de CTA — botões precisam "pedir" o toque do usuário. O verde foi reservado como secundária, ligado a recuperação/mobilidade/sucesso, um uso mais alinhado ao seu significado psicológico de equilíbrio.
+**Por que coral como cor de marca, e não um verde dominante?**
+Coral conecta com energia e movimento. Teal fica reservado para recuperação, mobilidade e sucesso; âmbar destaca nutrição. As categorias têm acentos próprios para diferenciar treino e hábitos sem depender de uma cor única de "saúde".
 
 **Por que 10 estágios por família em vez de 5?**
-Uma paleta terrosa tem menos "espaço" de saturação para trabalhar do que uma paleta vibrante — cores terrosas ficam parecidas entre si em poucos estágios. Dez estágios garantem granularidade suficiente para diferenciar claramente fundo (50–100), estado padrão (300–500) e texto (700–900) sem recorrer a preto ou cinza puro, o que quebraria a identidade "chalk".
+Uma escala de neutros frios mantém a leitura clara e dá contraste aos acentos de categoria. Os níveis distinguem fundo (50–100), estados interativos (300–500) e texto (700–900).
 
 **Por que uma cor dedicada por categoria de hábito (seção 1.7)?**
 O motor de recomendação (Fase 8) precisa comunicar rapidamente "que tipo" de sugestão está sendo feita, antes mesmo do usuário ler o texto — reconhecimento visual reduz esforço cognitivo (princípio de UX do briefing). Cor por categoria também é o que permite ao gráfico de Analytics (seção 6.3 da Fase 1, "visão geral de equilíbrio") ser lido em segundos. Essas cores são deliberadamente restritas a contextos de dado/categorização — nunca usadas como cor de texto corrido, para não competir com a paleta funcional (primária/neutra).
 
 **Por que o cuidado extra com contraste (WCAG AA)?**
-Paletas terrosas de baixa saturação são particularmente propensas a falhar em acessibilidade — é fácil parecer "elegante" e na prática ficar ilegível para usuários com baixa visão. Por isso cada par texto/fundo documentado (seção 1.8) foi verificado para 4.5:1, e a cor de marca (`primary-500`) só é usada como fundo de texto branco, nunca como texto sobre fundo claro (para isso existe `primary-700`/`800`, mais escuros e com contraste garantido).
+Combinações de texto e fundo precisam ser verificadas para manter contraste WCAG AA. Tons escuros da paleta são usados para texto; cores de categoria identificam dados e ícones.
 
 ---
 
 ## 2. Dark Mode (preparado, não implementado na v1)
 
-Estratégia: inversão de elevação, não inversão pura de cor — mantém a identidade "chalk/terracotta" mesmo no escuro (tons mais próximos de argila queimada e carvão do que preto puro).
+Estratégia: inversão de elevação com neutros frios, mantendo coral, teal e âmbar em tons ajustados para contraste.
 
 | Papel                       | Token light         | Token dark                                             |
 | --------------------------- | ------------------- | ------------------------------------------------------ |
-| `bg-page`                   | `#FDFBF7`           | `#1A1613` (carvão quente)                              |
-| `bg-surface`                | `#F7F2EA`           | `#221C16`                                              |
-| `bg-card`                   | `#FFFFFF`           | `#2B2420`                                              |
+| `bg-page`                   | `#F8F9FA`           | `#171D24`                                              |
+| `bg-surface`                | `#F0F2F4`           | `#252E38`                                              |
+| `bg-card`                   | `#FFFFFF`           | `#303B47`                                              |
 | `border-default`            | `color-neutral-200` | `#3A322A`                                              |
 | `text-primary`              | `color-neutral-900` | `#F2ECE1`                                              |
 | `text-secondary`            | `color-neutral-600` | `#C9B99C`                                              |
-| `color-primary-500` (marca) | `#B35E34`           | `#D68F66` (mais claro, para contraste em fundo escuro) |
-| `color-secondary-500`       | `#707C48`           | `#A2AD79`                                              |
+| `color-primary-500` (marca) | `#C65332`           | `#EBAF9A` (mais claro, para contraste em fundo escuro) |
+| `color-secondary-500`       | `#34786F`           | `#80B8AF`                                              |
 
-**Racional:** a maioria dos design systems trata dark mode como "inverter para preto". Isso quebraria a identidade chalk/terrosa do ROOT — preto puro é frio e associado a apps técnicos/gamer, exatamente o que o briefing pede para evitar. Por isso o fundo escuro parte de um carvão com base marrom-quente (`#1A1613`), não de um cinza-azulado neutro, e as cores de marca clareiam um estágio (500→300/400 equivalente) para manter contraste sem perder saturação. Essa decisão é registrada agora, mesmo sem implementação na v1, porque retrofitar dark mode depois de telas prontas costuma gerar inconsistência — decidir a estratégia cedo é o que garante que ela seja "preparada" de verdade, como pede o briefing.
+**Racional:** manter níveis de elevação distintos e clarear os acentos de marca para preservar contraste em fundos escuros. O tema escuro continua planejado, ainda sem implementação.
 
 ---
 
@@ -144,28 +144,28 @@ Estratégia: inversão de elevação, não inversão pura de cor — mantém a i
 
 | Token                  | Família              | Uso                                                                                       |
 | ---------------------- | -------------------- | ----------------------------------------------------------------------------------------- |
-| `font-display`         | **DM Serif Display** | Títulos, headlines, saudação do dashboard, números de destaque (streak, métricas grandes) |
+| `font-display`         | **Inter Semibold** | Títulos, headlines, saudação do dashboard, números de destaque (streak, métricas grandes) |
 | `font-body`            | **Inter**            | Corpo de texto, labels, botões, navegação, formulários                                    |
 | `font-mono` (opcional) | JetBrains Mono       | Dados técnicos/debug (não usado em produção visível)                                      |
 
-**Justificativa de UX:** DM Serif Display traz o caráter "editorial/chalk" desejado nos títulos, transmitindo sofisticação sem parecer corporativo; Inter garante legibilidade excelente em telas pequenas para dados frequentemente escaneados (métricas, listas).
+**Justificativa de UX:** Inter mantém os títulos compactos e legíveis, com uma hierarquia visual mais próxima de ferramentas de treino e painéis de atividade.
 
 **Por que serifada nos títulos, contrariando a maioria dos apps mobile?**
-Quase todo app fitness usa sans-serif em peso pesado (bold/black) para transmitir força e urgência. Uma serifada elegante como DM Serif Display comunica o oposto — cuidado, curadoria, "algo pensado para você" — e é exatamente essa a diferenciação editorial pedida no briefing. O risco de serifadas (menor legibilidade em telas pequenas) é mitigado por dois limites de uso: DM Serif Display nunca é usada em corpo de texto ou em elementos com alta densidade de leitura (listas, tabelas), apenas em headlines curtas e números de destaque — contextos onde o usuário reconhece a forma da palavra/número mais do que lê letra a letra.
+Títulos e números usam a mesma sans-serif para que listas, métricas e ações tenham uma linguagem visual consistente em todas as telas.
 
 **Por que Inter e não outra grotesca (ex: Manrope, sugerida como alternativa no briefing)?**
 Ambas cumpririam o papel; Inter foi escolhida por ter otimização específica para telas (hinting em tamanhos pequenos) e uma família de pesos mais completa, importante para diferenciar hierarquia (label 500 vs. body 400) sem depender de tamanho de fonte como único sinal — o que ajuda usuários com baixa acuidade visual a diferenciar níveis de informação mesmo em zoom.
 
 **Por que números de destaque (`type-numeric-lg`) usam a serifada, e não uma fonte "display" numérica?**
-Métricas como streak e calorias são o dado mais "emocional" da tela — o número que representa o esforço do usuário. Usar a mesma família dos títulos (DM Serif Display) reforça que esse número é tratado como conquista editorial, não como estatística fria de dashboard corporativo.
+Métricas como sequência, XP e atividades concluídas usam o mesmo sistema tipográfico do restante do painel para comunicar progresso sem criar cobrança.
 
 ### 3.2 Escala Tipográfica (mobile-first, `rem`, base 16px)
 
 | Token             | Tamanho          | Line-height | Peso | Família          | Uso                                                           |
 | ----------------- | ---------------- | ----------- | ---- | ---------------- | ------------------------------------------------------------- |
-| `type-display-lg` | 2.5rem / 40px    | 1.1         | 400  | DM Serif Display | Hero / saudação principal (desktop)                           |
-| `type-display-md` | 2rem / 32px      | 1.15        | 400  | DM Serif Display | Saudação (mobile), títulos de página                          |
-| `type-display-sm` | 1.5rem / 24px    | 1.2         | 400  | DM Serif Display | Títulos de seção, headline de card grande                     |
+| `type-display-lg` | 2.5rem / 40px    | 1.1         | 600  | Inter            | Hero / saudação principal (desktop)                           |
+| `type-display-md` | 2rem / 32px      | 1.15        | 600  | Inter            | Saudação (mobile), títulos de página                          |
+| `type-display-sm` | 1.5rem / 24px    | 1.2         | 600  | Inter            | Títulos de seção, headline de card grande                     |
 | `type-heading-lg` | 1.25rem / 20px   | 1.3         | 600  | Inter            | Títulos de card (Workout Card, Goal Card)                     |
 | `type-heading-md` | 1.125rem / 18px  | 1.35        | 600  | Inter            | Subtítulos                                                    |
 | `type-heading-sm` | 1rem / 16px      | 1.4         | 600  | Inter            | Títulos de componentes pequenos                               |
@@ -174,7 +174,7 @@ Métricas como streak e calorias são o dado mais "emocional" da tela — o núm
 | `type-body-sm`    | 0.75rem / 12px   | 1.5         | 400  | Inter            | Legendas, metadados                                           |
 | `type-label`      | 0.8125rem / 13px | 1.4         | 500  | Inter            | Labels de formulário, tabs                                    |
 | `type-caption`    | 0.6875rem / 11px | 1.4         | 500  | Inter            | Timestamps, tags pequenas (uppercase + letter-spacing 0.04em) |
-| `type-numeric-lg` | 2.25rem / 36px   | 1           | 400  | DM Serif Display | Números de destaque (streak, calorias)                        |
+| `type-numeric-lg` | 2.25rem / 36px   | 1           | 700  | Inter            | Números de destaque (XP e atividades)                         |
 | `type-numeric-md` | 1.5rem / 24px    | 1.1         | 500  | Inter            | Números secundários em métricas                               |
 
 **Desktop (≥1024px):** `type-display-lg` sobe para 3rem/48px; `type-display-md` para 2.25rem/36px. Demais tamanhos permanecem estáveis (Inter já otimizada para leitura em qualquer tela).
@@ -214,7 +214,7 @@ Escala base **4px**, progressão quase-geométrica para cobrir microespaçamento
 
 ## 5. Radius Tokens
 
-Bordas suavemente arredondadas para reforçar a sensação orgânica/calma (nunca cantos vivos, nunca "pill" agressivo em elementos grandes):
+Bordas moderadamente arredondadas para manter os componentes confortáveis e firmes, sem formas excessivamente orgânicas:
 
 | Token         | Valor | Uso                                                          |
 | ------------- | ----- | ------------------------------------------------------------ |
@@ -225,13 +225,13 @@ Bordas suavemente arredondadas para reforçar a sensação orgânica/calma (nunc
 | `radius-2xl`  | 32px  | Modais grandes, ilustrações contidas                         |
 | `radius-full` | 999px | Avatares, FAB, Switch, Progress circular                     |
 
-**Racional:** cantos vivos (radius 0-4px) foram descartados por completo — associam-se a interfaces técnicas/utilitárias (planilhas, dashboards corporativos), o oposto do "organic design" pedido no briefing. Ao mesmo tempo, evitamos "pill shape" (radius-full) em elementos grandes como cards e botões primários, porque esse estilo hoje é fortemente associado a apps de produtividade genéricos (SaaS) e reduz a percepção de sofisticação. A progressão 8→32px foi calibrada para que o radius pareça proporcional ao tamanho do elemento (um Chip pequeno com radius grande demais pareceria uma bolha; um Card grande com radius pequeno demais pareceria rígido) — regra prática: quanto maior a superfície, maior o radius, até o teto de 32px onde a forma deixa de parecer "arredondada" e passa a parecer "orgânica".
+**Racional:** cantos de 8–24px diferenciam campos, botões e cards mantendo uma apresentação atual. O raio de 32px fica reservado a modais grandes.
 
 ---
 
 ## 6. Shadow Tokens (elevação visual)
 
-Sombras suaves, difusas e com tonalidade quente (nunca preto puro) — reforça o "soft shadow" do estilo chalk/editorial:
+Sombras suaves e neutras para distinguir superfícies sem competir com dados ou ações:
 
 | Token          | Valor (CSS)                          | Uso                                                    |
 | -------------- | ------------------------------------ | ------------------------------------------------------ |
@@ -241,7 +241,7 @@ Sombras suaves, difusas e com tonalidade quente (nunca preto puro) — reforça 
 | `shadow-lg`    | `0 12px 32px rgba(54, 46, 36, 0.14)` | Bottom Sheet, Modal                                    |
 | `shadow-focus` | `0 0 0 3px rgba(179, 94, 52, 0.25)`  | Anel de foco em elementos interativos (acessibilidade) |
 
-**Racional:** sombras com preto puro (`rgba(0,0,0,...)`) criam uma dissonância sutil, mas perceptível, sobre um fundo quente como `neutral-0` (#FDFBF7) — o cinza-azulado da sombra "briga" com o bege do papel. Usar a cor `neutral-900` (#362E24, um marrom escuro) como base do `rgba` faz a sombra parecer "tingida" pelo mesmo material do restante da interface, como se fosse a sombra real de um objeto sobre papel — reforço direto da referência "chalk portrait/paper texture" do briefing. As opacidades são propositalmente baixas (6-14%) porque sombras fortes comunicam urgência/flutuação agressiva; o objetivo aqui é sugerir profundidade mínima, suficiente para hierarquia, sem quebrar a sensação de calma.
+**Racional:** as sombras usam o neutro principal em baixa opacidade, mantendo hierarquia visual sem aparência pesada.
 
 ---
 

@@ -1,21 +1,23 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { IconComponent } from '../../shared/ui/icon/icon.component';
 import { GreetingHeaderComponent } from './components/greeting-header/greeting-header.component';
+import { GamificationSummaryComponent } from './components/gamification-summary/gamification-summary.component';
 import { RecommendationCardComponent } from './components/recommendation-card/recommendation-card.component';
-import { NextWorkoutCardComponent } from './components/next-workout-card/next-workout-card.component';
 import { WeeklySummaryComponent } from './components/weekly-summary/weekly-summary.component';
 import { RecentHabitsComponent } from './components/recent-habits/recent-habits.component';
 import { SuggestedActivitiesComponent } from './components/suggested-activities/suggested-activities.component';
 import { InteractionService } from '../../core/interaction/interaction.service';
+import { ActionFeedbackService } from '../../core/feedback/action-feedback.service';
+import { GuidedActivity, GuidedActivityModalComponent } from '../../shared/ui/guided-activity-modal/guided-activity-modal.component';
+import { calculateActivityStreak } from '../../core/interaction/activity-metrics';
 import { RecommendationService } from '../../core/recommendation/recommendation.service';
 import { UserService } from '../../core/user/user.service';
-import { ExperienceLevel } from '../onboarding/models/onboarding.models';
 import {
   CATEGORIES,
   HabitCategoryId,
   HabitLogEntry,
   InteractionEvent,
-  NextWorkout,
   Recommendation,
   SuggestedActivity,
   WeeklyCategoryStat,
@@ -25,12 +27,14 @@ import {
   selector: 'app-root-dashboard',
   imports: [
     IconComponent,
+    RouterLink,
     GreetingHeaderComponent,
+    GamificationSummaryComponent,
     RecommendationCardComponent,
-    NextWorkoutCardComponent,
     WeeklySummaryComponent,
     RecentHabitsComponent,
     SuggestedActivitiesComponent,
+    GuidedActivityModalComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dashboard.component.html',
@@ -38,49 +42,68 @@ import {
 })
 export class DashboardComponent {
   private readonly interactionService = inject(InteractionService);
+  private readonly feedback = inject(ActionFeedbackService);
   private readonly recommendationService = inject(RecommendationService);
   private readonly userService = inject(UserService);
 
   protected readonly showAlternatives = signal(false);
+  protected readonly activeActivity = signal<GuidedActivity | null>(null);
+  protected readonly pendingRecommendationClickId = signal<string | null>(null);
 
   protected readonly userName = computed(() => this.userService.profile()?.name ?? 'Visitante');
 
   protected readonly recommendationState = this.recommendationService.result;
 
   protected readonly streakDays = computed(() =>
-    this.calculateStreak(this.interactionService.history()),
+    calculateActivityStreak(this.interactionService.history()),
   );
 
-  protected readonly nextWorkout = computed<NextWorkout>(() => ({
-    category: CATEGORIES.mobility,
-    name: 'Mobilidade completa — corpo todo',
-    scheduledLabel: 'Hoje, 18:30',
-    durationMinutes: 25,
-    level: this.mapExperienceToLevel(this.userService.profile()?.experienceLevel),
-    exerciseCount: 8,
-  }));
+  protected readonly experiencePoints = this.interactionService.experiencePoints;
 
-  protected readonly suggestedActivities = signal<SuggestedActivity[]>([
-    { id: 'a1', category: CATEGORIES.mobility, title: 'Alongamento matinal', durationMinutes: 8 },
-    { id: 'a2', category: CATEGORIES.hydration, title: 'Registrar hidratação', durationMinutes: 1 },
-    { id: 'a3', category: CATEGORIES.nutrition, title: 'Planejar refeições', durationMinutes: 5 },
-    { id: 'a4', category: CATEGORIES.sleep, title: 'Registrar sono da noite', durationMinutes: 1 },
-    { id: 'a5', category: CATEGORIES.cardio, title: 'Caminhada leve', durationMinutes: 15 },
-  ]);
+  protected readonly suggestedActivities = computed<SuggestedActivity[]>(() => {
+    const activityDetails: Record<HabitCategoryId, { title: string; durationMinutes: number }> = {
+      strength: { title: 'Fazer um treino de força', durationMinutes: 25 },
+      mobility: { title: 'Fazer alongamento', durationMinutes: 8 },
+      hydration: { title: 'Registrar sua hidratação', durationMinutes: 1 },
+      sleep: { title: 'Registrar seu sono', durationMinutes: 1 },
+      nutrition: { title: 'Registrar uma refeição', durationMinutes: 2 },
+      cardio: { title: 'Fazer uma caminhada leve', durationMinutes: 15 },
+    };
+    const history = this.interactionService.history();
+    const now = Date.now();
+    const weekStart = now - 7 * 24 * 60 * 60 * 1000;
+    const frequency = new Map<HabitCategoryId, number>();
+
+    for (const id of Object.keys(CATEGORIES) as HabitCategoryId[]) frequency.set(id, 0);
+    for (const event of history) {
+      if (
+        (event.type === 'habit_completed' || event.type === 'workout_completed') &&
+        new Date(event.createdAt).getTime() >= weekStart && new Date(event.createdAt).getTime() <= now
+      ) {
+        frequency.set(event.category, (frequency.get(event.category) ?? 0) + 1);
+      }
+    }
+
+    return [...frequency.entries()]
+      .sort(([aId, aCount], [bId, bCount]) => aCount - bCount || aId.localeCompare(bId))
+      .slice(0, 5)
+      .map(([id]) => ({ id, category: CATEGORIES[id], ...activityDetails[id] }));
+  });
 
   protected readonly weeklyStats = computed<WeeklyCategoryStat[]>(() => {
     const history = this.interactionService.history();
-    const windowStart = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const now = Date.now();
+    const windowStart = now - 7 * 24 * 60 * 60 * 1000;
 
     return (Object.keys(CATEGORIES) as HabitCategoryId[]).map((id) => {
       const count = history.filter(
         (e) =>
           e.category === id &&
           (e.type === 'habit_completed' || e.type === 'workout_completed') &&
-          new Date(e.createdAt).getTime() >= windowStart,
+          new Date(e.createdAt).getTime() >= windowStart && new Date(e.createdAt).getTime() <= now,
       ).length;
 
-      return { category: CATEGORIES[id], percentage: Math.min(100, count * 20) };
+      return { category: CATEGORIES[id], count };
     });
   });
 
@@ -94,13 +117,34 @@ export class DashboardComponent {
   );
 
   protected onAcceptRecommendation(recommendation: Recommendation): void {
-    this.interactionService.register('recommendation_clicked', recommendation.category.id);
-    this.interactionService.register('habit_completed', recommendation.category.id);
+    const clicked = this.interactionService.register('recommendation_clicked', recommendation.category.id);
+    this.pendingRecommendationClickId.set(clicked.id);
+    this.activeActivity.set({
+      category: recommendation.category,
+      title: recommendation.title,
+      durationMinutes: recommendation.durationMinutes,
+    });
     this.showAlternatives.set(false);
+    this.feedback.show('Escolha como quer fazer esta atividade.');
+  }
+
+  protected completeActivity(activity: GuidedActivity): void {
+    this.interactionService.register('habit_completed', activity.category.id as HabitCategoryId, activity.details || activity.title);
+    this.activeActivity.set(null);
+    this.pendingRecommendationClickId.set(null);
+    this.feedback.show(`${activity.title} concluída. Você ganhou 10 XP.`);
+  }
+
+  protected dismissActivity(): void {
+    const clickId = this.pendingRecommendationClickId();
+    if (clickId) this.interactionService.deleteEvent(clickId);
+    this.pendingRecommendationClickId.set(null);
+    this.activeActivity.set(null);
   }
 
   protected onDismissRecommendation(recommendation: Recommendation): void {
     this.interactionService.register('recommendation_dismissed', recommendation.category.id);
+    this.feedback.show('Recomendação dispensada. Vou considerar sua escolha nas próximas sugestões.');
   }
 
   protected onToggleAlternatives(): void {
@@ -108,35 +152,23 @@ export class DashboardComponent {
   }
 
   protected onSelectAlternative(recommendation: Recommendation): void {
-    this.interactionService.register('recommendation_clicked', recommendation.category.id);
-    this.interactionService.register('habit_completed', recommendation.category.id);
-    this.showAlternatives.set(false);
-  }
-
-  protected onCompleteWorkout(): void {
-    this.interactionService.register('workout_completed', this.nextWorkout().category.id);
+    this.onAcceptRecommendation(recommendation);
   }
 
   protected onSelectActivity(activity: SuggestedActivity): void {
-    this.interactionService.register('habit_completed', activity.category.id);
+    this.activeActivity.set(activity);
   }
 
-  private calculateStreak(history: InteractionEvent[]): number {
-    const activityDates = new Set(
-      history
-        .filter((e) => e.type === 'habit_completed' || e.type === 'workout_completed')
-        .map((e) => new Date(e.createdAt).toDateString()),
+  protected onDeleteActivity(id: string): void {
+    const deleted = this.interactionService.deleteEvent(id);
+    if (!deleted) return;
+
+    const wasCompleted = deleted.type === 'habit_completed' || deleted.type === 'workout_completed';
+    this.feedback.show(
+      wasCompleted
+        ? 'Registro apagado. Os 10 XP dessa atividade também foram removidos.'
+        : 'Ação apagada do histórico.',
     );
-
-    let streak = 0;
-    const cursor = new Date();
-
-    while (activityDates.has(cursor.toDateString())) {
-      streak += 1;
-      cursor.setDate(cursor.getDate() - 1);
-    }
-
-    return streak;
   }
 
   private formatRelativeTime(iso: string): string {
@@ -158,19 +190,13 @@ export class DashboardComponent {
     const label = CATEGORIES[event.category].label.toLowerCase();
     switch (event.type) {
       case 'workout_completed':
-        return `Treino de ${label} concluído`;
+        return event.details ? `Treino ${event.details} concluído` : `Treino de ${label} concluído`;
       case 'habit_completed':
-        return `Hábito de ${label} registrado`;
+        return event.details ? event.details : `Hábito de ${label} registrado`;
       case 'recommendation_clicked':
         return `Recomendação de ${label} aceita`;
       default:
         return `${label} atualizado`;
     }
-  }
-
-  private mapExperienceToLevel(level?: ExperienceLevel): NextWorkout['level'] {
-    if (level === 'beginner') return 'Iniciante';
-    if (level === 'advanced') return 'Avançado';
-    return 'Intermediário';
   }
 }

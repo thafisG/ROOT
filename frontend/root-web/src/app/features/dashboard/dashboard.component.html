@@ -1,5 +1,6 @@
 <main class="dashboard">
   <app-root-greeting-header [userName]="userName()" [streakDays]="streakDays()" />
+  <app-root-gamification-summary [experiencePoints]="experiencePoints()" />
 
   @if (recommendationState().isLearning) {
     <div class="dashboard__learning">
@@ -39,7 +40,11 @@
 
   <div class="dashboard__grid">
     <div class="dashboard__grid-main">
-      <app-root-next-workout-card [workout]="nextWorkout()" (complete)="onCompleteWorkout()" />
+      <section class="dashboard__workout-empty" aria-labelledby="workout-empty-title">
+        <h3 id="workout-empty-title">Nenhum treino agendado</h3>
+        <p>Escolha uma das sugestões para começar uma atividade hoje.</p>
+        <a routerLink="/treinos">Criar ou iniciar um treino</a>
+      </section>
       <app-root-weekly-summary [stats]="weeklyStats()" />
       <app-root-suggested-activities
         [activities]="suggestedActivities()"
@@ -48,7 +53,11 @@
     </div>
 
     <aside class="dashboard__grid-side">
-      <app-root-recent-habits [entries]="recentHabits()" />
+      <app-root-recent-habits [entries]="recentHabits()" (deleteEntry)="onDeleteActivity($event)" />
     </aside>
   </div>
+
+  @if (activeActivity(); as activity) {
+    <app-guided-activity-modal [activity]="activity" (complete)="completeActivity($event)" (dismiss)="dismissActivity()" />
+  }
 </main>

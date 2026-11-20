@@ -71,3 +71,19 @@
   color: var(--text-muted);
   margin: var(--space-2) 0 0;
 }
+
+.recent-habits__delete {
+  flex: 0 0 auto;
+  padding: var(--space-4) var(--space-8);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  background: transparent;
+  font: 0.6875rem var(--font-body);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--color-error);
+    color: var(--color-error);
+  }
+}
