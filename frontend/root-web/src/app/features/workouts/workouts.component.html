@@ -1,0 +1,295 @@
+<main class="workouts-page">
+  <header class="workouts-page__header">
+    <div>
+      <p class="workouts-page__eyebrow">Treino de academia</p>
+      <h1>{{ isGallery ? 'Galeria de cartas' : 'Seus treinos' }}</h1>
+      <p>{{ isGallery ? 'Sua coleção de personagens fortalecidos pelos treinos concluídos.' : 'Organize suas fichas e acompanhe cada sessão.' }}</p>
+    </div>
+    <span class="workouts-page__count">{{ routinesForPage().length }} {{ isGallery ? 'cartas' : 'fichas' }}</span>
+  </header>
+
+  <nav class="workout-subnav" aria-label="Área de treinos">
+    <a routerLink="/treinos" routerLinkActive="workout-subnav__link--active" [routerLinkActiveOptions]="{ exact: true }">Fichas para treinar</a>
+    <a routerLink="/galeria-cartas" routerLinkActive="workout-subnav__link--active">Galeria de cartas <span>{{ completedRoutines().length }}</span></a>
+  </nav>
+
+  @if (activeWorkout(); as active) {
+    <section class="workout-session" aria-labelledby="workout-session-title">
+      <div class="workout-section__heading">
+        <div>
+          <p class="workouts-page__eyebrow">{{ rpgMode() ? 'Aventura ROOT · missão em andamento' : 'Sessão em andamento' }}</p>
+          <h2 id="workout-session-title">{{ active.name }}</h2>
+        </div>
+        <span class="workout-session__progress">{{ completedExercises().length }}/{{ active.exercises.length }}</span>
+      </div>
+      <p class="workout-session__hint">{{ rpgMode() ? 'Cada exercício é uma etapa da missão. Complete todas para vencer e evoluir sua carta.' : 'Marque os exercícios concluídos.' }}</p>
+      <ul>
+        @for (exercise of active.exercises; track exercise) {
+          <li>
+            <label>
+              <input
+                type="checkbox"
+                [checked]="completedExercises().includes(exercise)"
+                (change)="toggleExercise(exercise)"
+              />
+              <span>@if (rpgMode()) { <small class="workout-session__quest-step">ETAPA {{ $index + 1 }}</small> } {{ exercise }}</span>
+            </label>
+          </li>
+        }
+      </ul>
+      <button
+        type="button"
+        [disabled]="completedExercises().length !== active.exercises.length"
+        (click)="finishWorkout()"
+      >
+        Finalizar treino
+      </button>
+    </section>
+  } @else {
+    @if (!isGallery) {
+    <section class="workout-tools" aria-label="Criar ou escolher um treino">
+      <details class="workout-disclosure">
+        <summary>
+          <span class="workout-disclosure__icon" aria-hidden="true">✦</span>
+          <span class="workout-disclosure__text">
+            <strong>Sugestões prontas</strong>
+            <small>Comece por uma ficha avulsa</small>
+          </span>
+          <span class="workout-disclosure__chevron" aria-hidden="true"></span>
+        </summary>
+        <div class="workout-disclosure__content">
+          <div class="workout-presets__grid">
+            @for (preset of presets; track preset.name) {
+              <article class="workout-preset">
+                <div class="workout-preset__top">
+                  <h3>{{ preset.name }}</h3>
+                  <span>{{ preset.exercises.length }} exercícios</span>
+                </div>
+                <details class="workout-preset__details">
+                  <summary>Ver exercícios</summary>
+                  <ul>@for (exercise of preset.exercises; track exercise) { <li>{{ exercise }}</li> }</ul>
+                </details>
+                <button type="button" (click)="addPreset(preset)">Adicionar ficha</button>
+              </article>
+            }
+          </div>
+        </div>
+      </details>
+
+      <details class="workout-disclosure">
+        <summary class="workout-plan-card">
+          <svg class="workout-plan-card__art" viewBox="0 0 120 92" aria-hidden="true" focusable="false">
+            <rect width="120" height="92" rx="18" fill="var(--color-primary-50)" />
+            <circle cx="94" cy="23" r="12" fill="var(--color-accent-300)" opacity=".75" />
+            <path d="M18 72c14-16 26-18 39-7 12 10 24 8 43-10v21H18z" fill="var(--color-secondary-100)" />
+            <path d="M42 56h35M48 50v12M71 50v12M37 53v7M80 53v7" fill="none" stroke="var(--color-primary-700)" stroke-width="4" stroke-linecap="round" />
+            <circle cx="57" cy="31" r="7" fill="var(--color-primary-500)" />
+            <path d="m56 39-7 13 10 5 8-12m-17 10-8 9m17-6 9 5" fill="none" stroke="var(--color-primary-600)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="m22 25 2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="var(--color-accent-500)" />
+          </svg>
+          <span class="workout-plan-card__copy">
+            <small class="workout-plan-card__tag">RECOMENDADO PARA VOCÊ</small>
+            <strong>Monte um plano que cabe na sua rotina</strong>
+            <span>Escolha seu objetivo, disponibilidade e experiência.</span>
+          </span>
+          <span class="workout-plan-card__action">Personalizar <span class="workout-disclosure__chevron" aria-hidden="true"></span></span>
+        </summary>
+        <div class="workout-disclosure__content plan-builder">
+          <form [formGroup]="planForm" (ngSubmit)="buildPlan()" novalidate>
+            <fieldset class="choice-group">
+              <legend>Qual é seu objetivo?</legend>
+              <div class="choice-grid choice-grid--goals">
+                @for (option of goalOptions; track option.value) {
+                  <button
+                    type="button"
+                    class="choice-card"
+                    [class.choice-card--selected]="planForm.controls.goal.value === option.value"
+                    [attr.aria-pressed]="planForm.controls.goal.value === option.value"
+                    (click)="selectGoal(option.value)"
+                  >
+                    <strong>{{ option.label }}</strong>
+                    <small>{{ option.description }}</small>
+                  </button>
+                }
+              </div>
+            </fieldset>
+
+            <fieldset class="choice-group">
+              <legend>Quantos dias por semana?</legend>
+              <div class="choice-chips" aria-label="Dias de treino por semana">
+                @for (day of dayOptions; track day) {
+                  <button
+                    type="button"
+                    class="choice-chip"
+                    [class.choice-chip--selected]="planForm.controls.daysPerWeek.value === day"
+                    [attr.aria-pressed]="planForm.controls.daysPerWeek.value === day"
+                    (click)="selectDays(day)"
+                  >{{ day }}</button>
+                }
+              </div>
+              @if (planForm.controls.daysPerWeek.invalid && planForm.controls.daysPerWeek.touched) {
+                <small class="field-error">Escolha de 1 a 7 dias por semana.</small>
+              }
+            </fieldset>
+
+            <fieldset class="choice-group">
+              <legend>Como descreve sua experiência?</legend>
+              <div class="choice-grid choice-grid--experience">
+                @for (option of experienceOptions; track option.value) {
+                  <button
+                    type="button"
+                    class="choice-card"
+                    [class.choice-card--selected]="planForm.controls.experienceLevel.value === option.value"
+                    [attr.aria-pressed]="planForm.controls.experienceLevel.value === option.value"
+                    (click)="selectExperience(option.value)"
+                  >
+                    <strong>{{ option.label }}</strong>
+                    <small>{{ option.description }}</small>
+                  </button>
+                }
+              </div>
+            </fieldset>
+
+            <fieldset class="choice-group">
+              <legend>Tempo por sessão</legend>
+              <div class="choice-chips choice-chips--duration">
+                @for (minutes of sessionOptions; track minutes) {
+                  <button
+                    type="button"
+                    class="choice-chip choice-chip--wide"
+                    [class.choice-chip--selected]="planForm.controls.sessionMinutes.value === minutes"
+                    [attr.aria-pressed]="planForm.controls.sessionMinutes.value === minutes"
+                    (click)="selectDuration(minutes)"
+                  >{{ minutes }} min</button>
+                }
+              </div>
+            </fieldset>
+
+            <div class="plan-builder__footer">
+              <p>Você poderá revisar e ajustar cada ficha depois.</p>
+              <button type="submit">Montar meu plano</button>
+            </div>
+          </form>
+        </div>
+      </details>
+
+      <app-workout-manual-builder />
+    </section>
+    }
+
+    <section class="workout-list" id="workout-gallery" aria-labelledby="workout-list-title">
+      <div class="workout-list__heading">
+        <div>
+          <p class="workouts-page__eyebrow">{{ isGallery ? 'Sua coleção ROOT' : 'Próximas sessões' }}</p>
+          <h2 id="workout-list-title">{{ isGallery ? 'Cartas conquistadas' : 'Fichas para treinar' }}</h2>
+          @if (isGallery) { <p class="workout-gallery__intro">Cada treino concluído vira uma carta com atributos próprios. Use a coleção inteira em duelos contra o Robô ROOT.</p> }
+        </div>
+        <span class="workout-list__count">{{ routinesForPage().length }}</span>
+      </div>
+      @if (isGallery && completedRoutines().length > 0) {
+        <button type="button" class="workout-gallery__play" (click)="startCollectionGame()">Jogar com toda a coleção <span>{{ completedRoutines().length }} cartas</span></button>
+      }
+      @if (routinesForPage().length === 0) {
+        @if (isGallery) {
+          <p class="workout-list__empty">Suas cartas aparecem aqui depois que você conclui um treino. <a routerLink="/treinos">Escolha uma ficha para começar.</a></p>
+        } @else {
+          <p class="workout-list__empty">Você concluiu todas as fichas que tinha. Veja sua coleção na <a routerLink="/galeria-cartas">galeria de cartas</a> ou crie um novo treino.</p>
+        }
+      } @else {
+        <div class="workout-routine-list">
+          @for (routine of routinesForPage(); track routine.id) {
+            <article class="workout-routine">
+        <div class="workout-card-scene" [class.workout-card-scene--new]="latestCompletedId() === routine.id" [class.workout-card--moss]="(routine.cardTheme ?? 'moss') === 'moss'" [class.workout-card--sunset]="routine.cardTheme === 'sunset'" [class.workout-card--ocean]="routine.cardTheme === 'ocean'" [class.workout-card--royal]="routine.cardTheme === 'royal'" [class.workout-card-frame--gilded]="routine.cardFrame === 'gilded'" [class.workout-card-frame--arcane]="routine.cardFrame === 'arcane'" [class.workout-card-frame--etched]="routine.cardFrame === 'etched'" [style.--card-accent]="routine.cardAccent ?? null" [style.--card-color]="routine.cardColor ?? null" [attr.data-rank]="cardLevel(routine).rank">
+          <div class="workout-card__flip" [class.workout-card__flip--back]="flippedCardId() === routine.id">
+            <section class="workout-card workout-card__front" role="button" tabindex="0" [attr.aria-label]="'Carta ' + routine.name + '. Frente do personagem. Ative para ver o verso com os exercícios.'" (click)="toggleCardFace(routine.id)" (keydown)="onCardKeydown($event, routine.id)">
+              <div class="workout-card__topline"><span>ROOT · CARTA DE TREINO</span><span>{{ cardLevel(routine).label }}</span></div>
+              <div class="workout-card__art" aria-hidden="true">@if (routine.cardArtwork) { <img [src]="routine.cardArtwork" alt="" /> } @else { <span class="workout-card__emblem">{{ routine.cardEmblem ?? '🌿' }}</span> }<span class="workout-card__spark workout-card__spark--one">✦</span><span class="workout-card__spark workout-card__spark--two">✧</span></div>
+              <h3>{{ routine.cardTitle || routine.name }}</h3>
+              @if (routine.cardTitle && routine.cardTitle !== routine.name) { <small class="workout-card__routine-name">Ficha: {{ routine.name }}</small> }
+              <p>{{ routine.exercises.length }} habilidades <span>·</span> {{ routine.completions ?? 0 }} {{ (routine.completions ?? 0) === 1 ? 'vitória' : 'vitórias' }}</p>
+              <small class="workout-card__duel-record">Rodadas: {{ routine.cardWins ?? 0 }}V · {{ routine.cardLosses ?? 0 }}D · {{ routine.cardDraws ?? 0 }}E</small>
+              <div class="workout-card__progress" aria-label="Progresso da carta"><span [style.width.%]="cardLevel(routine).rank * 25"></span></div>
+              <small class="workout-card__next">{{ cardLevel(routine).rank === 4 ? 'Nível máximo alcançado' : 'Próxima evolução: ' + ([2, 5, 10][cardLevel(routine).rank - 1]) + ' vitórias' }}</small>
+              <small class="workout-card__cycle" [class.workout-card__cycle--expired]="cycleDaysRemaining(routine) === 0">@if (cycleDaysRemaining(routine) === null) { {{ cycleEndLabel(routine) }} } @else if (cycleDaysRemaining(routine) === 0) { Ciclo encerrado · revise sua ficha } @else { {{ cycleDaysRemaining(routine) }} dias para revisar · termina {{ cycleEndLabel(routine) }} }</small>
+              @if (routine.cardLore) { <small class="workout-card__lore">“{{ routine.cardLore }}”</small> }
+              <span class="workout-card__flip-hint">{{ latestCompletedId() === routine.id ? 'TREINO CONCLUÍDO · CARTA ADICIONADA' : 'Toque para ver a força do personagem ↻' }}</span>
+            </section>
+	            <section class="workout-card workout-card__back" role="button" tabindex="0" aria-label="Verso da carta: habilidades do personagem. Ative para voltar à frente." (click)="toggleCardFace(routine.id)" (keydown)="onCardKeydown($event, routine.id)">
+              <div class="workout-card__topline"><span>{{ routine.cardTitle || routine.name }}</span><span>FORÇA</span></div>
+              <div class="workout-card__strength"><span aria-hidden="true">{{ routine.cardEmblem ?? '✦' }}</span><strong>Atributos do personagem</strong><small>Mais exercícios de um tipo aumentam esse atributo · {{ routine.name }}</small></div>
+              <div class="workout-card__stats">@for (attribute of cardAttributes; track attribute.id) { <div class="workout-card__stat"><span>{{ attribute.icon }} {{ attribute.label }}</span><span class="workout-card__stat-track"><span [style.width.%]="cardStats(routine)[attribute.id]"></span></span><strong>{{ cardStats(routine)[attribute.id] }}</strong></div> }</div>
+              <ol class="workout-card__skills">@for (exercise of routine.exercises; track $index) { <li><span>{{ $index + 1 }}</span><strong>{{ exercise }}</strong></li> }</ol>
+              <span class="workout-card__flip-hint">Toque para voltar à frente ↻</span>
+            </section>
+          </div>
+        </div>
+        <div class="workout-card__actions">
+          @if (!isGallery) {
+            <button type="button" (click)="startWorkout(routine, true)">Jogar aventura</button>
+            <button type="button" class="workout-card__secondary" (click)="startWorkout(routine)">Fazer treino</button>
+          }
+          <button type="button" class="workout-card__secondary" [attr.aria-pressed]="flippedCardId() === routine.id" (click)="toggleCardFace(routine.id)">{{ flippedCardId() === routine.id ? 'Ver frente' : 'Ver verso' }}</button>
+          @if (!isGallery) { <button type="button" class="workout-card__secondary" (click)="toggleCardEditor(routine.id)">{{ editingCardId() === routine.id ? 'Fechar decoração' : 'Decorar carta' }}</button> }
+          <button type="button" class="workout-routine__delete" [attr.aria-label]="'Apagar ficha ' + routine.name" (click)="deleteWorkout(routine)">Apagar carta</button>
+          @if (!isGallery && cycleDaysRemaining(routine) === 0) { <button type="button" class="workout-card__secondary" (click)="renewCycle(routine)">Renovar ciclo</button> }
+        </div>
+        @if (!isGallery && editingCardId() === routine.id) {
+          <fieldset class="workout-card__customizer"><legend>Escolha o visual da sua carta</legend><div class="workout-card__themes">
+            @for (theme of cardThemes; track theme.id) {
+              <button type="button" [class.workout-card__theme--selected]="(routine.cardTheme ?? 'moss') === theme.id" [attr.aria-pressed]="(routine.cardTheme ?? 'moss') === theme.id" (click)="customizeCard(routine, theme)"><span>{{ theme.emblem }}</span>{{ theme.label }}</button>
+            }
+          </div></fieldset>
+          <label class="workout-card__field">Nome do personagem<input type="text" maxlength="40" [value]="routine.cardTitle ?? routine.name" (change)="updateCardText(routine, 'cardTitle', $event)" /></label>
+          <label class="workout-card__field">Frase ou história do personagem<textarea maxlength="120" rows="2" [value]="routine.cardLore ?? ''" placeholder="Ex.: Guardião da constância" (change)="updateCardText(routine, 'cardLore', $event)"></textarea></label>
+          <fieldset class="workout-card__customizer"><legend>Moldura</legend><div class="workout-card__themes">
+            @for (frame of cardFrames; track frame.id) { <button type="button" [class.workout-card__theme--selected]="(routine.cardFrame ?? 'classic') === frame.id" [attr.aria-pressed]="(routine.cardFrame ?? 'classic') === frame.id" (click)="selectFrame(routine, frame)">{{ frame.label }}</button> }
+          </div></fieldset>
+          <fieldset class="workout-card__customizer"><legend>Emblema do personagem</legend><div class="workout-card__emblems">
+            @for (emblem of cardEmblems; track emblem) { <button type="button" [class.workout-card__theme--selected]="(routine.cardEmblem ?? '🌿') === emblem" [attr.aria-label]="'Usar emblema ' + emblem" [attr.aria-pressed]="(routine.cardEmblem ?? '🌿') === emblem" (click)="selectEmblem(routine, emblem)">{{ emblem }}</button> }
+          </div></fieldset>
+          <fieldset class="workout-card__customizer"><legend>Cor principal da carta</legend><p class="workout-card__color-hint">Muda o fundo da frente e do verso.</p><div class="workout-card__color-swatches">
+            @for (color of cardColors; track color.value) { <button type="button" class="workout-card__color-swatch" [style.backgroundColor]="color.value" [class.workout-card__color-swatch--selected]="(routine.cardColor ?? '') === color.value" [attr.aria-label]="'Cor ' + color.name" [attr.aria-pressed]="(routine.cardColor ?? '') === color.value" (click)="selectCardColor(routine, color.value)"></button> }
+            <label class="workout-card__custom-color" aria-label="Escolher outra cor"><input type="color" [value]="routine.cardColor ?? '#dcefe2'" (input)="selectCustomCardColor(routine, $event)" /><span>Outra</span></label>
+          </div></fieldset>
+          <label class="workout-card__field workout-card__accent">Cor dos detalhes<input type="color" [value]="routine.cardAccent ?? '#173b2a'" (input)="selectAccent(routine, $event)" /></label>
+          <label class="workout-card__field">Duração deste ciclo de treino<select [value]="routine.cycleDays ?? 28" (change)="selectCycleDays(routine, $event)">@for (days of cycleOptions; track days) { <option [value]="days">{{ days }} dias</option> }</select></label>
+          <label class="workout-card__upload">{{ routine.cardArtwork ? 'Trocar arte do personagem' : 'Adicionar arte do personagem' }}<input type="file" accept="image/*" (change)="onArtworkSelected($event, routine)" /></label>
+          @if (routine.cardArtwork) { <button type="button" class="workout-card__remove-art" (click)="removeArtwork(routine)">Remover arte personalizada</button> }
+        }
+            </article>
+          }
+        </div>
+      }
+    </section>
+  }
+
+  @if (collectionGameOpen()) {
+    <div class="card-battle__backdrop" role="presentation" (click)="closeCollectionGame()">
+      <section class="collection-game" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="collection-game-title" (click)="$event.stopPropagation()" (keydown)="onCollectionGameKeydown($event)">
+        <header class="card-battle__header"><div><p>Duelo da coleção · todas as cartas entram</p><h2 id="collection-game-title">Sua coleção <span>×</span> Robô ROOT</h2></div><button type="button" aria-label="Fechar partida" (click)="closeCollectionGame()">×</button></header>
+        <div class="collection-game__score"><span>Você <strong>{{ playerRoundWins() }}</strong></span><span>Rodada {{ cardRounds().length + 1 }} / {{ completedRoutines().length }}</span><span>Robô <strong>{{ robotRoundWins() }}</strong></span></div>
+        <p class="collection-game__message" aria-live="polite">{{ collectionGameMessage() }}</p>
+        @if (!collectionGameResult()) {
+          @if (currentRobotCard(); as robot) {
+            <section class="collection-game__robot-card" aria-label="Carta jogada pelo Robô ROOT">
+              <div class="collection-game__robot-avatar" aria-hidden="true"><svg viewBox="0 0 120 130"><path d="M60 8v14M53 8h14" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><circle cx="60" cy="8" r="5" fill="currentColor"/><rect x="25" y="26" width="70" height="54" rx="15" fill="currentColor"/><circle cx="45" cy="51" r="7" fill="white"/><circle cx="75" cy="51" r="7" fill="white"/><path d="M45 68h30M20 94h80l10 28H10z" fill="currentColor"/><path d="M10 99 2 113m108-14 8 14" stroke="currentColor" stroke-width="7" stroke-linecap="round"/></svg></div>
+              <div><small>O ROBÔ JOGOU</small><h3>{{ robot.name }}</h3><p>Escolha sua carta e depois um atributo para a disputa.</p></div>
+              <div class="collection-game__stats">@for (attribute of cardAttributes; track attribute.id) { <span>{{ attribute.icon }} {{ attribute.label }} <strong>{{ robot.stats[attribute.id] }}</strong></span> }</div>
+            </section>
+            @if (selectedPlayerCard(); as selected) {
+              <section class="collection-game__attribute-pick"><h3>Sua carta: {{ selected.cardTitle || selected.name }}</h3><p>Qual atributo vai para o duelo?</p><div>@for (attribute of cardAttributes; track attribute.id; let i = $index) { <button type="button" (click)="playCardAttribute(attribute.id)"><kbd>{{ i + 1 }}</kbd>{{ attribute.icon }} {{ attribute.label }}<strong>{{ cardStats(selected)[attribute.id] }} × {{ robot.stats[attribute.id] }}</strong></button> }</div></section>
+            } @else {
+              <section class="collection-game__hand"><h3>Escolha uma carta da sua mão <small>{{ playerHand().length }} restantes</small></h3><p>Use todas as cartas da galeria, uma por rodada. Toque numa carta ou pressione 1–9.</p><div>@for (card of playerHand(); track card.id; let i = $index) {
+                <button type="button" class="collection-game__hand-card" [class.collection-game__hand-card--selected]="selectedPlayerCardId() === card.id" (click)="selectPlayerCard(card.id)"><span class="collection-game__hand-art">@if (card.cardArtwork) { <img [src]="card.cardArtwork" alt="" /> } @else { {{ card.cardEmblem ?? '🌿' }} }</span><strong><kbd>{{ i + 1 }}</kbd> {{ card.cardTitle || card.name }}</strong><small>Poder geral {{ cardGamePower(card) }}</small><span class="collection-game__hand-stats">@for (attribute of cardAttributes; track attribute.id) { <span>{{ attribute.icon }} {{ cardStats(card)[attribute.id] }}</span> }</span></button>
+              }</div></section>
+            }
+          }
+        } @else {
+          <section class="collection-game__result" [class.collection-game__result--win]="collectionGameResult() === 'won'"><strong>{{ collectionGameResult() === 'won' ? 'Sua coleção venceu!' : collectionGameResult() === 'lost' ? 'O Robô ROOT venceu desta vez.' : 'Empate!' }}</strong><p>{{ playerRoundWins() }} rodadas suas · {{ robotRoundWins() }} do robô · {{ cardRounds().length }} cartas usadas</p><button type="button" (click)="closeCollectionGame()">Voltar à galeria</button></section>
+          <ol class="collection-game__history">@for (round of cardRounds(); track $index) { <li><span>{{ round.playerName }} {{ round.playerValue }}</span><small>{{ cardAttributeLabel(round.attribute) }}</small><span>{{ round.robotValue }} {{ round.robotName }}</span><strong>{{ round.winner === 'player' ? 'Você venceu' : round.winner === 'robot' ? 'Robô venceu' : 'Empate' }}</strong></li> }</ol>
+        }
+        <p class="card-battle__future">Cada carta da sua coleção é usada uma vez. No futuro, você poderá jogar contra outras pessoas.</p>
+      </section>
+    </div>
+  }
+</main>

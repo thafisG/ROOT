@@ -1,7 +1,8 @@
 <section class="weekly-summary">
   <header class="weekly-summary__header">
     <h3 class="weekly-summary__title">Resumo da semana</h3>
-    <p class="weekly-summary__subtitle">Equilíbrio entre categorias de hábito</p>
+    <p class="weekly-summary__subtitle">Atividades registradas nos últimos 7 dias</p>
+    <a class="weekly-summary__link" routerLink="/analytics">Ver análise</a>
   </header>
 
   <ul class="weekly-summary__list">
@@ -13,15 +14,7 @@
 
         <span class="weekly-summary__label">{{ stat.category.label }}</span>
 
-        <span class="weekly-summary__track">
-          <span
-            class="weekly-summary__fill"
-            [style.width.%]="stat.percentage"
-            [style.background]="'var(' + stat.category.colorVar + ')'"
-          ></span>
-        </span>
-
-        <span class="weekly-summary__value">{{ stat.percentage }}%</span>
+        <span class="weekly-summary__value" [attr.aria-label]="stat.count + ' registros'">{{ stat.count }}</span>
       </li>
     }
   </ul>

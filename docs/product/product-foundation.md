@@ -25,15 +25,15 @@ O resultado é abandono do app em poucas semanas — o problema não é falta de
 
 ### 1.3 Proposta de Valor
 
-**ROOT não é um diário de treinos. É um sistema de recomendação comportamental aplicado à saúde.**
+**ROOT é uma plataforma de hábitos saudáveis que combina treino, nutrição, recuperação e recomendações comportamentais.**
 
 | Apps tradicionais | ROOT |
 |---|---|
 | Usuário decide o que fazer | Sistema sugere com base em padrões reais |
 | Métricas isoladas | Padrões cruzados (frequência × recência × objetivo) |
 | Recomendação genérica ("beba água") | Recomendação contextual e explicada |
-| Foco em um pilar (treino OU dieta OU sono) | Visão holística de hábitos |
-| Engajamento por gamificação vazia | Engajamento por relevância e clareza |
+| Ferramentas isoladas para cada pilar | Uma rotina integrada de treino, nutrição e recuperação |
+| Gamificação que cobra volume | Progressão leve por consistência e equilíbrio |
 
 ### 1.4 North Star Metric
 
@@ -50,7 +50,7 @@ Métricas de suporte:
 1. Demonstrar um **Recommendation Engine funcional, explicável e evolutivo** (arquitetura em camadas, de regras simples a preparação para ML).
 2. Demonstrar **arquitetura Angular enterprise** por features, com separação clara de responsabilidades.
 3. Demonstrar **maturidade em UX**: decisões justificadas, não estéticas gratuitas.
-4. Entregar um produto **visualmente coeso e emocionalmente distinto** (identidade "chalk/nature/editorial"), fugindo do padrão visual saturado de apps fitness (neon, gamificado, agressivo).
+4. Entregar um produto **visualmente coeso e emocionalmente distinto**, conectando energia de academia com bem-estar sem parecer uma marca de produtos naturais nem recorrer a neon agressivo.
 
 ### 1.6 Princípios de Produto
 
@@ -58,7 +58,8 @@ Métricas de suporte:
 2. **Calma antes de estímulo.** Nenhuma notificação ou cor grita pela atenção do usuário.
 3. **O sistema se adapta ao usuário, não o contrário.** Menos configuração manual, mais inferência de comportamento.
 4. **Equilíbrio é o objetivo, não intensidade.** ROOT não empurra "treinar mais" — empurra "treinar melhor e mais completo".
-5. **Progresso visível, mas não ansiogênico.** Métricas mostradas com contexto, nunca como cobrança.
+5. **Progresso visível, mas não ansiogênico.** XP e níveis reconhecem atividades concluídas; faltas não retiram pontos nem geram culpa.
+6. **Cuidado integrado.** Treinos, nutrição, sono e recuperação fazem parte da mesma rotina, com orientação profissional como uma evolução do produto.
 
 ---
 

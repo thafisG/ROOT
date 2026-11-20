@@ -25,6 +25,7 @@
 }
 
 .bottom-nav__item {
+  flex: 1 1 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -35,7 +36,8 @@
   font-size: 0.6875rem;
   font-weight: 500;
   padding: var(--space-4);
-  min-width: 48px;
+  min-width: 0;
+  white-space: nowrap;
 
   &--active {
     color: var(--color-primary-600);

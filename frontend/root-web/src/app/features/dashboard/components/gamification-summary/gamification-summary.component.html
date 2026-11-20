@@ -1,0 +1,23 @@
+<section class="gamification" aria-label="Progresso de hábitos">
+  <div class="gamification__level">
+    <span class="gamification__level-label">Nível</span>
+    <strong>{{ level() }}</strong>
+  </div>
+  <div class="gamification__progress">
+    <div class="gamification__copy">
+      <strong>{{ totalXp() }} XP</strong>
+      <span>{{ xpInLevel() }} de 100 XP para o próximo nível</span>
+    </div>
+    <div
+      class="gamification__track"
+      role="progressbar"
+      aria-label="Progresso até o próximo nível"
+      [attr.aria-valuenow]="xpInLevel()"
+      aria-valuemin="0"
+      aria-valuemax="100"
+    >
+      <span [style.width.%]="xpInLevel()"></span>
+    </div>
+  </div>
+  <p class="gamification__note">Cada atividade concluída vale 10 XP.</p>
+</section>

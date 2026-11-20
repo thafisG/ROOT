@@ -5,6 +5,11 @@ export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 
   {
+    path: 'login',
+    loadComponent: () => import('./features/auth/login.component').then((m) => m.LoginComponent),
+  },
+
+  {
     path: 'onboarding',
     canActivate: [redirectIfOnboardedGuard],
     loadComponent: () =>
@@ -25,21 +30,30 @@ export const routes: Routes = [
       {
         path: 'treinos',
         loadComponent: () =>
-          import('./shared/ui/placeholder-page/placeholder-page.component').then(
-            (m) => m.PlaceholderPageComponent,
-          ),
-        data: { title: 'Treinos', description: 'A biblioteca de treinos chega na próxima fase.' },
+          import('./features/workouts/workouts.component').then((m) => m.WorkoutsComponent),
+      },
+      {
+        path: 'galeria-cartas',
+        data: { gallery: true },
+        loadComponent: () =>
+          import('./features/workouts/workouts.component').then((m) => m.WorkoutsComponent),
+      },
+      {
+        path: 'nutricao',
+        loadComponent: () =>
+          import('./features/nutrition/nutrition.component').then((m) => m.NutritionComponent),
+      },
+      {
+        path: 'acompanhamento',
+        loadComponent: () =>
+          import('./features/coaching/coaching.component').then((m) => m.CoachingComponent),
       },
       {
         path: 'recomendacoes',
         loadComponent: () =>
-          import('./shared/ui/placeholder-page/placeholder-page.component').then(
-            (m) => m.PlaceholderPageComponent,
+          import('./features/recommendations/recommendations.component').then(
+            (m) => m.RecommendationsComponent,
           ),
-        data: {
-          title: 'Recomendações',
-          description: 'O histórico completo de recomendações chega na próxima fase.',
-        },
       },
       {
         path: 'analytics',
@@ -55,10 +69,7 @@ export const routes: Routes = [
       {
         path: 'perfil',
         loadComponent: () =>
-          import('./shared/ui/placeholder-page/placeholder-page.component').then(
-            (m) => m.PlaceholderPageComponent,
-          ),
-        data: { title: 'Perfil', description: 'Edição de perfil chega na próxima fase.' },
+          import('./features/profile/profile.component').then((m) => m.ProfileComponent),
       },
     ],
   },

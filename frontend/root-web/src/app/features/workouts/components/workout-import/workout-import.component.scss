@@ -1,0 +1,33 @@
+.workout-import {
+  display: grid;
+  gap: var(--space-8);
+  padding: var(--space-12);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-page);
+  font-family: var(--font-body);
+}
+
+.workout-import__heading { display: flex; align-items: center; justify-content: space-between; gap: var(--space-8); }
+.workout-import__heading h3 { margin: 0; color: var(--text-primary); font-size: 0.8125rem; }
+.workout-import__heading span { color: var(--text-muted); font-size: 0.6875rem; }
+.workout-import__standard,
+.workout-import__photo-note,
+.workout-import__status,
+.workout-import__error { margin: 0; color: var(--text-secondary); font-size: 0.75rem; line-height: 1.45; }
+.workout-import__standard strong { color: var(--text-primary); }
+.workout-import__status { color: var(--color-secondary-700); }
+.workout-import__error { color: var(--color-error); }
+.workout-import__button,
+.workout-import__remove { justify-self: start; padding: var(--space-8) var(--space-12); border: 1px solid var(--border-default); border-radius: var(--radius-md); color: var(--color-primary-700); background: var(--bg-card); font: 600 0.75rem var(--font-body); cursor: pointer; }
+.workout-import__button:disabled,
+.workout-import__remove:disabled { opacity: 0.6; cursor: wait; }
+.workout-import__file-input { width: 100%; padding: var(--space-8); border: 1px solid var(--border-default); border-radius: var(--radius-md); color: var(--text-secondary); background: var(--bg-card); font: 0.75rem var(--font-body); }
+.workout-import__file-input::file-selector-button { margin-right: var(--space-8); padding: var(--space-8) var(--space-12); border: 0; border-radius: var(--radius-sm); color: var(--text-on-primary); background: var(--color-primary-600); font: 600 0.75rem var(--font-body); cursor: pointer; }
+.workout-import__preview { display: flex; align-items: flex-start; gap: var(--space-12); }
+.workout-import__preview img { width: min(100%, 260px); max-height: 220px; object-fit: contain; border: 1px solid var(--border-default); border-radius: var(--radius-md); background: var(--bg-card); }
+.workout-import__progress { width: 100%; height: 8px; accent-color: var(--color-primary-600); }
+
+@media (max-width: 600px) {
+  .workout-import__preview { flex-direction: column; }
+}

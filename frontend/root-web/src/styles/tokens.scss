@@ -16,55 +16,55 @@ $bp-wide: 1440px;
 
 :root {
   // Neutros — Paper & Stone
-  --color-neutral-0: #FDFBF7;
-  --color-neutral-50: #F7F2EA;
-  --color-neutral-100: #EDE4D3;
-  --color-neutral-200: #E0D4BE;
-  --color-neutral-300: #C9B99C;
-  --color-neutral-400: #A8977A;
-  --color-neutral-500: #8A7A63;
-  --color-neutral-600: #6B5D4A;
-  --color-neutral-700: #4F4436;
-  --color-neutral-800: #362E24;
-  --color-neutral-900: #221C16;
+  --color-neutral-0: #F8F9FA;
+  --color-neutral-50: #F0F2F4;
+  --color-neutral-100: #E4E7EB;
+  --color-neutral-200: #D3D8DE;
+  --color-neutral-300: #B4BDC7;
+  --color-neutral-400: #8995A3;
+  --color-neutral-500: #687483;
+  --color-neutral-600: #4D5967;
+  --color-neutral-700: #37414D;
+  --color-neutral-800: #252E38;
+  --color-neutral-900: #171D24;
 
   // Primária — Terracotta
-  --color-primary-50: #FBEDE6;
-  --color-primary-100: #F4D3C2;
-  --color-primary-200: #E8B191;
-  --color-primary-300: #D68F66;
-  --color-primary-400: #C97748;
-  --color-primary-500: #B35E34;
-  --color-primary-600: #94492A;
-  --color-primary-700: #743823;
-  --color-primary-800: #55291A;
+  --color-primary-50: #FCEDE8;
+  --color-primary-100: #F7D6CB;
+  --color-primary-200: #EBAF9A;
+  --color-primary-300: #DC856A;
+  --color-primary-400: #D4694A;
+  --color-primary-500: #C65332;
+  --color-primary-600: #A83F26;
+  --color-primary-700: #84321F;
+  --color-primary-800: #612719;
 
   // Secundária — Moss
-  --color-secondary-50: #EEF0E4;
-  --color-secondary-100: #D9DEC3;
-  --color-secondary-300: #A2AD79;
-  --color-secondary-500: #707C48;
-  --color-secondary-700: #454C2C;
+  --color-secondary-50: #E8F3F1;
+  --color-secondary-100: #CDE5E1;
+  --color-secondary-300: #80B8AF;
+  --color-secondary-500: #34786F;
+  --color-secondary-700: #24544E;
 
   // Acento — Ochre
-  --color-accent-50: #FBF1E1;
-  --color-accent-300: #DDAE68;
-  --color-accent-500: #C08A3E;
-  --color-accent-700: #8A611F;
+  --color-accent-50: #FFF4DF;
+  --color-accent-300: #E7B95D;
+  --color-accent-500: #B87916;
+  --color-accent-700: #76500D;
 
   // Semânticas
   --color-success: var(--color-secondary-500);
   --color-warning: var(--color-accent-500);
   --color-error: #A8462F;
-  --color-info: #6B7D8A;
+  --color-info: #3579A8;
 
   // Categorias de hábito
   --color-cat-strength: var(--color-primary-600);
   --color-cat-mobility: var(--color-secondary-500);
-  --color-cat-hydration: #6B7D8A;
-  --color-cat-sleep: #5C5470;
+  --color-cat-hydration: #3579A8;
+  --color-cat-sleep: #66568D;
   --color-cat-nutrition: var(--color-accent-500);
-  --color-cat-cardio: var(--color-primary-500);
+  --color-cat-cardio: #D85C3B;
 
   // Aplicação
   --bg-page: var(--color-neutral-0);
@@ -79,7 +79,7 @@ $bp-wide: 1440px;
   --icon-default: var(--color-neutral-500);
 
   // Tipografia
-  --font-display: 'DM Serif Display', serif;
+  --font-display: 'Inter', sans-serif;
   --font-body: 'Inter', sans-serif;
 
   // Espaçamento
@@ -92,11 +92,11 @@ $bp-wide: 1440px;
   --radius-xl: 24px; --radius-2xl: 32px; --radius-full: 999px;
 
   // Sombras (tingidas com neutral-900, nunca preto puro)
-  --shadow-xs: 0 1px 2px rgba(54, 46, 36, 0.06);
-  --shadow-sm: 0 2px 6px rgba(54, 46, 36, 0.08);
-  --shadow-md: 0 6px 16px rgba(54, 46, 36, 0.10);
-  --shadow-lg: 0 12px 32px rgba(54, 46, 36, 0.14);
-  --shadow-focus: 0 0 0 3px rgba(179, 94, 52, 0.25);
+  --shadow-xs: 0 1px 2px rgba(23, 29, 36, 0.06);
+  --shadow-sm: 0 2px 6px rgba(23, 29, 36, 0.08);
+  --shadow-md: 0 6px 16px rgba(23, 29, 36, 0.10);
+  --shadow-lg: 0 12px 32px rgba(23, 29, 36, 0.14);
+  --shadow-focus: 0 0 0 3px rgba(198, 83, 50, 0.25);
 
   // Motion
   --duration-fast: 150ms;

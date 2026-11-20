@@ -1,0 +1,59 @@
+<section class="workout-import" aria-labelledby="workout-import-title">
+  <div class="workout-import__heading">
+    <h3 id="workout-import-title">{{ mode() === 'message' ? 'Cole a mensagem do professor' : 'Envie uma foto da ficha' }}</h3>
+    <span>Opcional</span>
+  </div>
+  @if (mode() === 'message') {
+    <p class="workout-import__standard">
+      Use uma linha por exercício: <strong>Supino reto — 3×8</strong>. Para separar fichas, inclua títulos como <strong>Treino A</strong> e <strong>Treino B</strong>. Confira o resultado antes de salvar.
+    </p>
+  } @else {
+    <p class="workout-import__standard">
+      Vou tentar ler exercícios e títulos como <strong>Treino A</strong> e <strong>Treino B</strong>. A leitura pode não identificar todos os grupos; você poderá organizar cada exercício antes de salvar.
+    </p>
+  }
+  @if (mode() === 'message') {
+    <label for="coach-message">Mensagem do professor</label>
+    <textarea
+      id="coach-message"
+      rows="4"
+      [value]="message()"
+      (input)="onMessageInput($event)"
+      placeholder="Treino A&#10;Supino reto — 3×8&#10;Remada baixa — 3×10"
+    ></textarea>
+    <button type="button" class="workout-import__button" [disabled]="isProcessing() || !message().trim()" (click)="importMessage()">
+      Organizar minha mensagem
+    </button>
+  } @else {
+    <label for="workout-reference-image">Escolha a imagem (JPG, PNG ou WebP; até 8 MB)</label>
+    <input
+      id="workout-reference-image"
+      class="workout-import__file-input"
+      type="file"
+      accept="image/jpeg,image/png,image/webp"
+      aria-describedby="workout-import-photo-note"
+      [disabled]="isProcessing()"
+      (change)="onImageSelected($event)"
+    />
+    <p id="workout-import-photo-note" class="workout-import__photo-note">
+      A leitura acontece no navegador. Na primeira vez, o app baixa o modelo de leitura em português.
+    </p>
+  }
+  @if (image()) {
+    <div class="workout-import__preview">
+      <img [src]="image()" alt="Prévia da foto de referência da ficha" />
+      <button type="button" class="workout-import__remove" [disabled]="isProcessing()" (click)="removeImage()">
+        Remover foto
+      </button>
+    </div>
+  }
+  @if (isProcessing()) {
+    <progress class="workout-import__progress" [value]="progress()" max="100">{{ progress() }}%</progress>
+  }
+  @if (status()) {
+    <p class="workout-import__status" role="status">{{ status() }}</p>
+  }
+  @if (error()) {
+    <p class="workout-import__error" role="alert">{{ error() }}</p>
+  }
+</section>

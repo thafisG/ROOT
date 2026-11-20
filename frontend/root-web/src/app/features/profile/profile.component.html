@@ -1,0 +1,44 @@
+<main class="profile-page">
+  <header class="profile-page__header">
+    <p class="profile-page__eyebrow">Sua conta</p>
+    <h1>Perfil e dados</h1>
+    <p>Seus dados de perfil e atividades ficam armazenados localmente neste dispositivo.</p>
+  </header>
+
+  @if (profile(); as user) {
+    <section class="profile-card" aria-labelledby="profile-details-title">
+      <h2 id="profile-details-title">Seus dados</h2>
+      <dl>
+        <div><dt>Nome</dt><dd>{{ user.name }}</dd></div>
+        <div><dt>E-mail</dt><dd>{{ user.email }}</dd></div>
+        <div><dt>Objetivo</dt><dd>{{ goalLabel() }}</dd></div>
+        <div><dt>Experiência</dt><dd>{{ user.experienceLevel }}</dd></div>
+        <div><dt>Dias disponíveis</dt><dd>{{ user.availableDaysPerWeek }} por semana</dd></div>
+      </dl>
+    </section>
+  }
+
+  <section class="profile-card" aria-labelledby="profile-privacy-title">
+    <h2 id="profile-privacy-title">Acesso e privacidade</h2>
+    <p>Ao sair, seu perfil e histórico continuam salvos para você entrar novamente neste dispositivo.</p>
+    <button type="button" class="profile-page__secondary" (click)="signOut()">Sair</button>
+
+    @if (!confirmDelete()) {
+      <button type="button" class="profile-page__danger" (click)="confirmDelete.set(true)">
+        Apagar perfil e histórico
+      </button>
+    } @else {
+      <div class="profile-page__confirmation" role="alert">
+        <p>Isso apaga o perfil e todas as atividades salvas neste dispositivo. Esta ação não pode ser desfeita.</p>
+        <button type="button" class="profile-page__danger" (click)="deleteData()">Confirmar apagamento</button>
+        <button type="button" class="profile-page__secondary" (click)="confirmDelete.set(false)">Cancelar</button>
+      </div>
+    }
+  </section>
+
+  <section class="profile-card" aria-labelledby="profile-support-title">
+    <h2 id="profile-support-title">Acompanhamento profissional</h2>
+    <p>Veja como o ROOT está organizando treino, nutrição e apoio especializado.</p>
+    <a routerLink="/acompanhamento">Explorar acompanhamento</a>
+  </section>
+</main>

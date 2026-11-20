@@ -1,8 +1,6 @@
 <div [formGroup]="form()" class="step">
   <h2 class="step__title">Bem-vindo(a) ao ROOT</h2>
-  <p class="step__subtitle">
-    Vamos te conhecer para personalizar suas recomendações desde o primeiro dia.
-  </p>
+  <p class="step__subtitle">Vamos conhecer seus objetivos e sua rotina para personalizar as sugestões.</p>
 
   <label class="field">
     <span class="field__label">Nome</span>
@@ -19,7 +17,7 @@
   </label>
 
   <label class="field">
-    <span class="field__label">E-mail</span>
+    <span class="field__label">E-mail para entrar neste dispositivo</span>
     <input
       class="field__input"
       type="email"
@@ -29,6 +27,20 @@
     />
     @if (form().get('email')?.invalid && form().get('email')?.touched) {
       <span class="field__error">Informe um e-mail válido.</span>
+    }
+  </label>
+
+  <label class="field">
+    <span class="field__label">Senha</span>
+    <input
+      class="field__input"
+      type="password"
+      formControlName="password"
+      placeholder="Mínimo de 8 caracteres"
+      autocomplete="new-password"
+    />
+    @if (form().get('password')?.invalid && form().get('password')?.touched) {
+      <span class="field__error">Crie uma senha com pelo menos 8 caracteres.</span>
     }
   </label>
 </div>

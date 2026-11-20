@@ -11,23 +11,19 @@
             <app-root-step-welcome [form]="form" />
           }
           @case (1) {
-            <app-root-step-physical [form]="form" />
-          }
-          @case (2) {
             <app-root-step-goal [form]="form" />
           }
-          @case (3) {
+          @case (2) {
             <app-root-step-routine [form]="form" />
           }
-          @case (4) {
+          @case (3) {
             <app-root-step-summary
               [name]="form.value.name!"
-              [age]="form.value.age!"
-              [heightCm]="form.value.heightCm!"
-              [weightKg]="form.value.weightKg!"
               [goal]="form.value.goal!"
               [experienceLevel]="form.value.experienceLevel!"
               [availableDaysPerWeek]="form.value.availableDaysPerWeek!"
+              [replacingProfile]="replacesExistingProfile"
+              [form]="form"
             />
           }
         }
@@ -36,11 +32,15 @@
           @if (currentStep() > 0) {
             <button type="button" class="onboarding__back" (click)="back()">Voltar</button>
           }
-          <button type="submit" class="onboarding__next">
-            {{ currentStep() === lastStepIndex ? 'Começar a usar o ROOT' : 'Continuar' }}
+          <button type="submit" class="onboarding__next" [disabled]="submitting()">
+            {{ submitting() ? 'Criando sua conta…' : currentStep() === lastStepIndex ? 'Começar a usar o ROOT' : 'Continuar' }}
           </button>
         </div>
       </form>
+      @if (error()) {
+        <p class="onboarding__error" role="alert">{{ error() }}</p>
+      }
+      <p class="onboarding__login">Já tem uma conta? <a routerLink="/login">Entrar</a></p>
     </div>
   </div>
 </div>

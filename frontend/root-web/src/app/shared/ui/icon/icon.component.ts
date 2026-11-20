@@ -9,11 +9,12 @@ export type IconName =
   | 'droplet'
   | 'moon'
   | 'flame'
-  | 'leaf'
+  | 'activity'
   | 'apple'
   | 'chevron-right'
   | 'check'
   | 'x'
+  | 'briefcase'
   | 'clock';
 
 @Component({

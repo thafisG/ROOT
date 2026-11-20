@@ -98,6 +98,24 @@ Evitar:
 - excesso de notificações
 - cores agressivas
 - animações exageradas
+
+---
+
+# 6. Gamification Without Guilt
+
+O ROOT reconhece a consistência com XP, níveis e pequenas conquistas. O usuário não perde pontos por descansar, faltar ou recomeçar uma rotina.
+
+### Isso significa:
+
+- Recompensar atividades concluídas e hábitos diversos, não volume ou intensidade sem contexto.
+- Explicar como os pontos são ganhos.
+- Nunca usar sequências interrompidas para repreender ou envergonhar a pessoa.
+
+---
+
+# 7. One Wellness Routine
+
+Treino de academia, nutrição, hidratação, sono e recuperação pertencem à mesma experiência. O app organiza os hábitos e deixa claro quando uma orientação precisa vir de um profissional habilitado.
 - gamificação excessiva
 - pressão psicológica
 

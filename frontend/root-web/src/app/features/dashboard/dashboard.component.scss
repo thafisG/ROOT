@@ -34,6 +34,46 @@
   margin: 0;
 }
 
+.dashboard__complete-recommendation {
+  align-self: flex-start;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  padding: var(--space-8) var(--space-12);
+  font: inherit;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--border-strong);
+  }
+}
+
+.dashboard__workout-empty {
+  border: 1px dashed var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: var(--space-16);
+
+  h3 {
+    margin: 0 0 var(--space-4);
+    color: var(--text-primary);
+    font: 600 1rem var(--font-body);
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-secondary);
+    font: 0.875rem var(--font-body);
+  }
+
+  a {
+    display: inline-block;
+    margin-top: var(--space-12);
+    color: var(--color-primary-700);
+    font: 600 0.8125rem var(--font-body);
+  }
+}
+
 .dashboard__alternatives {
   display: flex;
   flex-direction: column;
