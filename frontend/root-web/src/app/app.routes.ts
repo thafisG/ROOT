@@ -33,6 +33,12 @@ export const routes: Routes = [
           import('./features/workouts/workouts.component').then((m) => m.WorkoutsComponent),
       },
       {
+        path: 'galeria-cartas',
+        data: { gallery: true },
+        loadComponent: () =>
+          import('./features/workouts/workouts.component').then((m) => m.WorkoutsComponent),
+      },
+      {
         path: 'nutricao',
         loadComponent: () =>
           import('./features/nutrition/nutrition.component').then((m) => m.NutritionComponent),
