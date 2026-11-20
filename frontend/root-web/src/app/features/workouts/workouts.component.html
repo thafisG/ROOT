@@ -214,7 +214,7 @@
               @if (routine.cardLore) { <small class="workout-card__lore">“{{ routine.cardLore }}”</small> }
               <span class="workout-card__flip-hint">{{ latestCompletedId() === routine.id ? 'TREINO CONCLUÍDO · CARTA ADICIONADA' : 'Toque para ver a força do personagem ↻' }}</span>
             </section>
-            <section class="workout-card workout-card__back" aria-label="Verso da carta: habilidades do personagem" (click)="toggleCardFace(routine.id)">
+	            <section class="workout-card workout-card__back" role="button" tabindex="0" aria-label="Verso da carta: habilidades do personagem. Ative para voltar à frente." (click)="toggleCardFace(routine.id)" (keydown)="onCardKeydown($event, routine.id)">
               <div class="workout-card__topline"><span>{{ routine.cardTitle || routine.name }}</span><span>FORÇA</span></div>
               <div class="workout-card__strength"><span aria-hidden="true">{{ routine.cardEmblem ?? '✦' }}</span><strong>Atributos do personagem</strong><small>Mais exercícios de um tipo aumentam esse atributo · {{ routine.name }}</small></div>
               <div class="workout-card__stats">@for (attribute of cardAttributes; track attribute.id) { <div class="workout-card__stat"><span>{{ attribute.icon }} {{ attribute.label }}</span><span class="workout-card__stat-track"><span [style.width.%]="cardStats(routine)[attribute.id]"></span></span><strong>{{ cardStats(routine)[attribute.id] }}</strong></div> }</div>
