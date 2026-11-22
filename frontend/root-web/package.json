@@ -29,8 +29,8 @@
     "phosphor-icons": "^1.4.2",
     "rxjs": "~7.8.0",
     "tesseract.js": "^7.0.0",
-    "tslib": "^2.3.0",
-    "zod": "^4.5.4"
+    "tslib": "^2.9.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@angular/build": "^22.0.6",
@@ -38,13 +38,13 @@
     "@angular/compiler-cli": "^22.0.7",
     "@eslint/js": "^10.0.1",
     "@types/express": "^5.0.1",
-    "@types/node": "^26.4.1",
-    "angular-eslint": "22.2.0",
+    "@types/node": "^26.6.6",
+    "angular-eslint": "22.8.0",
     "eslint": "^10.3.0",
-    "jsdom": "^30.0.1",
+    "jsdom": "^31.0.1",
     "prettier": "^3.8.1",
     "typescript": "~6.0.3",
     "typescript-eslint": "8.63.0",
-    "vitest": "^4.1.12"
+    "vitest": "^5.1.1"
   }
 }
